@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { createGenerationStream } from "../services/streaming";
-import type { ContentType, GenerationRequest } from "../types/content";
+import type { GenerationRequest } from "../types/content";
 
 export type GenerationStatus = "idle" | "generating" | "error";
 

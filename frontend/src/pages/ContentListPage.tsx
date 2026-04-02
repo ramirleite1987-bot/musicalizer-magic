@@ -86,7 +86,7 @@ export function ContentListPage() {
       <div className="flex items-center gap-3">
         <Select
           value={filters.status ?? ""}
-          onValueChange={(value) =>
+          onValueChange={(value: string) =>
             setFilters({ ...filters, status: (value || undefined) as ContentStatus | undefined, page: 1 })
           }
         >
@@ -105,7 +105,7 @@ export function ContentListPage() {
 
         <Select
           value={filters.content_type ?? ""}
-          onValueChange={(value) =>
+          onValueChange={(value: string) =>
             setFilters({ ...filters, content_type: (value || undefined) as ContentType | undefined, page: 1 })
           }
         >
