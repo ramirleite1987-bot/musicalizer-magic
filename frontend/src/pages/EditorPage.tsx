@@ -1,25 +1,76 @@
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { ContentEditor } from "../components/ContentEditor";
+import { GenerationPanel } from "../components/GenerationPanel";
+import { ValidationPanel } from "../components/ValidationPanel";
+import { useContent } from "../hooks/useContent";
+import type { ContentItem, ContentType } from "../types/content";
 
 export function EditorPage() {
   const { id } = useParams<{ id: string }>();
+  const { getById, create, update } = useContent();
+  const [content, setContent] = useState<ContentItem | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [contentId, setContentId] = useState<string>(id === "new" ? "" : id || "");
+
+  useEffect(() => {
+    if (id && id !== "new") {
+      setLoading(true);
+      getById(id)
+        .then((item) => {
+          setContent(item);
+          setContentId(item.id);
+        })
+        .catch(() => setContent(null))
+        .finally(() => setLoading(false));
+    }
+  }, [id, getById]);
+
+  const handleSave = useCallback(
+    async (data: { title: string; body: string; content_type: ContentType }) => {
+      if (contentId) {
+        const updated = await update(contentId, data);
+        setContent(updated);
+      } else {
+        const created = await create({ ...data, language: "pt", channels: [] });
+        setContent(created);
+        setContentId(created.id);
+        window.history.replaceState(null, "", `/content/${created.id}`);
+      }
+    },
+    [contentId, create, update]
+  );
+
+  const handleAcceptGenerated = useCallback((text: string) => {
+    setContent((prev) => {
+      if (!prev) return prev;
+      return { ...prev, body: prev.body ? prev.body + "\n\n" + text : text };
+    });
+  }, []);
 
   return (
     <div className="flex h-[calc(100vh-57px)]">
-      {/* Main Editor */}
+      {/* Main Editor Area */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
         <h2 className="text-2xl font-bold text-gray-900">
           {id === "new" ? "New Content" : "Edit Content"}
         </h2>
-        <p className="text-sm text-gray-500">
-          Content editor will be implemented here.
-        </p>
+
+        <ContentEditor
+          content={content}
+          loading={loading}
+          onSave={handleSave}
+        />
+
+        <GenerationPanel
+          contentType={content?.content_type || ("blog_post" as ContentType)}
+          onAccept={handleAcceptGenerated}
+        />
       </div>
-      {/* Validation Panel - Fixed Right */}
-      <div className="w-96 border-l bg-gray-50 overflow-y-auto p-4">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Validation</h3>
-        <p className="text-sm text-gray-500">
-          Validation panel will appear here after content is generated.
-        </p>
+
+      {/* Right Panel - Validation + Citations */}
+      <div className="w-96 border-l bg-gray-50 overflow-y-auto p-4 space-y-4">
+        <ValidationPanel contentId={contentId} />
       </div>
     </div>
   );
