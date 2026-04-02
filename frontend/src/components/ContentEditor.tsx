@@ -13,9 +13,9 @@ interface ContentEditorProps {
 }
 
 const CONTENT_TYPE_OPTIONS: { value: ContentType; label: string }[] = [
-  { value: "short_video" as ContentType, label: "Short Video (1 min)" },
-  { value: "long_video" as ContentType, label: "Long Video (10 min)" },
-  { value: "blog_post" as ContentType, label: "Blog Post" },
+  { value: "short_video" as ContentType, label: "V\u00eddeo Curto (1 min)" },
+  { value: "long_video" as ContentType, label: "V\u00eddeo Longo (10 min)" },
+  { value: "blog_post" as ContentType, label: "Artigo de Blog" },
 ];
 
 export function ContentEditor({ content, loading, onSave }: ContentEditorProps) {
@@ -45,7 +45,7 @@ export function ContentEditor({ content, loading, onSave }: ContentEditorProps) 
     return (
       <Card>
         <CardContent className="flex items-center justify-center py-12">
-          <span className="text-sm text-muted-foreground">Loading content...</span>
+          <span className="text-sm text-muted-foreground">Carregando conte\u00fado...</span>
         </CardContent>
       </Card>
     );
@@ -54,20 +54,20 @@ export function ContentEditor({ content, loading, onSave }: ContentEditorProps) 
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-        <CardTitle className="text-lg">Content</CardTitle>
+        <CardTitle className="text-lg">Conte\u00fado</CardTitle>
         <Button size="sm" onClick={handleSave} disabled={saving || !title.trim()}>
           <Save className="mr-1.5 h-3.5 w-3.5" />
-          {saving ? "Saving..." : "Save"}
+          {saving ? "Salvando..." : "Salvar"}
         </Button>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <label htmlFor="content-title" className="mb-1.5 block text-sm font-medium">
-            Title
+            T\u00edtulo
           </label>
           <Input
             id="content-title"
-            placeholder="Content title..."
+            placeholder="T\u00edtulo do conte\u00fado..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -75,7 +75,7 @@ export function ContentEditor({ content, loading, onSave }: ContentEditorProps) 
 
         <div>
           <label htmlFor="content-type" className="mb-1.5 block text-sm font-medium">
-            Type
+            Tipo
           </label>
           <select
             id="content-type"
@@ -93,11 +93,11 @@ export function ContentEditor({ content, loading, onSave }: ContentEditorProps) 
 
         <div>
           <label htmlFor="content-body" className="mb-1.5 block text-sm font-medium">
-            Body
+            Corpo
           </label>
           <Textarea
             id="content-body"
-            placeholder="Write your content here..."
+            placeholder="Escreva seu conte\u00fado aqui..."
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={16}
