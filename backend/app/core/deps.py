@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import Settings, get_settings
 from app.core.database import get_session
 from app.services.ai_service import AIService
+from app.services.validation_service import ValidationService
 
 logger = logging.getLogger(__name__)
 
@@ -43,3 +44,43 @@ def get_ai_service() -> AIService:
 
 
 AIServiceDep = Annotated[AIService, Depends(get_ai_service)]
+
+
+@lru_cache
+def get_validation_service() -> ValidationService:
+    """Create and cache the ValidationService with primary and fallback providers."""
+    settings = get_settings()
+
+    # Primary provider: NotebookLM
+    try:
+        from app.services.notebooklm_provider import NotebookLMProvider
+
+        primary = NotebookLMProvider(api_key=getattr(settings, "notebooklm_api_key", "") or "")
+        logger.info("NotebookLM validation provider registered")
+    except Exception as exc:
+        logger.warning("Failed to initialize NotebookLM provider: %s", exc)
+        primary = None
+
+    # Fallback provider: AI-based validation
+    try:
+        from app.services.fallback_validation_provider import FallbackValidationProvider
+
+        fallback = FallbackValidationProvider()
+        logger.info("Fallback validation provider registered")
+    except Exception as exc:
+        logger.warning("Failed to initialize fallback validation provider: %s", exc)
+        fallback = None
+
+    if primary is None and fallback is None:
+        raise RuntimeError("No validation providers available")
+
+    # If primary is missing, use fallback as both
+    if primary is None:
+        primary = fallback
+    if fallback is None:
+        fallback = primary
+
+    return ValidationService(primary=primary, fallback=fallback)
+
+
+ValidationServiceDep = Annotated[ValidationService, Depends(get_validation_service)]
