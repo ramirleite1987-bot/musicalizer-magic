@@ -2,9 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ContentEditor } from "../components/ContentEditor";
 import { GenerationPanel } from "../components/GenerationPanel";
+import { SEOPanel } from "../components/SEOPanel";
 import { ValidationPanel } from "../components/ValidationPanel";
 import { useContent } from "../hooks/useContent";
-import type { ContentItem, ContentType } from "../types/content";
+import type { ContentItem, ContentType, SEOMetadata } from "../types/content";
 
 export function EditorPage() {
   const { id } = useParams<{ id: string }>();
@@ -12,6 +13,7 @@ export function EditorPage() {
   const [content, setContent] = useState<ContentItem | null>(null);
   const [loading, setLoading] = useState(false);
   const [contentId, setContentId] = useState<string>(id === "new" ? "" : id || "");
+  const [seo, setSeo] = useState<SEOMetadata | null>(null);
 
   useEffect(() => {
     if (id && id !== "new") {
@@ -48,6 +50,24 @@ export function EditorPage() {
     });
   }, []);
 
+  const handleSeoChange = useCallback((updates: Partial<SEOMetadata>) => {
+    setSeo((prev) => {
+      const base: SEOMetadata = prev ?? {
+        id: "",
+        content_id: contentId,
+        meta_title: "",
+        meta_description: "",
+        keywords: [],
+        slug: "",
+        readability_score: null,
+        updated_at: "",
+      };
+      return { ...base, ...updates };
+    });
+  }, [contentId]);
+
+  const isBlogPost = (content?.content_type || "blog_post") === "blog_post";
+
   return (
     <div className="flex h-[calc(100vh-57px)]">
       {/* Main Editor Area */}
@@ -68,9 +88,18 @@ export function EditorPage() {
         />
       </div>
 
-      {/* Right Panel - Validation + Citations */}
+      {/* Right Panel - Validation + SEO */}
       <div className="w-96 border-l bg-gray-50 overflow-y-auto p-4 space-y-4">
         <ValidationPanel contentId={contentId} />
+        {isBlogPost && (
+          <SEOPanel
+            seo={seo}
+            onChange={handleSeoChange}
+            onSuggestKeywords={() => {
+              // Keyword suggestion trigger - placeholder for API integration
+            }}
+          />
+        )}
       </div>
     </div>
   );
