@@ -34,3 +34,26 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+
+# Virtual environments
+backend/venv/
+.venv/
+venv/
+
+# Python env files
+backend/.env
+
+# SQLite database
+*.db
+*.db-journal
+
+# Auto Claude data directory
+.auto-claude/
