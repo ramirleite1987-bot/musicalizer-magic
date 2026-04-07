@@ -1,0 +1,153 @@
+{
+  "session_number": 13,
+  "timestamp": "2026-03-26T20:36:06.565145+00:00",
+  "subtasks_completed": [
+    "subtask-4-2"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "src/musicalizer/generator.py",
+        "file_type": "python",
+        "lines_of_code": 87,
+        "purpose": "Song generation engine orchestrating LLMProvider + Preset to produce SunoOutput",
+        "key_components": [
+          "async generate_song() - main entry point with retry logic",
+          "_parse_response() - JSON parsing and Pydantic validation",
+          "_stricter_prompt() - prompt enhancement for retries",
+          "GenerationError - custom exception for generation failures"
+        ],
+        "dependencies": [
+          "musicalizer.models (EvalResult, Preset, SunoOutput)",
+          "musicalizer.prompts (build_generation_prompt)",
+          "musicalizer.providers.base (LLMProvider)",
+          "pydantic (ValidationError)",
+          "json, logging, __future__.annotations"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern_name": "Adaptive Retry with Prompt Refinement",
+        "description": "On malformed response, retry with tightened/stricter prompt rather than immediate failure",
+        "implementation": "Catches ValidationError/JSONDecodeError/KeyError/TypeError, calls _stricter_prompt(), retries up to MAX_RETRIES",
+        "benefit": "Improves resilience against LLM output formatting issues without external intervention"
+      },
+      {
+        "pattern_name": "Schema-Driven Response Validation",
+        "description": "Use Pydantic SunoOutput schema for automatic response structure validation",
+        "implementation": "provider.generate() accepts response_schema parameter; _parse_response uses SunoOutput.model_validate()",
+        "benefit": "Type-safe, contracts-based communication with LLM provider"
+      },
+      {
+        "pattern_name": "Async/Await Provider Abstraction",
+        "description": "Provider methods are async, enabling concurrent generation and network I/O handling",
+        "implementation": "await provider.generate() with system_prompt, user_prompt, response_schema",
+        "benefit": "Non-blocking, composable with other async operations"
+      },
+      {
+        "pattern_name": "Feedback-Aware Prompt Building",
+        "description": "Prior evaluation feedback incorporated into prompt to guide iterative improvement",
+        "implementation": "Optional prior_feedback parameter passed to build_generation_prompt()",
+        "benefit": "Enables refinement loop: generate \u2192 evaluate \u2192 regenerate with feedback"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Edge Case 3: Malformed JSON Responses",
+        "severity": "medium",
+        "description": "LLM may produce invalid JSON, incomplete structures, or mixed text/JSON output",
+        "handling": "Catches ValidationError, json.JSONDecodeError, KeyError, TypeError; retries with stricter prompt",
+        "potential_issues": "Only 2 retries may insufficient for severely broken LLMs; last_error logging could hide intermediate failures"
+      },
+      {
+        "gotcha": "Prompt Tightening May Be Insufficient",
+        "severity": "low",
+        "description": "_stricter_prompt only appends suffix; doesn't fundamentally restructure prompt or use chain-of-thought",
+        "handling": "Current implementation adds CRITICAL directive; may need CoT, examples, or format enforcement",
+        "potential_issues": "If LLM consistently ignores structure, retries will fail identically"
+      },
+      {
+        "gotcha": "Silent Response Loss on Retry",
+        "severity": "low",
+        "description": "raw_response overwritten on each attempt; only final response logged on failure",
+        "handling": "Last raw_response is logged; earlier attempts discarded",
+        "potential_issues": "Debugging multiple failed attempts difficult; intermediate outputs lost"
+      },
+      {
+        "gotcha": "Fixed MAX_RETRIES Value",
+        "severity": "low",
+        "description": "MAX_RETRIES = 2 hardcoded; no configurability per preset or provider",
+        "handling": "Constant defined at module level",
+        "potential_issues": "Different providers/presets may benefit from different retry counts"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "summary": "Successfully created generator.py module with robust async song generation function",
+      "key_achievements": [
+        "Async/await pattern for non-blocking LLM integration",
+        "Retry logic with adaptive prompt tightening (Edge Case 3 mitigation)",
+        "Clean separation: generation logic, response parsing, prompt adjustment",
+        "Comprehensive exception handling (ValidationError, JSON, type errors)",
+        "Feedback-aware prompt building for iterative refinement",
+        "Logging at WARNING/ERROR levels for observability"
+      ],
+      "design_decisions": [
+        "2 maximum retries chosen (1 initial + 1 retry with stricter prompt)",
+        "Pydantic model_validate() for type-safe response validation",
+        "Prompt suffix appending for retry tightening (vs. full rewrite)",
+        "GenerationError custom exception for clear failure signaling"
+      ]
+    },
+    "recommendations": [
+      {
+        "category": "Robustness",
+        "recommendation": "Make MAX_RETRIES configurable",
+        "rationale": "Different providers or deployment environments may benefit from adaptive retry counts",
+        "implementation": "Pass max_retries parameter to generate_song() or load from preset/config"
+      },
+      {
+        "category": "Observability",
+        "recommendation": "Collect all intermediate responses/errors, not just last",
+        "rationale": "Debugging multi-attempt failures requires visibility into each attempt's failure mode",
+        "implementation": "Maintain list of (attempt, raw_response, error) tuples; log aggregated summary on final failure"
+      },
+      {
+        "category": "Resilience",
+        "recommendation": "Consider exponential backoff or adaptive retry strategies",
+        "rationale": "Immediate retry may hit same rate limits; progressive backoff improves success rates",
+        "implementation": "Add optional delay between retries; vary based on error type (rate limit vs. validation)"
+      },
+      {
+        "category": "Prompt Engineering",
+        "recommendation": "Enhance _stricter_prompt with examples or chain-of-thought",
+        "rationale": "Simple suffix may be insufficient for complex LLM behavior; examples improve structure compliance",
+        "implementation": "Include valid JSON example in strict_suffix; consider few-shot demonstration"
+      },
+      {
+        "category": "Testing",
+        "recommendation": "Add unit tests for edge cases",
+        "rationale": "Retry logic, prompt tightening, and various exception types need coverage",
+        "implementation": "Mock LLMProvider to return malformed responses; verify retry behavior and error messages"
+      },
+      {
+        "category": "Performance",
+        "recommendation": "Consider caching or batching generation requests",
+        "rationale": "Identical presets/feedback combinations may be regenerated unnecessarily",
+        "implementation": "Memoize generate_song() results based on (preset, prior_feedback) hash"
+      }
+    ],
+    "subtask_id": "subtask-4-2",
+    "session_num": 13,
+    "success": true,
+    "changed_files": [
+      "src/musicalizer/generator.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-4-2"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

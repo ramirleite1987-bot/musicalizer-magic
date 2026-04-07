@@ -1,0 +1,494 @@
+{
+  "integrations_researched": [
+    {
+      "name": "Anthropic Claude API (Python SDK)",
+      "type": "library",
+      "verified_package": {
+        "name": "anthropic",
+        "install_command": "pip install anthropic",
+        "version": ">=0.88.0",
+        "python_requires": ">=3.9",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from anthropic import Anthropic",
+          "from anthropic import AsyncAnthropic",
+          "import anthropic"
+        ],
+        "initialization": "client = Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))",
+        "async_initialization": "client = AsyncAnthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))",
+        "key_functions": [
+          "client.messages.create(model, max_tokens, messages) -> Message",
+          "client.messages.stream(model, max_tokens, messages) -> MessageStream (context manager)",
+          "client.messages.create(..., stream=True) -> iterable of SSE events",
+          "client.messages.count_tokens(model, messages) -> TokenCount",
+          "await async_client.messages.create(...) -> Message"
+        ],
+        "models_available": [
+          "claude-opus-4-6",
+          "claude-sonnet-4-5-20250514",
+          "claude-haiku-3-5-20241022"
+        ],
+        "error_handling": {
+          "base_class": "anthropic.APIError",
+          "specific_errors": [
+            "anthropic.APIConnectionError",
+            "anthropic.RateLimitError (429)",
+            "anthropic.AuthenticationError (401)",
+            "anthropic.BadRequestError (400)",
+            "anthropic.InternalServerError (>=500)"
+          ],
+          "auto_retries": "2 retries by default for connection errors, 429, and >=500"
+        },
+        "streaming_pattern": "async with client.messages.stream(max_tokens=1024, messages=[...], model='claude-opus-4-6') as stream:\n    async for text in stream.text_stream:\n        print(text)",
+        "response_structure": {
+          "message.content": "list of content blocks",
+          "message.usage": "Usage(input_tokens, output_tokens)",
+          "message._request_id": "request tracking ID"
+        },
+        "verified_against": "Anthropic official PyPI page + platform.claude.com/docs/en/api/sdks/python"
+      },
+      "configuration": {
+        "env_vars": ["ANTHROPIC_API_KEY"],
+        "optional_env_vars": ["ANTHROPIC_LOG", "ANTHROPIC_BASE_URL"],
+        "config_files": [],
+        "dependencies": [],
+        "optional_extras": [
+          "anthropic[aiohttp] - improved async performance",
+          "anthropic[bedrock] - AWS Bedrock support",
+          "anthropic[vertex] - Google Vertex AI support"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "external_service": "Anthropic API (api.anthropic.com)",
+        "rate_limits": "Varies by plan tier"
+      },
+      "gotchas": [
+        "Default timeout is 10 minutes - may need adjustment for faster UX",
+        "Non-streaming requests with large max_tokens will throw ValueError if expected >10min",
+        "Auto-retries (2 by default) mean failures may take longer to surface",
+        "Must use stream=True or .stream() for long-running requests to avoid idle connection drops",
+        "model parameter is required - no default model"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/anthropic/",
+        "https://platform.claude.com/docs/en/api/sdks/python",
+        "https://github.com/anthropics/anthropic-sdk-python"
+      ]
+    },
+    {
+      "name": "OpenAI ChatGPT API (Python SDK)",
+      "type": "library",
+      "verified_package": {
+        "name": "openai",
+        "install_command": "pip install openai",
+        "version": ">=2.30.0",
+        "python_requires": ">=3.9",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from openai import OpenAI",
+          "from openai import AsyncOpenAI"
+        ],
+        "initialization": "client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))",
+        "async_initialization": "client = AsyncOpenAI(api_key=os.environ.get('OPENAI_API_KEY'))",
+        "key_functions": [
+          "client.chat.completions.create(model, messages) -> ChatCompletion",
+          "client.chat.completions.create(..., stream=True) -> Stream",
+          "client.responses.create(model, input, instructions) -> Response (newer Responses API)",
+          "await async_client.chat.completions.create(...) -> ChatCompletion"
+        ],
+        "models_available": [
+          "gpt-4o",
+          "gpt-4o-mini",
+          "gpt-5.2",
+          "gpt-5.4"
+        ],
+        "chat_completions_pattern": "response = client.chat.completions.create(\n    model='gpt-4o',\n    messages=[{'role': 'system', 'content': '...'}, {'role': 'user', 'content': '...'}]\n)\nprint(response.choices[0].message.content)",
+        "responses_api_pattern": "response = client.responses.create(\n    model='gpt-4o',\n    instructions='System prompt here',\n    input='User message here'\n)\nprint(response.output_text)",
+        "verified_against": "OpenAI official PyPI page + developers.openai.com quickstart"
+      },
+      "configuration": {
+        "env_vars": ["OPENAI_API_KEY"],
+        "optional_env_vars": ["OPENAI_ORG_ID", "OPENAI_BASE_URL"],
+        "config_files": [],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "external_service": "OpenAI API (api.openai.com)",
+        "rate_limits": "Varies by plan tier and model"
+      },
+      "gotchas": [
+        "SDK has both Chat Completions API (older, stable) and Responses API (newer) - use Chat Completions for compatibility",
+        "gpt-4o-mini recommended as starting point, upgrade to gpt-4o for quality",
+        "Create one client instance and reuse it - don't create per-request",
+        "Both sync and async clients powered by httpx",
+        "Portuguese output quality may vary - test prompts carefully for language consistency"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/openai/",
+        "https://developers.openai.com/api/docs/quickstart",
+        "https://github.com/openai/openai-python"
+      ]
+    },
+    {
+      "name": "NotebookLM Integration (notebooklm-py)",
+      "type": "library",
+      "risk_level": "HIGH",
+      "verified_package": {
+        "name": "notebooklm-py",
+        "install_command": "pip install \"notebooklm-py[browser]\"",
+        "version": ">=0.3.4",
+        "python_requires": ">=3.10",
+        "verified": true,
+        "official": false,
+        "disclaimer": "UNOFFICIAL - Uses undocumented Google APIs that can change without notice. Not affiliated with Google."
+      },
+      "api_patterns": {
+        "imports": [
+          "from notebooklm import NotebookLMClient",
+          "from notebooklm import AuthTokens",
+          "from notebooklm import RPCError"
+        ],
+        "initialization": "async with await NotebookLMClient.from_storage() as client:\n    # use client APIs",
+        "key_functions": [
+          "client.notebooks.create(title) -> Notebook",
+          "client.notebooks.list() -> list[Notebook]",
+          "client.notebooks.get(notebook_id) -> Notebook",
+          "client.sources.add_url(notebook_id, url) -> Source",
+          "client.sources.add_text(notebook_id, title, content) -> Source",
+          "client.sources.add_file(notebook_id, path, mime_type) -> Source",
+          "client.sources.list(notebook_id) -> list[Source]",
+          "client.chat.ask(notebook_id, question) -> AskResult",
+          "client.chat.ask_stream(notebook_id, question) -> AsyncIterator",
+          "client.notebooks.get_summary(notebook_id) -> str",
+          "client.notebooks.get_description(notebook_id) -> NotebookDescription"
+        ],
+        "validation_pattern": {
+          "description": "For theological validation, use chat.ask() to query against loaded Catholic sources",
+          "code": "result = await client.chat.ask(notebook_id, 'Validate this content against Church teaching: ...')\nprint(result.answer)  # Answer with inline citations [1], [2]\nfor ref in result.references:\n    print(f'Citation {ref.citation_number}: Source {ref.source_id}')\n    print(f'Cited text: {ref.cited_text}')",
+          "response_structure": {
+            "AskResult.answer": "Answer text with inline [1], [2] citations",
+            "AskResult.references": "List of ChatReference objects",
+            "ChatReference.citation_number": "Citation index number",
+            "ChatReference.source_id": "ID of the source being cited",
+            "ChatReference.cited_text": "Actual text passage being cited",
+            "ChatReference.start_char": "Start position in source",
+            "ChatReference.end_char": "End position in source"
+          }
+        },
+        "verified_against": "GitHub teng-lin/notebooklm-py docs/python-api.md + PyPI"
+      },
+      "authentication": {
+        "method": "Browser-based Google authentication",
+        "setup_command": "notebooklm login",
+        "description": "Opens a browser window for Google SSO login. Stores auth tokens locally at ~/.notebooklm/",
+        "env_vars_alternative": ["NOTEBOOKLM_AUTH_JSON (inline auth for CI/CD)", "NOTEBOOKLM_HOME", "NOTEBOOKLM_PROFILE"],
+        "auto_refresh": "Tokens refresh automatically on auth errors",
+        "manual_refresh": "await client.refresh_auth()"
+      },
+      "configuration": {
+        "env_vars": ["NOTEBOOKLM_AUTH_JSON", "NOTEBOOKLM_HOME", "NOTEBOOKLM_PROFILE"],
+        "config_files": ["~/.notebooklm/auth.json"],
+        "dependencies": ["playwright (for browser auth)", "chromium (browser)"],
+        "install_with_browser": "pip install 'notebooklm-py[browser]' && playwright install chromium"
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "external_service": "Google NotebookLM (undocumented internal APIs)",
+        "requires_google_account": true
+      },
+      "gotchas": [
+        "CRITICAL: Uses UNDOCUMENTED Google APIs - can break at any time without notice",
+        "NOT affiliated with Google - community-maintained project",
+        "Recommended only for prototypes, research, and personal projects",
+        "Browser-based authentication required - cannot use simple API key",
+        "Auth tokens expire and need periodic refresh (handled automatically but may fail)",
+        "Heavy usage may face Google rate limiting/throttling",
+        "Async-only API (asyncio) - all methods are coroutines",
+        "Requires Python 3.10+ (stricter than other dependencies)",
+        "Playwright + Chromium installation needed for browser auth (~200MB+)",
+        "No SLA, no guaranteed uptime, no official support"
+      ],
+      "alternative_options": {
+        "notebooklm_enterprise_api": {
+          "description": "Official Google Cloud NotebookLM Enterprise API (Preview/Pre-GA)",
+          "status": "Preview - subject to Pre-GA terms",
+          "requirements": [
+            "Active Google Cloud project",
+            "NotebookLM Enterprise licenses",
+            "Google Workspace Enterprise subscription",
+            "IAM role: Cloud NotebookLM User"
+          ],
+          "authentication": "OAuth 2.0 via gcloud auth print-access-token",
+          "api_endpoint": "https://{LOCATION}-discoveryengine.googleapis.com/v1alpha/projects/{PROJECT}/locations/{LOCATION}/notebooks",
+          "cost": "Requires Enterprise licensing - NOT free",
+          "verdict": "Overkill for single-user personal project. Requires paid Google Workspace Enterprise."
+        },
+        "fallback_strategy": {
+          "description": "If notebooklm-py breaks, implement validation using Claude/GPT with Catholic source documents",
+          "approach": "Load Catholic documents (Catechism, Vatican II docs) as context and use AI to validate against them",
+          "trade_off": "Less comprehensive than NotebookLM but more reliable and under our control"
+        }
+      },
+      "research_sources": [
+        "https://github.com/teng-lin/notebooklm-py",
+        "https://pypi.org/project/notebooklm-py/",
+        "https://github.com/teng-lin/notebooklm-py/blob/main/docs/python-api.md",
+        "https://docs.cloud.google.com/gemini/enterprise/notebooklm-enterprise/docs/api-notebooks"
+      ]
+    },
+    {
+      "name": "FastAPI (Backend Web Framework)",
+      "type": "infrastructure",
+      "verified_package": {
+        "name": "fastapi",
+        "install_command": "pip install \"fastapi[standard]\"",
+        "version": ">=0.135.0",
+        "python_requires": ">=3.10",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from fastapi import FastAPI, Depends, HTTPException",
+          "from fastapi.middleware.cors import CORSMiddleware",
+          "import uvicorn"
+        ],
+        "initialization": "app = FastAPI(title='Verbum API')",
+        "key_functions": [
+          "@app.get('/path') - GET endpoint decorator",
+          "@app.post('/path') - POST endpoint decorator",
+          "Depends() - dependency injection",
+          "HTTPException - error responses",
+          "app.add_middleware(CORSMiddleware, ...) - CORS setup"
+        ],
+        "verified_against": "PyPI fastapi page + fastapi.tiangolo.com"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": ["uvicorn (included with [standard])"]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "runs_locally": true,
+        "default_port": 8000
+      },
+      "gotchas": [
+        "FastAPI >= 0.130.0 dropped Python 3.9 support (Feb 2026) - requires Python 3.10+",
+        "Use 'fastapi[standard]' to get uvicorn and other standard dependencies",
+        "Native async support pairs well with async NotebookLM and AI SDK clients",
+        "CORS middleware MUST be configured for React frontend communication"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/fastapi/",
+        "https://fastapi.tiangolo.com/"
+      ]
+    },
+    {
+      "name": "SQLModel (Database ORM)",
+      "type": "library",
+      "verified_package": {
+        "name": "sqlmodel",
+        "install_command": "pip install sqlmodel",
+        "version": ">=0.0.37",
+        "python_requires": ">=3.10",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from sqlmodel import SQLModel, Field, Session, create_engine, select",
+          "from sqlmodel.ext.asyncio.session import AsyncSession",
+          "from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker"
+        ],
+        "initialization": "engine = create_async_engine('sqlite+aiosqlite:///./verbum.db')",
+        "key_functions": [
+          "SQLModel - base class combining SQLAlchemy + Pydantic",
+          "Field() - column definition with validation",
+          "Session/AsyncSession - database session",
+          "select() - query builder",
+          "session.add() / session.commit() / session.refresh()"
+        ],
+        "async_sqlite_setup": "from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker\n\nengine = create_async_engine('sqlite+aiosqlite:///./verbum.db', echo=True)\nasync_session = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)",
+        "verified_against": "PyPI sqlmodel page + sqlmodel.tiangolo.com + FastAPI SQL databases tutorial"
+      },
+      "configuration": {
+        "env_vars": ["DATABASE_URL (optional, can hardcode for single-user)"],
+        "config_files": [],
+        "dependencies": [
+          "aiosqlite (for async SQLite support)",
+          "sqlalchemy (auto-installed by sqlmodel)",
+          "pydantic (auto-installed by sqlmodel)"
+        ]
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "database_type": "SQLite (embedded, file-based)",
+        "database_file": "verbum.db",
+        "no_separate_server": true
+      },
+      "gotchas": [
+        "For async SQLite, must install aiosqlite separately: pip install aiosqlite",
+        "Use expire_on_commit=False for async sessions (SQLAlchemy docs recommendation)",
+        "SQLite is perfect for single-user app - no DB server needed",
+        "SQLModel combines Pydantic + SQLAlchemy into single model class (DRY)",
+        "Created by same author as FastAPI - designed to work together seamlessly"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/sqlmodel/",
+        "https://sqlmodel.tiangolo.com/",
+        "https://fastapi.tiangolo.com/tutorial/sql-databases/"
+      ]
+    },
+    {
+      "name": "icalendar (Calendar Export)",
+      "type": "library",
+      "verified_package": {
+        "name": "icalendar",
+        "install_command": "pip install icalendar",
+        "version": "latest",
+        "verified": true
+      },
+      "api_patterns": {
+        "imports": [
+          "from icalendar import Calendar, Event",
+          "from datetime import datetime"
+        ],
+        "initialization": "cal = Calendar()",
+        "key_functions": [
+          "Calendar() - create calendar",
+          "Event() - create event",
+          "event.add('summary', '...') - add event properties",
+          "event.add('dtstart', datetime(...)) - set start time",
+          "cal.add_component(event) - add event to calendar",
+          "cal.to_ical() - serialize to .ics format"
+        ],
+        "export_pattern": "cal = Calendar()\ncal.add('prodid', '-//Verbum//verbum.app//')\ncal.add('version', '2.0')\nevent = Event()\nevent.add('summary', 'Publish: Content Title')\nevent.add('dtstart', scheduled_date)\nevent.add('description', 'Channel: YouTube')\ncal.add_component(event)\nwith open('schedule.ics', 'wb') as f:\n    f.write(cal.to_ical())",
+        "verified_against": "PyPI icalendar page"
+      },
+      "configuration": {
+        "env_vars": [],
+        "config_files": [],
+        "dependencies": []
+      },
+      "infrastructure": {
+        "requires_docker": false,
+        "output_format": ".ics file (compatible with Google Calendar, Apple Calendar, Outlook)"
+      },
+      "gotchas": [
+        "Output is .ics file format - user downloads and imports into their calendar app",
+        "No direct Google Calendar API integration (would require google-api-python-client + OAuth)",
+        "Sufficient for low-priority delivery reminders feature",
+        "Alternative: 'ics' package (pip install ics) - more pythonic API but less mature"
+      ],
+      "research_sources": [
+        "https://pypi.org/project/icalendar/",
+        "https://github.com/collective/icalendar"
+      ]
+    }
+  ],
+  "unverified_claims": [
+    {
+      "claim": "NotebookLM can provide <2 second response times for validation queries",
+      "reason": "notebooklm-py uses undocumented Google APIs with no SLA. Response times depend on Google's internal infrastructure, network latency, notebook size, and current load. No performance benchmarks available in documentation.",
+      "risk_level": "medium"
+    },
+    {
+      "claim": "NotebookLM third-party library will remain stable and functional",
+      "reason": "notebooklm-py explicitly warns it uses undocumented APIs that can change without notice. The library is community-maintained (MIT license) and is NOT affiliated with Google. Google can break the API at any time. This is the biggest technical risk in the project.",
+      "risk_level": "high"
+    },
+    {
+      "claim": "NotebookLM handles the entire Catholic knowledge base without custom RAG",
+      "reason": "NotebookLM requires sources to be manually uploaded/linked to notebooks. The Catholic corpus (Catechism, Vatican II docs, papal encyclicals, etc.) must be added as sources to a NotebookLM notebook. This is a one-time setup but requires curating and uploading the right documents. NotebookLM has source limits per notebook.",
+      "risk_level": "medium"
+    },
+    {
+      "claim": "AI generation will complete in <5 seconds",
+      "reason": "Depends on model choice, prompt length, and max_tokens. Claude and GPT-4o typically respond in 2-10 seconds for moderate-length content. Short-form scripts should be under 5s, but long-form scripts (10-min video) may exceed this. Streaming can improve perceived performance.",
+      "risk_level": "low"
+    },
+    {
+      "claim": "Portuguese SEO optimization via AI is consistently high quality",
+      "reason": "Both Claude and GPT-4o support Portuguese, but quality of SEO-specific suggestions (keywords, meta descriptions) in Portuguese was not independently verified. May require careful prompt engineering.",
+      "risk_level": "low"
+    }
+  ],
+  "recommendations": [
+    {
+      "topic": "NotebookLM Risk Mitigation",
+      "recommendation": "Implement NotebookLM integration behind an abstraction layer (interface/protocol) so the validation provider can be swapped. Build a fallback validation strategy using Claude/GPT with loaded Catholic source documents. This protects against notebooklm-py breaking due to Google API changes.",
+      "priority": "critical"
+    },
+    {
+      "topic": "NotebookLM Authentication",
+      "recommendation": "notebooklm-py requires browser-based Google authentication (not a simple API key). The setup flow requires running 'notebooklm login' CLI command + Playwright/Chromium. For production stability, use NOTEBOOKLM_AUTH_JSON env var with pre-captured tokens and implement automatic token refresh handling.",
+      "priority": "high"
+    },
+    {
+      "topic": "Python Version Requirement",
+      "recommendation": "Use Python 3.10+ as the minimum version. FastAPI >=0.130.0 and notebooklm-py both require Python 3.10+. The existing project uses Python 3.11+ which satisfies all dependencies.",
+      "priority": "high"
+    },
+    {
+      "topic": "Database Choice",
+      "recommendation": "Use SQLite with SQLModel + aiosqlite for async operations. SQLite is ideal for this single-user application - no database server needed, file-based storage, zero configuration. SQLModel provides Pydantic validation + SQLAlchemy ORM in a single model class, designed to integrate seamlessly with FastAPI.",
+      "priority": "high"
+    },
+    {
+      "topic": "Async Architecture",
+      "recommendation": "Use async throughout the backend: AsyncAnthropic for Claude, AsyncOpenAI for ChatGPT, notebooklm-py (already async-only), FastAPI (native async), SQLModel with async sessions. This ensures the single-threaded event loop can handle concurrent AI and database operations efficiently.",
+      "priority": "high"
+    },
+    {
+      "topic": "Streaming for AI Generation",
+      "recommendation": "Implement streaming responses for AI content generation using SSE (Server-Sent Events). Both Anthropic and OpenAI SDKs support streaming. FastAPI supports SSE via StreamingResponse. This dramatically improves perceived performance for the <5 second generation target.",
+      "priority": "medium"
+    },
+    {
+      "topic": "Frontend Reuse",
+      "recommendation": "The existing project already has React 18 + Vite + TypeScript + Tailwind CSS 3.x. The new Verbum feature should be built as additional routes/pages within the existing frontend, reusing the component library (Button, Input, Select, etc.) and Tailwind theme. No new frontend framework needed.",
+      "priority": "medium"
+    },
+    {
+      "topic": "OpenAI API Choice",
+      "recommendation": "Use the Chat Completions API (client.chat.completions.create) rather than the newer Responses API for stability and wider documentation coverage. Start with gpt-4o-mini for cost efficiency, allow user to select gpt-4o for higher quality.",
+      "priority": "low"
+    },
+    {
+      "topic": "Calendar Export",
+      "recommendation": "Use the icalendar library for simple .ics file export. This is low priority and sufficient for delivery reminders. Avoid Google Calendar API integration (requires OAuth complexity) unless specifically requested.",
+      "priority": "low"
+    }
+  ],
+  "tech_stack_summary": {
+    "backend": {
+      "language": "Python 3.11+",
+      "framework": "FastAPI >=0.135.0",
+      "orm": "SQLModel >=0.0.37 + aiosqlite",
+      "database": "SQLite (embedded)",
+      "server": "uvicorn (included with fastapi[standard])"
+    },
+    "frontend": {
+      "existing": true,
+      "framework": "React 18 + TypeScript 5.5",
+      "bundler": "Vite 5.2",
+      "styling": "Tailwind CSS 3.4",
+      "icons": "lucide-react"
+    },
+    "ai_integrations": {
+      "primary": "Anthropic Claude SDK (anthropic >=0.88.0)",
+      "secondary": "OpenAI ChatGPT SDK (openai >=2.30.0)",
+      "validation": "notebooklm-py >=0.3.4 (UNOFFICIAL - HIGH RISK)"
+    },
+    "optional": {
+      "calendar": "icalendar (for .ics export)"
+    }
+  },
+  "dependency_install_command": "pip install anthropic openai \"notebooklm-py[browser]\" \"fastapi[standard]\" sqlmodel aiosqlite python-dotenv icalendar",
+  "created_at": "2026-04-01T12:00:00Z"
+}
