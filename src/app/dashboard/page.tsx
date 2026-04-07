@@ -3,7 +3,7 @@ import { getDashboardData } from '@/lib/dashboard-data'
 
 export const dynamic = 'force-dynamic'
 
-export default async function Page() {
+export default async function DashboardPage() {
   const { tracks, themes, loadError } = await getDashboardData()
 
   return (
