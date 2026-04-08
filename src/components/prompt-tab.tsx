@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { History, ChevronDown } from "lucide-react";
+import { History } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";

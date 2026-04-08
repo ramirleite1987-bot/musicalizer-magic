@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Track {
+  id        String   @id @default(cuid())
+  name      String
+  genre     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  versions TrackVersion[]
+  themes   Theme[]        @relation("TrackThemes")
+
+  @@map("tracks")
+}
+
+model TrackVersion {
+  id            String      @id @default(cuid())
+  versionNumber Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  status        TrackStatus @default(draft)
+
+  prompt         String @default("")
+  negativePrompt String @default("")
+  lyrics         String @default("")
+
+  style           Json
+  dimensionScores Json
+  feedback        Json
+
+  rating Float   @default(0)
+  notes  String  @default("")
+  isBest Boolean @default(false)
+
+  audioFileName String?
+  audioUrl      String?
+
+  trackId String
+  track   Track  @relation(fields: [trackId], references: [id], onDelete: Cascade)
+
+  @@map("track_versions")
+}
+
+enum TrackStatus {
+  draft
+  generating
+  complete
+  archived
+}
+
+model Theme {
+  id          String      @id @default(cuid())
+  name        String
+  description String      @default("")
+  keywords    String[]
+  color       String      @default("violet")
+  source      ThemeSource @default(manual)
+  sourceRef   String      @default("")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  tracks Track[] @relation("TrackThemes")
+
+  @@map("themes")
+}
+
+enum ThemeSource {
+  manual
+  url
+  document
+}

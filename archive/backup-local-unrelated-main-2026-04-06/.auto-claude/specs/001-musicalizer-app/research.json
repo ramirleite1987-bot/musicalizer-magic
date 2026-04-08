@@ -1,0 +1,364 @@
+{
+  "integrations_researched": [
+    {
+      "name": "Google Gemini API (google-genai SDK)",
+      "type": "library",
+      "verified_package": {
+        "name": "google-genai",
+        "install_command": "pip install google-genai",
+        "version": ">=1.68.0",
+        "python_requires": ">=3.10",
+        "verified": true,
+        "notes": "The OLD package 'google-generativeai' is DEPRECATED (support ended Nov 30, 2025). Must use 'google-genai' (the unified Google Gen AI SDK)."
+      },
+      "api_patterns": {
+        "imports": [
+          "from google import genai",
+          "from google.genai import types"
+        ],
+        "initialization": "client = genai.Client(api_key='YOUR_API_KEY')  # or auto from GEMINI_API_KEY env var",
+        "key_functions": [
+          "client.models.generate_content(model='gemini-2.5-flash', contents='prompt', config={...})",
+          "client.models.generate_content_stream(model='gemini-2.5-flash', contents='prompt')",
+          "await client.aio.models.generate_content(model='gemini-2.5-flash', contents='prompt')",
+          "chat = client.chats.create(model='gemini-2.5-flash')",
+          "chat.send_message('message')",
+          "client.models.count_tokens(model='gemini-2.5-flash', contents='text')"
+        ],
+        "structured_output": {
+          "description": "Native structured output via response_json_schema config parameter",
+          "pattern": "client.models.generate_content(model='gemini-2.5-flash', contents=prompt, config={'response_json_schema': MyPydanticModel.model_json_schema()})",
+          "notes": "Works with Pydantic BaseModel.model_json_schema(). Supported on Gemini 2.5 and 3.x models."
+        },
+        "system_instructions": {
+          "description": "System instructions via GenerateContentConfig",
+          "pattern": "config=types.GenerateContentConfig(system_instruction='You are a helpful assistant...')"
+        },
+        "verified_against": "Google AI for Developers official docs + PyPI"
+      },
+      "configuration": {
+        "env_vars": ["GEMINI_API_KEY"],
+        "config_files": [],
+        "dependencies": ["pydantic (for structured output schemas)"],
+        "optional_extras": ["google-genai[aiohttp] for async support"]
+      },
+      "available_models": [
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-image",
+        "gemini-2.0-flash-001",
+        "gemini-3-flash-preview"
+      ],
+      "infrastructure": {
+        "requires_docker": false,
+        "external_service": "Google AI Studio (free tier available)"
+      },
+      "gotchas": [
+        "DO NOT use 'google-generativeai' package - it is deprecated since Nov 2025",
+        "Client auto-reads GEMINI_API_KEY env var if no api_key param provided",
+        "Structured output requires response_json_schema in config dict, not a separate parameter",
+        "System instruction goes in types.GenerateContentConfig, not as a separate parameter",
+        "Async requires client.aio namespace (client.aio.models.generate_content)",
+        "Streaming uses generate_content_stream() not generate_content(stream=True)"
+      ],
+      "research_sources": [
+        "https://ai.google.dev/gemini-api/docs/quickstart",
+        "https://googleapis.github.io/python-genai/",
+        "https://pypi.org/project/google-genai/",
+        "https://github.com/googleapis/python-genai",
+        "https://ai.google.dev/gemini-api/docs/structured-output"
+      ]
+    },
+    {
+      "name": "Chutes API (OpenAI-compatible LLM inference)",
+      "type": "service",
+      "verified_package": {
+        "name": "openai",
+        "install_command": "pip install openai",
+        "version": ">=1.0.0",
+        "verified": true,
+        "notes": "Chutes exposes an OpenAI-compatible API. Use the standard 'openai' Python package with a custom base_url. The 'chutes' PyPI package (pip install chutes) is the DEPLOYMENT SDK, NOT for inference calls."
+      },
+      "api_patterns": {
+        "imports": [
+          "from openai import OpenAI"
+        ],
+        "initialization": "client = OpenAI(api_key='YOUR_CHUTES_KEY', base_url='https://llm.chutes.ai/v1/')",
+        "alternative_base_url": "https://api.chutes.ai/v1/",
+        "key_functions": [
+          "client.chat.completions.create(model='deepseek-ai/DeepSeek-R1', messages=[...], max_tokens=200, temperature=0.7)",
+          "client.chat.completions.create(model='...', messages=[...], stream=True)"
+        ],
+        "request_format": {
+          "description": "Standard OpenAI chat completions format",
+          "example": {
+            "model": "deepseek-ai/DeepSeek-R1",
+            "messages": [
+              {"role": "system", "content": "You are a helpful assistant."},
+              {"role": "user", "content": "Hello"}
+            ],
+            "max_tokens": 200,
+            "temperature": 0.7
+          }
+        },
+        "verified_against": "Chutes official docs + liteLLM integration docs"
+      },
+      "configuration": {
+        "env_vars": ["CHUTES_API_KEY"],
+        "config_files": [],
+        "dependencies": ["openai (Python package for OpenAI-compatible API calls)"]
+      },
+      "available_models": [
+        "deepseek-ai/DeepSeek-R1",
+        "unsloth/Llama-3.2-1B-Instruct",
+        "Various HuggingFace model identifiers"
+      ],
+      "infrastructure": {
+        "requires_docker": false,
+        "external_service": "Chutes.ai cloud platform"
+      },
+      "gotchas": [
+        "Do NOT use the 'chutes' PyPI package for LLM inference - that's the deployment SDK requiring Bittensor wallet",
+        "Use the 'openai' package with custom base_url instead",
+        "Two base URLs exist: 'https://llm.chutes.ai/v1/' and 'https://api.chutes.ai/v1/' - verify which works for your account",
+        "Model names use HuggingFace-style identifiers (e.g., 'deepseek-ai/DeepSeek-R1'), not short names",
+        "API key is passed via the standard OpenAI client api_key parameter",
+        "Streaming is supported via stream=True parameter"
+      ],
+      "research_sources": [
+        "https://chutes.ai/docs/examples/llm-chat",
+        "https://chutes.ai/docs/api-reference/overview",
+        "https://docs.litellm.ai/docs/providers/chutes",
+        "https://pypi.org/project/chutes/",
+        "https://free-llm.com/provider/chutes-ai"
+      ]
+    },
+    {
+      "name": "Suno AI (prompt format specification)",
+      "type": "specification",
+      "verified_package": {
+        "name": "N/A - Suno is a prompt format spec, not a library",
+        "install_command": "N/A",
+        "version": "V4.5 (current as of 2025-2026)",
+        "verified": true,
+        "notes": "Suno is an AI music generation platform. The project generates Suno-compatible prompts/lyrics, not API calls to Suno directly."
+      },
+      "prompt_format": {
+        "two_field_model": {
+          "style_prompt": {
+            "description": "Sound definition: genre, tempo-feel, instrumentation, energy, vocal intent, mix direction",
+            "formula": "genre + subgenre + tempo-feel + core instrumentation + vocal intent + mix intent + emotional axis",
+            "example": "dreamy bass house, dreamstep influence, 126 bpm feel, deep sub bass, crisp drums, wide synth pads, airy topline, modern clean mix"
+          },
+          "lyrics_prompt": {
+            "description": "Words and structure only. No sound descriptions or production notes.",
+            "uses_meta_tags": true
+          }
+        },
+        "structural_meta_tags": [
+          "[Intro]",
+          "[Instrumental Intro]",
+          "[Verse 1]",
+          "[Verse 2]",
+          "[Verse 3]",
+          "[Pre-Chorus]",
+          "[Chorus]",
+          "[Final Chorus]",
+          "[Bridge]",
+          "[Outro]",
+          "[Hook]",
+          "[Break]",
+          "[Build]",
+          "[Drop]",
+          "[Interlude]",
+          "[End]",
+          "[Fade Out]",
+          "[Fade to end]"
+        ],
+        "descriptor_tags": [
+          "[Mood: ...]",
+          "[Energy: ...]",
+          "[Vocal Style: ...]",
+          "[Instrument: ...]"
+        ],
+        "vocal_expression_tags": [
+          "Whispers",
+          "Whistling",
+          "Giggling",
+          "Male narrator",
+          "Female narrator"
+        ],
+        "best_practices": [
+          "Keep style prompt about SOUND, lyrics prompt about WORDS and STRUCTURE",
+          "Fewer, cleaner signals produce stronger output than many tags",
+          "Tag placement matters: top = broad, before section = local and more effective",
+          "Avoid sound effects cues in lyrics for cleaner songwriting",
+          "Use one variable at a time when iterating",
+          "Maintain consistent vocal language across generations",
+          "Keep prompts modular and reusable",
+          "[Intro] can be unreliable - 'short instrumental intro' in style prompt may work better"
+        ]
+      },
+      "brazilian_catholic_preset_research": {
+        "style_elements": [
+          "Catholic hymn / sacred music",
+          "Brazilian Portuguese language",
+          "Genres: MPB sacra, sertanejo gospel, folk liturgico brasileiro",
+          "Instruments: violao (acoustic guitar), piano, organ, choir",
+          "Mood: reverential, uplifting, devotional",
+          "Vocal style: warm, congregational, solemn or joyful depending on context"
+        ],
+        "example_style_prompt": "Brazilian Catholic hymn, MPB influence, warm acoustic guitar, gentle piano, congregational choir, devotional mood, Portuguese lyrics, reverent and uplifting"
+      },
+      "gotchas": [
+        "Suno has NO public API for programmatic music generation - output is prompt text for manual/UI use",
+        "Meta tags are suggestions, not commands - Suno may interpret them differently",
+        "[Intro] tag is less reliable than describing intro in style prompt",
+        "V4.5 changed prompting behavior - older guides may have outdated tag info",
+        "Descriptor tags (Mood, Energy, etc.) are experimental and less predictable"
+      ],
+      "research_sources": [
+        "https://help.suno.com/en/articles/5782977",
+        "https://howtopromptsuno.com/making-music",
+        "https://sunoaiwiki.com/resources/2024-05-13-list-of-metatags/",
+        "https://howtopromptsuno.com/a-complete-guide-to-prompting-suno",
+        "https://suno.com/hub/how-to-make-a-song"
+      ]
+    },
+    {
+      "name": "Karpathy AutoResearch Pattern",
+      "type": "architecture_pattern",
+      "verified_package": {
+        "name": "N/A - architectural pattern, not a library",
+        "install_command": "N/A",
+        "version": "N/A",
+        "verified": true,
+        "notes": "AutoResearch is a design pattern for autonomous iterative improvement, not an installable package."
+      },
+      "architecture": {
+        "core_pattern": "Generate -> Evaluate -> Decide (keep/discard) -> Repeat",
+        "three_file_structure": {
+          "editable_asset": "Single file the agent modifies (train.py in original)",
+          "instruction_file": "program.md - defines objectives, constraints, stopping criteria",
+          "fixed_infrastructure": "prepare.py - utilities/evaluation not modified by agent"
+        },
+        "adaptation_for_musicalizer": {
+          "editable_asset": "The generated song prompt/lyrics (style + lyrics text)",
+          "instruction_file": "Preset configuration + evaluation criteria",
+          "fixed_infrastructure": "LLM provider abstraction + evaluation framework"
+        }
+      },
+      "improvement_loop": {
+        "steps": [
+          "1. Read current context (preset config, previous eval feedback, generation history)",
+          "2. Generate new song prompt/lyrics using LLM provider",
+          "3. Evaluate the output (score: good/bad, rationale, improvement suggestions)",
+          "4. Compare against previous best (scalar metric)",
+          "5. Keep if improved, discard if not",
+          "6. Feed evaluation output as context for next generation",
+          "7. Repeat until quality threshold or max iterations reached"
+        ],
+        "key_principles": [
+          "Single scalar metric for unambiguous comparison",
+          "Fixed evaluation criteria for fair comparison across iterations",
+          "Each generation uses prior eval as context (learning from mistakes)",
+          "Simplicity matters: marginal improvements don't justify complexity",
+          "Autonomous operation - no human intervention in the loop"
+        ]
+      },
+      "data_model_requirements": {
+        "generation_lineage": "Must track parent-child relationships between generations",
+        "evaluation_persistence": "Must store score, rationale, and improvements for each generation",
+        "iteration_tracking": "Must know which iteration/cycle each generation belongs to"
+      },
+      "gotchas": [
+        "Original AutoResearch uses a single numeric metric (val_bpb) - music quality evaluation is more subjective",
+        "Must define a clear, parseable evaluation schema for the improvement loop to work",
+        "The loop should be bounded (max iterations) unlike the original which runs until interrupted",
+        "Evaluation must be done by the LLM itself (no external music analysis tool)",
+        "Risk of evaluation/generation model agreement bias - same model may not be harsh enough critic"
+      ],
+      "research_sources": [
+        "https://github.com/karpathy/autoresearch",
+        "https://github.com/karpathy/autoresearch/blob/master/program.md",
+        "https://thenewstack.io/karpathy-autonomous-experiment-loop/",
+        "https://www.datacamp.com/tutorial/guide-to-autoresearch",
+        "https://sidsaladi.substack.com/p/autoresearch-101-builders-playbook"
+      ]
+    }
+  ],
+  "additional_dependencies": [
+    {
+      "name": "pydantic",
+      "type": "library",
+      "purpose": "Schema definition for Preset, Evaluation, and Generation models. Required for structured output with Google GenAI.",
+      "verified_package": {
+        "name": "pydantic",
+        "install_command": "pip install pydantic",
+        "version": ">=2.0",
+        "verified": true
+      },
+      "notes": "Core dependency for typed data models. Used for Preset schema, Evaluation output schema, and Gemini structured output via model_json_schema()."
+    },
+    {
+      "name": "openai",
+      "type": "library",
+      "purpose": "Required for Chutes API integration (OpenAI-compatible endpoint)",
+      "verified_package": {
+        "name": "openai",
+        "install_command": "pip install openai",
+        "version": ">=1.0.0",
+        "verified": true
+      },
+      "notes": "Used with custom base_url for Chutes provider. Also useful as fallback for any other OpenAI-compatible providers."
+    }
+  ],
+  "unverified_claims": [
+    {
+      "claim": "Chutes API supports all models listed on their platform for chat completions inference",
+      "reason": "Available models depend on user's Chutes account/subscription. Could not verify full model catalog without authentication.",
+      "risk_level": "low"
+    },
+    {
+      "claim": "docs.suno.com contains official prompt documentation",
+      "reason": "The URL docs.suno.com referenced in requirements redirects to Suno help center. Official prompt documentation is fragmented across help.suno.com and community resources.",
+      "risk_level": "low"
+    },
+    {
+      "claim": "Suno V4.5 descriptor tags (Mood, Energy, Vocal Style) work reliably",
+      "reason": "Community reports suggest these are experimental and inconsistent. Structural tags (Verse, Chorus, etc.) are more reliable.",
+      "risk_level": "medium"
+    },
+    {
+      "claim": "LLM self-evaluation produces reliable quality scoring for music prompts",
+      "reason": "Using an LLM to both generate and evaluate its own output has inherent bias. No external validation source for music prompt quality exists in this architecture.",
+      "risk_level": "medium"
+    }
+  ],
+  "recommendations": [
+    "Use 'google-genai' (NOT 'google-generativeai') as the Gemini SDK - the old package is deprecated",
+    "Use the 'openai' package with custom base_url for Chutes API - do NOT use the 'chutes' deployment SDK",
+    "Build a provider abstraction (LLMProvider interface) that wraps both google-genai and openai clients",
+    "Use Pydantic BaseModel for all schemas: Preset, Evaluation, Generation - enables structured output with Gemini natively",
+    "Implement Suno prompt format as a two-field model (style_prompt + lyrics_prompt) matching Suno's actual UI",
+    "For the auto-improvement loop, define a clear numeric scoring system (not just good/bad) to enable meaningful comparison between iterations",
+    "Bound the auto-improvement loop with max_iterations to prevent runaway API costs",
+    "Store full generation lineage (parent generation ID, iteration number, eval results) for the improvement loop",
+    "Start with reliable Suno structural tags only ([Verse], [Chorus], [Bridge], [Outro]) - avoid experimental descriptor tags",
+    "Consider using a different model for evaluation than generation to reduce self-agreement bias (e.g., generate with Chutes, evaluate with Gemini)"
+  ],
+  "provider_abstraction_design": {
+    "description": "Both providers need a unified interface for the system to be provider-agnostic",
+    "gemini_specifics": {
+      "client_init": "genai.Client(api_key=os.environ['GEMINI_API_KEY'])",
+      "generate": "client.models.generate_content(model=model_name, contents=prompt, config=config)",
+      "structured_output": "config={'response_json_schema': schema.model_json_schema()}"
+    },
+    "chutes_specifics": {
+      "client_init": "OpenAI(api_key=os.environ['CHUTES_API_KEY'], base_url='https://llm.chutes.ai/v1/')",
+      "generate": "client.chat.completions.create(model=model_name, messages=messages)",
+      "structured_output": "Use system prompt instruction + JSON mode or parse response manually"
+    },
+    "abstraction_note": "The two SDKs have different interfaces (google-genai vs openai). The provider abstraction must normalize: prompt format (string vs messages array), structured output (native schema vs system prompt), and response parsing."
+  },
+  "created_at": "2026-03-26T00:00:00Z"
+}

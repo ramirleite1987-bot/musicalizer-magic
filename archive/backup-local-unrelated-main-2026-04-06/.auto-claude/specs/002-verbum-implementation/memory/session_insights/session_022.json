@@ -1,0 +1,197 @@
+{
+  "session_number": 22,
+  "timestamp": "2026-04-02T03:09:05.733214+00:00",
+  "subtasks_completed": [
+    "subtask-6-2"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "backend/app/api/seo.py",
+        "changes": "Converted from stub endpoints to fully functional SEO API with 4 endpoints",
+        "key_additions": [
+          "SEOMetadataResponse and SEOMetadataUpdate Pydantic models",
+          "GET /{content_id} endpoint with 404 handling",
+          "PUT /{content_id} endpoint for metadata updates (upsert pattern)",
+          "POST /{content_id}/analyze endpoint for readability analysis",
+          "POST /{content_id}/keywords endpoint for AI-powered keyword suggestions",
+          "Helper function _to_response for model-to-response conversion with JSON deserialization"
+        ],
+        "dependencies_added": [
+          "json, Optional from typing",
+          "HTTPException from fastapi",
+          "BaseModel from pydantic",
+          "AIServiceDep, SessionDep from app.core.deps",
+          "SEOService from app.services.seo_service"
+        ]
+      },
+      {
+        "file": "backend/app/services/seo_service.py",
+        "changes": "New service file with complete SEO business logic",
+        "key_additions": [
+          "Portuguese readability score calculation algorithm (0-100 scale)",
+          "Syllable counting for Portuguese words",
+          "Portuguese stop words/simple words set (67 words)",
+          "Text processing utilities: _split_sentences, _extract_words, _count_syllables_pt",
+          "SEOService class with 4 methods: get_metadata, upsert_metadata, analyze, suggest_keywords",
+          "AI integration for keyword suggestion with Portuguese-specific prompt engineering"
+        ],
+        "algorithm_details": {
+          "readability_score": "100 - (avg_sentence_length * 1.5) - (complex_pct * 2.0), clamped 0-100",
+          "complex_word": "4+ syllables AND not in simple words list",
+          "syllable_estimation": "Counts vowel groups (including accented characters)"
+        }
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Dependency Injection",
+        "implementation": "SessionDep and AIServiceDep injected into endpoints, service receives dependencies in constructor",
+        "benefit": "Loose coupling, testability, clear dependency graph"
+      },
+      {
+        "pattern": "Async SQLAlchemy",
+        "implementation": "AsyncSession with sqlmodel for async queries, proper commit/refresh cycle",
+        "files": [
+          "backend/app/services/seo_service.py"
+        ]
+      },
+      {
+        "pattern": "Upsert Pattern",
+        "implementation": "upsert_metadata checks existence, creates or updates, handles None fields as optional",
+        "benefit": "Idempotent operations, no duplicate key errors"
+      },
+      {
+        "pattern": "Portuguese NLP",
+        "implementation": "Regex-based sentence/word splitting, syllable counting, language-specific stop words",
+        "scope": "Limited to Portuguese readability, not full NLP"
+      },
+      {
+        "pattern": "Error Handling",
+        "implementation": "HTTPException for 404/400 errors, ValueError for business logic validation",
+        "coverage": [
+          "Missing content",
+          "Missing AI provider",
+          "Invalid content_id"
+        ]
+      },
+      {
+        "pattern": "JSON Storage in Relational DB",
+        "implementation": "keywords list stored as JSON string in database, deserialized in _to_response",
+        "note": "Works but requires manual serialization/deserialization"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Keyword JSON Serialization",
+        "issue": "keywords field stored as JSON string in database but returned as list in response",
+        "solution": "json.loads() in _to_response helper function",
+        "risk": "Easy to forget deserialization, could cause type errors"
+      },
+      {
+        "gotcha": "Portuguese Syllable Counting",
+        "issue": "Syllable estimation is crude (vowel group counting), not linguistically accurate",
+        "note": "Works for readability purposes but may misclassify complex words",
+        "example": "Diphthongs treated as single syllable"
+      },
+      {
+        "gotcha": "Portuguese Stop Words Hardcoded",
+        "issue": "Fixed set of 67 words, not comprehensive for all domains (religious content)",
+        "risk": "May incorrectly classify domain-specific terms as 'simple'",
+        "note": "Set labeled _PORTUGUESE_SIMPLE_WORDS suggests more complete than actual"
+      },
+      {
+        "gotcha": "AI Service Availability Check",
+        "issue": "suggest_keywords checks 'if not self.ai_service.available_models' could raise AttributeError",
+        "current": "ValueError raised if check fails",
+        "risk": "Should validate ai_service is not None first"
+      },
+      {
+        "gotcha": "Content Body Truncation",
+        "issue": "AI prompt uses content.body[:2000] for keyword suggestion",
+        "risk": "Longer articles truncated, may miss important keywords in later sections"
+      },
+      {
+        "gotcha": "Readability Score Always Recalculates",
+        "issue": "analyze() endpoint always recalculates, no caching",
+        "performance": "For large texts, repeated calls could be expensive"
+      },
+      {
+        "gotcha": "No Validation on Metadata Fields",
+        "issue": "meta_title/meta_description lengths not validated (common SEO issues: title >70 chars)",
+        "risk": "Can save invalid SEO data without warnings"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "completion": "All 4 endpoints fully implemented with business logic",
+      "subtask_id": "subtask-6-2",
+      "commit": "5a08354",
+      "files_created": 1,
+      "files_modified": 1,
+      "core_deliverables": [
+        "SEOService class with readability calculation algorithm",
+        "Portuguese-specific text processing utilities",
+        "4 functional API endpoints with proper error handling",
+        "AI integration for keyword suggestions",
+        "Database metadata CRUD operations"
+      ]
+    },
+    "recommendations": [
+      {
+        "category": "Performance",
+        "recommendation": "Implement caching for readability scores (cache key: content_id + body_hash)",
+        "priority": "medium",
+        "rationale": "analyze endpoint may be called repeatedly without content changes"
+      },
+      {
+        "category": "Data Quality",
+        "recommendation": "Add SEO field validation: meta_title length 30-70 chars, description 100-160 chars",
+        "priority": "high",
+        "rationale": "Common SEO best practices being ignored"
+      },
+      {
+        "category": "NLP Accuracy",
+        "recommendation": "Expand Portuguese stop words list or use nltk/spacy for better tokenization",
+        "priority": "low",
+        "rationale": "Current approach is functional but may misclassify domain-specific terms"
+      },
+      {
+        "category": "Robustness",
+        "recommendation": "Add null checks before accessing ai_service.available_models",
+        "priority": "medium",
+        "rationale": "Potential AttributeError if ai_service is None but check doesn't verify"
+      },
+      {
+        "category": "Documentation",
+        "recommendation": "Document readability score algorithm with example calculations and thresholds",
+        "priority": "low",
+        "rationale": "Algorithm uses magic numbers (1.5, 2.0, 4 syllables) without explanation"
+      },
+      {
+        "category": "API Design",
+        "recommendation": "Consider batch keyword suggestion endpoint for bulk content (POST /keywords with content_ids)",
+        "priority": "low",
+        "rationale": "Current single-item endpoint requires multiple calls for bulk operations"
+      },
+      {
+        "category": "Testing",
+        "recommendation": "Add unit tests for readability_score() with known Portuguese test cases",
+        "priority": "medium",
+        "rationale": "Algorithm complexity warrants dedicated test coverage"
+      }
+    ],
+    "subtask_id": "subtask-6-2",
+    "session_num": 22,
+    "success": true,
+    "changed_files": [
+      "backend/app/api/seo.py",
+      "backend/app/services/seo_service.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-6-2"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

@@ -1,0 +1,369 @@
+{
+  "subtasks": {
+    "subtask-1-1": {
+      "attempts": [
+        {
+          "session": 1,
+          "timestamp": "2026-04-02T02:20:49.112618+00:00",
+          "approach": "Implemented: Create backend project scaffolding \u2014 directory structure, requirements.txt, __init__.py files, .env.",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-2": {
+      "attempts": [
+        {
+          "session": 2,
+          "timestamp": "2026-04-02T02:23:49.089502+00:00",
+          "approach": "Implemented: Create core configuration (Pydantic BaseSettings for env vars), async SQLite database setup (engine,",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-3": {
+      "attempts": [
+        {
+          "session": 3,
+          "timestamp": "2026-04-02T02:25:27.589287+00:00",
+          "approach": "Implemented: Create SQLModel data models \u2014 ContentItem (with ContentType/ContentStatus enums), ContentVersion, Va",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-4": {
+      "attempts": [
+        {
+          "session": 4,
+          "timestamp": "2026-04-02T02:27:37.951590+00:00",
+          "approach": "Implemented: Create Pydantic request/response schemas for content endpoints (create, update, list, status transit",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-5": {
+      "attempts": [
+        {
+          "session": 5,
+          "timestamp": "2026-04-02T02:29:11.081193+00:00",
+          "approach": "Implemented: Create content service with full CRUD operations, version snapshot creation on saves, status transit",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-6": {
+      "attempts": [
+        {
+          "session": 6,
+          "timestamp": "2026-04-02T02:30:48.543679+00:00",
+          "approach": "Implemented: Create content API router with all CRUD endpoints (GET list with filtering, POST create, GET by id, ",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-1": {
+      "attempts": [
+        {
+          "session": 7,
+          "timestamp": "2026-04-02T02:34:16.423417+00:00",
+          "approach": "Implemented: Create frontend project scaffolding \u2014 package.json with React/Vite/Tailwind deps and react-router-do",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-2": {
+      "attempts": [
+        {
+          "session": 8,
+          "timestamp": "2026-04-02T02:38:10.709217+00:00",
+          "approach": "Implemented: Copy all UI components from prototypes-magic/src/components/ui/ to frontend/src/components/ui/. This",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-3": {
+      "attempts": [
+        {
+          "session": 9,
+          "timestamp": "2026-04-02T02:40:13.232621+00:00",
+          "approach": "Implemented: Create TypeScript type definitions for content items, validation results, generation requests, sched",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-2-4": {
+      "attempts": [
+        {
+          "session": 10,
+          "timestamp": "2026-04-02T02:43:48.084144+00:00",
+          "approach": "Implemented: Create App.tsx with react-router-dom routing (/, /content, /content/:id, /calendar). Create page she",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-1": {
+      "attempts": [
+        {
+          "session": 11,
+          "timestamp": "2026-04-02T02:45:45.098869+00:00",
+          "approach": "Implemented: Create AIProvider Protocol interface and AIService abstraction class. Implement ClaudeProvider using",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-2": {
+      "attempts": [
+        {
+          "session": 12,
+          "timestamp": "2026-04-02T02:47:07.465276+00:00",
+          "approach": "Implemented: Implement OpenAIProvider using AsyncOpenAI client with Chat Completions API (NOT Responses API). Sup",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-3-3": {
+      "attempts": [
+        {
+          "session": 13,
+          "timestamp": "2026-04-02T02:48:53.485833+00:00",
+          "approach": "Implemented: Implement generation API endpoints: POST /generate for full response, POST /stream for SSE streaming",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-1": {
+      "attempts": [
+        {
+          "session": 14,
+          "timestamp": "2026-04-02T02:50:25.659414+00:00",
+          "approach": "Implemented: Create ValidationProvider Protocol, ValidationResult/Citation dataclasses, and ValidationService wit",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-2": {
+      "attempts": [
+        {
+          "session": 15,
+          "timestamp": "2026-04-02T02:52:02.922448+00:00",
+          "approach": "Implemented: Implement FallbackValidationProvider that uses Claude/GPT to perform AI-based theological validation",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-4-3": {
+      "attempts": [
+        {
+          "session": 16,
+          "timestamp": "2026-04-02T02:55:13.050487+00:00",
+          "approach": "Implemented: Implement validation API endpoints: POST /validate/{content_id} to trigger validation, GET /history/",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-1": {
+      "attempts": [
+        {
+          "session": 17,
+          "timestamp": "2026-04-02T02:57:37.403060+00:00",
+          "approach": "Implemented: Create useContent hook for content CRUD operations (list with filtering, get by id, create, update, ",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-2": {
+      "attempts": [
+        {
+          "session": 18,
+          "timestamp": "2026-04-02T02:59:04.937248+00:00",
+          "approach": "Implemented: Create SSE streaming service for consuming AI generation events. Create useGeneration hook managing ",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-3": {
+      "attempts": [
+        {
+          "session": 19,
+          "timestamp": "2026-04-02T03:01:10.324964+00:00",
+          "approach": "Implemented: Create useValidation hook for triggering validation and fetching history. Create ValidationPanel com",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-5-4": {
+      "attempts": [
+        {
+          "session": 20,
+          "timestamp": "2026-04-02T03:03:27.869504+00:00",
+          "approach": "Implemented: Create ContentEditor component (single-column textarea/rich editor for content body). Integrate all ",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-1": {
+      "attempts": [
+        {
+          "session": 21,
+          "timestamp": "2026-04-02T03:06:02.950331+00:00",
+          "approach": "Implemented: Create schedule service with schedule/reschedule content items, date range queries for calendar, and",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-2": {
+      "attempts": [
+        {
+          "session": 22,
+          "timestamp": "2026-04-02T03:08:44.773985+00:00",
+          "approach": "Implemented: Create SEO service with Portuguese readability score calculation (sentence length, word complexity),",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-6-3": {
+      "attempts": [
+        {
+          "session": 23,
+          "timestamp": "2026-04-02T03:11:06.165004+00:00",
+          "approach": "Implemented: Create dashboard API endpoints: GET /summary (pipeline counts per status, recent items, total counts",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-1": {
+      "attempts": [
+        {
+          "session": 24,
+          "timestamp": "2026-04-02T03:12:47.532005+00:00",
+          "approach": "Implemented: Create useSchedule hook for calendar data and scheduling operations. Create CalendarView component w",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-2": {
+      "attempts": [
+        {
+          "session": 25,
+          "timestamp": "2026-04-02T03:16:35.056507+00:00",
+          "approach": "Implemented: Implement CalendarPage with CalendarView integration, filtering by type/channel, and click-to-schedu",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-7-3": {
+      "attempts": [
+        {
+          "session": 26,
+          "timestamp": "2026-04-02T03:18:49.511532+00:00",
+          "approach": "Implemented: Implement DashboardPage with pipeline status summary (counts per status with color-coded badges), up",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-1": {
+      "attempts": [
+        {
+          "session": 28,
+          "timestamp": "2026-04-02T03:24:46.943957+00:00",
+          "approach": "Implemented: Create pytest conftest.py with test database fixture (in-memory SQLite), mock AI service, mock valid",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-2": {
+      "attempts": [
+        {
+          "session": 29,
+          "timestamp": "2026-04-02T03:27:31.392320+00:00",
+          "approach": "Implemented: Create test_generation.py (mock Anthropic/OpenAI clients, verify correct model params, handle errors",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-3": {
+      "attempts": [
+        {
+          "session": 30,
+          "timestamp": "2026-04-02T03:30:13.394032+00:00",
+          "approach": "Implemented: Implement content versioning UI in the EditorPage: version history sidebar/dropdown showing past ver",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-8-4": {
+      "attempts": [
+        {
+          "session": 31,
+          "timestamp": "2026-04-02T03:32:50.870847+00:00",
+          "approach": "Implemented: End-to-end integration verification: verify the full content lifecycle works (create \u2192 generate \u2192 va",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    }
+  },
+  "stuck_subtasks": [],
+  "metadata": {
+    "created_at": "2026-04-02T02:19:22.391959+00:00",
+    "last_updated": "2026-04-02T03:32:50.870858+00:00"
+  }
+}

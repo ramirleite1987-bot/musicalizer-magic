@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Snapshots de branches arquivadas (não fazem parte do app atual)
+    "archive/**",
   ]),
 ]);
 

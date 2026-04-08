@@ -1,0 +1,185 @@
+{
+  "session_number": 14,
+  "timestamp": "2026-04-02T02:50:46.856802+00:00",
+  "subtasks_completed": [
+    "subtask-4-1"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "backend/app/services/validation_service.py",
+        "type": "new_file",
+        "lines_of_code": 59,
+        "key_components": [
+          "Citation dataclass with citation_number, source_id, cited_text fields",
+          "ValidationResult dataclass with score (0.0-1.0), flags, citations, provider, raw_answer",
+          "ValidationProvider Protocol with async validate() and is_available() methods",
+          "ValidationService class implementing primary\u2192fallback failover pattern"
+        ],
+        "dependencies": [
+          "dataclasses",
+          "typing.Protocol",
+          "logging"
+        ]
+      },
+      {
+        "file": "backend/app/services/notebooklm_provider.py",
+        "type": "new_file",
+        "lines_of_code": 153,
+        "key_components": [
+          "NotebookLMProvider class implementing ValidationProvider Protocol",
+          "Retry logic with exponential backoff (3 retries, 2^attempt delay)",
+          "Health check via is_available() method",
+          "Citation parsing from AskResult.references with defensive attribute access",
+          "Score extraction via regex patterns supporting multiple formats",
+          "Doctrinal flag detection from response text"
+        ],
+        "dependencies": [
+          "asyncio",
+          "logging",
+          "notebooklm library (lazy-loaded)",
+          "validation_service module"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "name": "Protocol-based Dependency Injection",
+        "description": "ValidationProvider Protocol defines interface; NotebookLMProvider and fallback provider implement it. ValidationService accepts providers as constructor arguments.",
+        "location": "validation_service.py:ValidationProvider, notebooklm_provider.py"
+      },
+      {
+        "name": "Exponential Backoff Retry Logic",
+        "description": "Failed NotebookLM calls retry up to 3 times with exponential backoff delays (1s, 2s, 4s). Last exception is captured and re-raised.",
+        "location": "notebooklm_provider.py:validate()",
+        "constants": [
+          "_MAX_RETRIES = 3",
+          "_BACKOFF_BASE = 1.0"
+        ]
+      },
+      {
+        "name": "Lazy Client Initialization",
+        "description": "NotebookLM client created on first use via _get_client(); initialisation errors logged and propagated.",
+        "location": "notebooklm_provider.py:_get_client()"
+      },
+      {
+        "name": "Defensive Attribute Access",
+        "description": "getattr() with defaults and chained fallbacks used to safely extract values from loosely-typed external objects (AskResult).",
+        "location": "notebooklm_provider.py:_parse_citations(), _parse_result()"
+      },
+      {
+        "name": "Failover/Fallback Pattern",
+        "description": "Primary provider attempted first; if unavailable or fails, fallback provider silently invoked.",
+        "location": "validation_service.py:ValidationService.validate()"
+      },
+      {
+        "name": "Async-to-Sync Thread Bridge",
+        "description": "asyncio.to_thread() wraps synchronous NotebookLM.ask() for use in async context.",
+        "location": "notebooklm_provider.py:_ask()"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "severity": "medium",
+        "issue": "Default score fallback of 0.5",
+        "description": "If regex parsing fails to extract score, _extract_score() silently returns 0.5. This masks parsing issues and could report false moderate confidence.",
+        "location": "notebooklm_provider.py:_extract_score()",
+        "mitigation": "Log score extraction failures; consider raising exception instead of returning default"
+      },
+      {
+        "severity": "low",
+        "issue": "Fragile regex patterns for score extraction",
+        "description": "Score extraction relies on Portuguese keywords (pontua\u00e7\u00e3o, precis\u00e3o) and numeric formats. Response format changes could break parsing.",
+        "location": "notebooklm_provider.py:_extract_score()",
+        "patterns": [
+          "(?:score|pontua\u00e7\u00e3o|precis\u00e3o)[:\\s]*(\\d{1,3})",
+          "(\\d{1,3})\\s*/\\s*100",
+          "(\\d{1,3})\\s*%"
+        ]
+      },
+      {
+        "severity": "medium",
+        "issue": "Hardcoded retry constants",
+        "description": "_MAX_RETRIES and _BACKOFF_BASE are module-level constants. Cannot be configured per instance or environment.",
+        "location": "notebooklm_provider.py:lines 10-11"
+      },
+      {
+        "severity": "low",
+        "issue": "Untyped external dependencies",
+        "description": "NotebookLM client and AskResult types not imported; defensive getattr() is required but reduces type safety.",
+        "location": "notebooklm_provider.py",
+        "mitigation": "Add type stubs or use TYPE_CHECKING block"
+      },
+      {
+        "severity": "low",
+        "issue": "Silent primary provider failure in failover",
+        "description": "When primary provider fails, only a warning is logged. No metrics or alerting for repeated failures.",
+        "location": "validation_service.py:ValidationService.validate()",
+        "impact": "Difficult to detect and investigate provider health issues in production"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "subtask_id": "subtask-4-1",
+      "completion_summary": "Fully implemented ValidationProvider Protocol, ValidationResult/Citation dataclasses, and ValidationService with primary\u2192fallback failover logic. NotebookLMProvider includes retry logic with exponential backoff, health checks, RPCError handling, and citation parsing from references.",
+      "files_created": 2,
+      "git_commit": "28d24f4"
+    },
+    "recommendations": [
+      {
+        "priority": "high",
+        "category": "Configuration",
+        "recommendation": "Make _MAX_RETRIES and _BACKOFF_BASE configurable via NotebookLMProvider constructor or environment variables",
+        "rationale": "Allows tuning retry behavior per environment without code changes"
+      },
+      {
+        "priority": "high",
+        "category": "Error Handling",
+        "recommendation": "Add schema validation for NotebookLM response structure before parsing",
+        "rationale": "Prevents silent failures and provides clear error messages when response format changes"
+      },
+      {
+        "priority": "medium",
+        "category": "Observability",
+        "recommendation": "Add metrics/counters for retry attempts, fallback invocations, and provider failures",
+        "rationale": "Enables monitoring of provider health and SLA compliance in production"
+      },
+      {
+        "priority": "medium",
+        "category": "Code Quality",
+        "recommendation": "Extract regex patterns to named constants at module level with documentation",
+        "rationale": "Improves maintainability and makes pattern changes traceable"
+      },
+      {
+        "priority": "medium",
+        "category": "Logging",
+        "recommendation": "Log score/flag extraction failures separately from validation failures",
+        "rationale": "Distinguishes parsing issues from API failures; aids debugging"
+      },
+      {
+        "priority": "low",
+        "category": "Type Safety",
+        "recommendation": "Create type stubs or Protocol classes for NotebookLM and AskResult objects",
+        "rationale": "Improves IDE support and type checking; documents expected interface"
+      },
+      {
+        "priority": "low",
+        "category": "Reliability",
+        "recommendation": "Consider implementing circuit breaker pattern on top of retry logic",
+        "rationale": "Fails fast after repeated failures instead of waiting through all retries"
+      }
+    ],
+    "subtask_id": "subtask-4-1",
+    "session_num": 14,
+    "success": true,
+    "changed_files": [
+      "backend/app/services/notebooklm_provider.py",
+      "backend/app/services/validation_service.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-4-1"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}
