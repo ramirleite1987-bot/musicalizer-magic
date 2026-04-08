@@ -9,7 +9,7 @@ async function seed() {
   console.log("Seeding database...");
 
   // Insert themes
-  const [th1, th2, th3, th4, th5, th6] = await db
+  const [th1, th2, , th4, , th6] = await db
     .insert(schema.themes)
     .values([
       {

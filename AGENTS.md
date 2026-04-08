@@ -43,6 +43,6 @@ The app uses `@neondatabase/serverless` (neon-http driver), which requires an HT
 - The dashboard (`/dashboard`) calls the DB on SSR; without `DATABASE_URL`, the error boundary may show that no connection string was provided. This is expected and does not block lint, typecheck, or build.
 - **neonConfig module instances**: Setting `neonConfig.fetchEndpoint` in `instrumentation.ts` does not affect all bundled server paths; the workaround is intercepting `globalThis.fetch` in the instrumentation `register()` function.
 - **drizzle-kit push**: May not work locally the same way as against Neon if tooling expects the websocket driver; you can create or migrate tables with `psql` against `localhost:5432` when using the local stack.
-- **No migration files**: The `drizzle/` directory may be empty; schema lives in `src/lib/db/schema.ts` and is synced per environment as documented.
+- **Migrations**: SQL snapshots live under `drizzle/`; apply with `npm run db:migrate` (requires `DATABASE_URL` and `tsx`). Schema source remains `src/lib/db/schema.ts`.
 - `.env` is gitignored; copy from `.env.example` and fill in values. For local dev, set `DATABASE_URL` and `NEON_LOCAL_PROXY` as described above.
 - No automated test suite is configured in `package.json` (no test runner script).
