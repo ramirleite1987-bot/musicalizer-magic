@@ -22,3 +22,5 @@ See `package.json` scripts: `npm run dev`, `npm run build`, `npm run lint`. Type
 - The dashboard page (`/dashboard`) calls the DB on SSR; without `DATABASE_URL`, the error boundary shows "No database connection string was provided to neon()". This is expected and does not block lint, typecheck, or build.
 - Database schema is managed via Drizzle Kit: `npx drizzle-kit push` to sync schema to a Neon DB.
 - No automated test suite exists in this repo (no test runner configured).
+- Seed data script at `src/lib/db/seed.ts` — run with `npx tsx src/lib/db/seed.ts` (requires `DATABASE_URL`).
+- The dev server must be started with `DATABASE_URL` in the environment for the dashboard to work; pass it inline or use a `.env` file.
