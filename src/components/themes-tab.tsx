@@ -15,7 +15,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { Track, Theme } from "@/types/music";
@@ -161,7 +160,6 @@ export function ThemesTab({
   const [newThemeColor, setNewThemeColor] = useState("blue");
 
   const assignedThemes = themes.filter((t) => track.themeIds.includes(t.id));
-  const unassignedThemes = themes.filter((t) => !track.themeIds.includes(t.id));
 
   const handleGenerate = async (source: "url" | "document") => {
     if (!sourceContent.trim()) {

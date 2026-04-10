@@ -1,0 +1,172 @@
+{
+  "session_number": 21,
+  "timestamp": "2026-04-02T03:06:25.235360+00:00",
+  "subtasks_completed": [
+    "subtask-6-1"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "backend/app/api/schedule.py",
+        "changes": "Converted 3 stub endpoints into 4 fully functional schedule management endpoints (GET /calendar, POST /{id}/schedule, PUT /{id}/reschedule, GET /export/ical)",
+        "key_additions": [
+          "Query parameter validation with FastAPI Query for start, end, scheduled_date, channel",
+          "HTTPException error handling for ValueError conditions",
+          "Response wrapper for iCal export with proper media type and disposition headers",
+          "_entry_to_dict serialization helper function"
+        ],
+        "dependencies": [
+          "SessionDep",
+          "ScheduleService",
+          "fastapi.responses.Response"
+        ]
+      },
+      {
+        "file": "backend/app/services/schedule_service.py",
+        "changes": "New service layer implementation with 4 business logic methods for schedule operations",
+        "key_features": [
+          "Async SQLAlchemy ORM queries with proper filtering and ordering",
+          "Content item status validation before scheduling (must be VALIDATED or SCHEDULED)",
+          "Timezone-aware datetime handling with timezone.utc",
+          "iCal generation using icalendar library with proper calendar metadata",
+          "Conditional channel filtering in reschedule operation"
+        ],
+        "lines_of_code": 127
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Service Layer Architecture",
+        "description": "Business logic abstracted into ScheduleService class, separated from API routing layer",
+        "benefit": "Reusability, testability, and separation of concerns"
+      },
+      {
+        "pattern": "Async/Await Throughout",
+        "description": "All database operations use async SQLAlchemy with await syntax",
+        "benefit": "Non-blocking I/O, scalable concurrent request handling"
+      },
+      {
+        "pattern": "Dependency Injection",
+        "description": "AsyncSession passed through SessionDep parameter, ScheduleService instantiated per-request",
+        "benefit": "Cleaner testing and request isolation"
+      },
+      {
+        "pattern": "Lazy Library Import",
+        "description": "icalendar library imported inside export_ical method rather than at module level",
+        "context": "Defers import until needed, reduces startup overhead"
+      },
+      {
+        "pattern": "Fluent Query Building",
+        "description": "SQLAlchemy select().where() chained syntax for dynamic query construction",
+        "benefit": "Readable and maintainable query logic"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "issue": "N+1 Query Problem in iCal Export",
+        "location": "schedule_service.py, export_ical method, lines 116-117",
+        "description": "Iterates through entries and fetches ContentItem individually for each entry inside the loop. With 100 scheduled items, this creates 100+ database queries.",
+        "severity": "high",
+        "impact": "Performance degradation on large editorial calendars"
+      },
+      {
+        "issue": "Missing Dependency Declaration",
+        "location": "schedule_service.py, line 99",
+        "description": "icalendar library imported inside method with no error handling if library is not installed",
+        "severity": "medium",
+        "impact": "Runtime ImportError if icalendar not in requirements.txt"
+      },
+      {
+        "issue": "Reschedule Silently Fails on Non-PENDING Status",
+        "location": "schedule_service.py, lines 65-73",
+        "description": "reschedule() only finds entries with PENDING status. Other statuses raise generic 'not found' error without clarity on why",
+        "severity": "medium",
+        "impact": "Confusing error messages for users attempting to reschedule already-published or cancelled items"
+      },
+      {
+        "issue": "Date Range Parameter Validation Missing",
+        "location": "backend/app/api/schedule.py, get_calendar and export_ical",
+        "description": "No validation that start < end. Reversed date ranges could cause unexpected query results",
+        "severity": "low",
+        "impact": "Potential for client-side bugs or unexpected empty results"
+      },
+      {
+        "issue": "Timezone Assumption",
+        "location": "schedule_service.py, lines 50, 77",
+        "description": "Uses datetime.now(timezone.utc) assuming all system time is UTC, but no documentation of expected timezone for incoming datetime parameters",
+        "severity": "low",
+        "impact": "Potential timezone mismatch if clients send naive datetimes"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "objectives_completed": [
+        "\u2713 Schedule service created with proper ORM integration",
+        "\u2713 Calendar date range query with optional channel filtering",
+        "\u2713 Schedule endpoint for new schedule entries with validation",
+        "\u2713 Reschedule endpoint with optional channel updates",
+        "\u2713 iCal export using icalendar library with proper formatting",
+        "\u2713 4 API endpoints fully implemented and functional"
+      ],
+      "architecture_quality": "Good - proper separation of concerns between API routes and service logic",
+      "error_handling": "Adequate - validates content status and catches ValueError with HTTP 400 responses",
+      "code_coverage": "All specified endpoints implemented with expected functionality"
+    },
+    "recommendations": [
+      {
+        "priority": "high",
+        "category": "Performance",
+        "recommendation": "Fix N+1 query in export_ical() by joining ContentItem in the initial select or batch-fetching content items",
+        "implementation": "Use joinedload() or implement batch load: entries_dict = {e.id: e for e in entries}; content_ids = [e.content_id for e in entries]; items = await session.execute(select(ContentItem).where(ContentItem.id.in_(content_ids)))"
+      },
+      {
+        "priority": "high",
+        "category": "Reliability",
+        "recommendation": "Add icalendar to requirements.txt and move import to module level with clear dependency documentation",
+        "implementation": "Add 'icalendar>=5.0.0' to requirements.txt and import at top of schedule_service.py"
+      },
+      {
+        "priority": "medium",
+        "category": "Validation",
+        "recommendation": "Add start < end validation for date range endpoints",
+        "implementation": "Add validation in get_calendar() and export_ical(): if start and end and start >= end: raise HTTPException(400, 'start must be before end')"
+      },
+      {
+        "priority": "medium",
+        "category": "User Experience",
+        "recommendation": "Improve error message for reschedule when entry is not in PENDING status",
+        "implementation": "Query without status filter first, check actual status, and provide specific error message about why rescheduling isn't allowed"
+      },
+      {
+        "priority": "medium",
+        "category": "Documentation",
+        "recommendation": "Document timezone expectations for API datetime parameters",
+        "implementation": "Add docstring notes in API endpoints and service methods clarifying that datetimes should be ISO 8601 with timezone info"
+      },
+      {
+        "priority": "low",
+        "category": "Enhancement",
+        "recommendation": "Consider implementing batch schedule/reschedule endpoints for bulk operations",
+        "implementation": "Add POST /batch/schedule and PUT /batch/reschedule endpoints accepting lists of scheduling operations"
+      },
+      {
+        "priority": "low",
+        "category": "Performance",
+        "recommendation": "Consider adding caching for iCal exports with cache invalidation on schedule changes",
+        "implementation": "Use Redis cache with cache key based on date range, invalidate on schedule/reschedule operations"
+      }
+    ],
+    "subtask_id": "subtask-6-1",
+    "session_num": 21,
+    "success": true,
+    "changed_files": [
+      "backend/app/api/schedule.py",
+      "backend/app/services/schedule_service.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-6-1"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

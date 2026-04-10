@@ -1,0 +1,72 @@
+{
+  "project_root": "/home/rlmit/workspace/musicalizer",
+  "project_type": "monorepo",
+  "services": {
+    "verbum-backend": {
+      "path": "backend",
+      "tech_stack": ["python", "fastapi", "sqlmodel", "sqlite", "aiosqlite"],
+      "port": 8000,
+      "dev_command": "cd backend && source venv/bin/activate && uvicorn app.main:app --reload --port 8000",
+      "test_command": "cd backend && source venv/bin/activate && pytest",
+      "entry_point": "backend/app/main.py",
+      "language": "python",
+      "python_version": "3.12.3"
+    },
+    "verbum-frontend": {
+      "path": "frontend",
+      "tech_stack": ["typescript", "react", "vite", "tailwindcss"],
+      "port": 5173,
+      "dev_command": "cd frontend && npm run dev",
+      "test_command": "cd frontend && npm test",
+      "entry_point": "frontend/src/main.tsx",
+      "language": "typescript"
+    },
+    "musicalizer-existing": {
+      "path": ".",
+      "tech_stack": ["typescript", "nextjs", "prisma", "postgresql"],
+      "port": 3000,
+      "dev_command": "npm run dev",
+      "test_command": "npm test",
+      "entry_point": "src/app/page.tsx",
+      "language": "typescript",
+      "note": "Existing musicalizer app - NOT part of Verbum. Do not modify."
+    },
+    "prototypes-magic": {
+      "path": "prototypes-magic",
+      "tech_stack": ["typescript", "react", "vite", "tailwindcss"],
+      "port": null,
+      "dev_command": "cd prototypes-magic && npx vite",
+      "test_command": null,
+      "entry_point": "prototypes-magic/src/index.tsx",
+      "language": "typescript",
+      "note": "UI component source - copy components from here to frontend/src/components/ui/"
+    }
+  },
+  "infrastructure": {
+    "docker": false,
+    "database": "sqlite",
+    "database_file": "backend/verbum.db",
+    "ci_cd": false
+  },
+  "conventions": {
+    "linter_backend": "none specified",
+    "linter_frontend": "eslint",
+    "formatter": "none specified",
+    "testing_backend": "pytest",
+    "testing_frontend": "vitest",
+    "ui_pattern": "CVA (class-variance-authority) with cn() utility (clsx + tailwind-merge)",
+    "component_structure": "ComponentName.tsx + index.tsx re-export per directory",
+    "api_pattern": "FastAPI APIRouter with prefix and tags",
+    "service_pattern": "Python Protocol classes for interfaces, dependency injection"
+  },
+  "dependency_locations": [
+    "backend/requirements.txt",
+    "frontend/package.json"
+  ],
+  "environment_variables": {
+    "backend": {
+      "required": ["ANTHROPIC_API_KEY", "OPENAI_API_KEY"],
+      "optional": ["NOTEBOOKLM_AUTH_JSON", "DATABASE_URL", "CLAUDE_MODEL", "OPENAI_MODEL", "NOTEBOOKLM_NOTEBOOK_ID", "LOG_LEVEL"]
+    }
+  }
+}

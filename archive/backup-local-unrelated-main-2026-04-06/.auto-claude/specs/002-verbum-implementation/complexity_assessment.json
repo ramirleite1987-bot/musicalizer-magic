@@ -1,0 +1,73 @@
+{
+  "complexity": "complex",
+  "workflow_type": "feature",
+  "confidence": 0.90,
+  "reasoning": "This is a greenfield full-stack application with 3 external API integrations (Anthropic Claude, OpenAI ChatGPT, NotebookLM), requiring database setup from scratch, backend infrastructure, and multiple frontend views (dashboard, editor with validation panel, editorial calendar). The codebase has no existing patterns—only a Vite/React prototype shell—so every layer (data model, API routes, services, components) must be designed and built. The NotebookLM third-party library is an unfamiliar integration requiring dedicated research.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 40,
+      "estimated_services": 3,
+      "is_cross_cutting": true,
+      "notes": "Full-stack greenfield: frontend (React components for dashboard, editor, calendar, validation panel), backend (API routes, service layer, AI/validation orchestration), and database (schema, migrations, ORM models). Content flows through creation → AI generation → validation → scheduling → publishing, touching all layers."
+    },
+    "integrations": {
+      "external_services": ["Anthropic Claude API", "OpenAI ChatGPT API", "NotebookLM (third-party library)"],
+      "new_dependencies": ["@anthropic-ai/sdk", "openai", "notebooklm-library (TBD)", "database ORM (e.g. prisma/drizzle)", "calendar/date library", "rich text editor"],
+      "research_needed": true,
+      "notes": "Three external integrations, each requiring API key management, error handling, retry logic, and rate limit awareness. NotebookLM is the highest research burden—it's a less well-documented third-party library rather than a major SDK with extensive examples. Claude and OpenAI SDKs are well-documented but still require streaming/error handling patterns. The exact NotebookLM library to use needs to be identified and validated."
+    },
+    "infrastructure": {
+      "docker_changes": false,
+      "database_changes": true,
+      "config_changes": true,
+      "notes": "Database must be created from scratch with schema for content items (type, status, language, channel, scheduled_date, version_history), validation records (scores, flags, citations, history), and scheduling metadata. Environment configuration needed for 3+ API keys, database connection, and feature toggles. No Docker mentioned in PRD—single-user local/hosted deployment likely sufficient initially."
+    },
+    "knowledge": {
+      "patterns_exist": false,
+      "research_required": true,
+      "unfamiliar_tech": ["NotebookLM third-party library", "theological validation scoring patterns"],
+      "notes": "Project index shows empty services/infrastructure/conventions—this is a blank slate. The prototypes-magic directory has a basic Vite+React+Tailwind template but no application logic. Need to research: (1) which NotebookLM library to use and its API surface, (2) content editor component selection, (3) calendar UI component selection, (4) database choice for single-user app (SQLite vs Postgres), (5) backend framework choice."
+    },
+    "risk": {
+      "level": "medium",
+      "concerns": [
+        "NotebookLM library reliability and API stability—explicitly flagged in PRD as a challenge",
+        "API key management for 3 services—security-sensitive configuration",
+        "AI response quality consistency in Portuguese—affects SEO and content quality",
+        "Greenfield architecture decisions—wrong choices early compound downstream",
+        "Scope creep from comprehensive PRD—need to identify MVP boundaries"
+      ],
+      "notes": "Primary risk is NotebookLM integration reliability. PRD explicitly calls out rate limits and downtime as challenges. The scope is ambitious for a single implementation cycle—editorial calendar, SEO tools, content versioning, and bulk scheduling are all medium/low priority features that may need phasing. API key exposure is a security concern requiring proper environment isolation."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "self_critique",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": true,
+    "needs_self_critique": true,
+    "needs_infrastructure_setup": true
+  },
+
+  "validation_recommendations": {
+    "risk_level": "high",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["unit", "integration", "e2e"],
+    "security_scan_required": true,
+    "staging_deployment_required": false,
+    "reasoning": "Three external API integrations with API key management require security scanning. Database setup from scratch and cross-service content lifecycle (creation → validation → scheduling → publishing) demand comprehensive unit, integration, and E2E testing. Security scan needed for API key handling, encryption at rest/in transit requirements, and GDPR compliance mentioned in PRD. No staging deployment needed since this is a single-user personal tool with no production traffic concerns during initial rollout."
+  },
+
+  "created_at": "2026-04-02T01:41:00.000Z"
+}

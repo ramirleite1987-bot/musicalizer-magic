@@ -1,7 +1,6 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
-import "dotenv/config";
 
 async function seed() {
   const sql = neon(process.env.DATABASE_URL!);
@@ -10,7 +9,7 @@ async function seed() {
   console.log("Seeding database...");
 
   // Insert themes
-  const [th1, th2, th3, th4, th5, th6] = await db
+  const [th1, th2, , th4, , th6] = await db
     .insert(schema.themes)
     .values([
       {

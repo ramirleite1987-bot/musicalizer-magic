@@ -1,0 +1,1017 @@
+{
+  "feature": "Verbum — Catholic Content Management Platform",
+  "workflow_type": "feature",
+  "workflow_rationale": "Greenfield full-stack application. No existing application logic to refactor — only a Vite/React/Tailwind prototype shell with reusable UI components. Every layer (database, backend API, AI integrations, frontend pages) must be designed and built from scratch.",
+  "phases": [
+    {
+      "id": "phase-1-backend-foundation",
+      "name": "Backend Foundation",
+      "type": "implementation",
+      "description": "Set up the Python FastAPI backend project structure, configuration, database, data models, schemas, content service, and content API. This creates the core backend that all subsequent phases build upon.",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Create backend project scaffolding — directory structure, requirements.txt, __init__.py files, .env.example, and update root .gitignore for Python/backend artifacts",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            ".gitignore"
+          ],
+          "files_to_create": [
+            "backend/requirements.txt",
+            "backend/.env.example",
+            "backend/app/__init__.py",
+            "backend/app/core/__init__.py",
+            "backend/app/models/__init__.py",
+            "backend/app/schemas/__init__.py",
+            "backend/app/services/__init__.py",
+            "backend/app/api/__init__.py",
+            "backend/tests/__init__.py"
+          ],
+          "patterns_from": [],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -c \"import fastapi; import sqlmodel; print('OK')\"",
+            "expected": "OK"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Create core configuration (Pydantic BaseSettings for env vars), async SQLite database setup (engine, session factory, init_db), and FastAPI dependency injection providers",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/core/config.py",
+            "backend/app/core/database.py",
+            "backend/app/core/deps.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 1: Async FastAPI with SQLModel"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.core.config import get_settings; s = get_settings(); print('config OK')\"",
+            "expected": "config OK"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-1-3",
+          "description": "Create SQLModel data models — ContentItem (with ContentType/ContentStatus enums), ContentVersion, ValidationRecord, SEOMetadata — matching the spec's data model exactly. UUID string PKs, timezone-aware datetimes.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/models/content.py",
+            "backend/app/models/validation.py",
+            "backend/app/models/schedule.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 2: SQLModel Data Models with Status Enum"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.models.content import ContentItem, ContentVersion, ContentType, ContentStatus; from app.models.validation import ValidationRecord; print('models OK')\"",
+            "expected": "models OK"
+          },
+          "status": "completed",
+          "notes": "Created ContentItem, ContentVersion, SEOMetadata (content.py), ValidationRecord (validation.py), ScheduleEntry (schedule.py). All with UUID string PKs, timezone-aware datetimes, string enums. Verification passed.",
+          "updated_at": "2026-04-02T02:25:22.818387+00:00"
+        },
+        {
+          "id": "subtask-1-4",
+          "description": "Create Pydantic request/response schemas for content endpoints (create, update, list, status transition), validation responses, and generation requests. These schemas define the API contract.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/schemas/content.py",
+            "backend/app/schemas/validation.py",
+            "backend/app/schemas/generation.py"
+          ],
+          "patterns_from": [
+            "spec.md API Endpoints section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.schemas.content import ContentCreate, ContentUpdate, ContentResponse; from app.schemas.generation import GenerationRequest; print('schemas OK')\"",
+            "expected": "schemas OK"
+          },
+          "status": "completed",
+          "notes": "Created Pydantic schemas: content.py (ContentCreate, ContentUpdate, StatusTransition, ContentResponse, ContentListResponse, ContentVersionResponse, ContentListParams), validation.py (CitationResponse, ValidationResponse, ValidationHistoryResponse, ValidationStatusResponse), generation.py (GenerationRequest, GenerationResponse, StreamChunk, ModelInfo, ModelsResponse). Verification passed.",
+          "updated_at": "2026-04-02T02:27:33.428382+00:00"
+        },
+        {
+          "id": "subtask-1-5",
+          "description": "Create content service with full CRUD operations, version snapshot creation on saves, status transition enforcement (draft→validated→scheduled→published), and filtering. All operations async.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/services/content_service.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 2: SQLModel Data Models"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.content_service import ContentService; print('content service OK')\"",
+            "expected": "content service OK"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-1-6",
+          "description": "Create content API router with all CRUD endpoints (GET list with filtering, POST create, GET by id, PUT update, DELETE, GET versions, POST status transition). Create FastAPI main.py with CORS, lifespan for DB init, and stub routers for all API modules.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/api/content.py",
+            "backend/app/api/generation.py",
+            "backend/app/api/validation.py",
+            "backend/app/api/schedule.py",
+            "backend/app/api/seo.py",
+            "backend/app/api/dashboard.py",
+            "backend/app/main.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 1: Async FastAPI with SQLModel"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && uvicorn app.main:app --host 0.0.0.0 --port 8000 &\nsleep 3 && curl -s http://localhost:8000/docs | head -5 && kill %1 2>/dev/null; echo 'API OK'",
+            "expected": "API OK"
+          },
+          "status": "completed",
+          "notes": "Created content API router with full CRUD (list with filtering, create, get, update, delete, versions, status transition). Created stub routers for generation, validation, schedule, seo, dashboard. Created main.py with CORS, lifespan, all routers registered. Verified all 23 routes registered correctly."
+        }
+      ]
+    },
+    {
+      "id": "phase-2-frontend-foundation",
+      "name": "Frontend Foundation",
+      "type": "implementation",
+      "description": "Set up the React/Vite/TypeScript frontend project, copy UI components from prototypes-magic, create TypeScript types, API client, and basic page shells with routing.",
+      "depends_on": [],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-2-1",
+          "description": "Create frontend project scaffolding — package.json with React/Vite/Tailwind deps and react-router-dom, tsconfig files, vite.config.ts with /api proxy to localhost:8000, tailwind.config.js (copy theme from prototypes-magic), postcss.config.js, index.html, index.css with Tailwind imports and CSS variables.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/package.json",
+            "frontend/tsconfig.json",
+            "frontend/tsconfig.node.json",
+            "frontend/vite.config.ts",
+            "frontend/tailwind.config.js",
+            "frontend/postcss.config.js",
+            "frontend/index.html",
+            "frontend/src/index.css"
+          ],
+          "patterns_from": [
+            "prototypes-magic/package.json",
+            "prototypes-magic/vite.config.ts",
+            "prototypes-magic/tailwind.config.js"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npm install && npx tsc --noEmit 2>&1 | tail -1; echo 'frontend scaffold OK'",
+            "expected": "frontend scaffold OK"
+          },
+          "status": "completed",
+          "notes": "Created all frontend scaffolding files: package.json, tsconfig.json, tsconfig.node.json, vite.config.ts, tailwind.config.js, postcss.config.js, index.html, src/index.css, src/main.tsx, .gitignore. Verification passes (tsc --noEmit succeeds).",
+          "updated_at": "2026-04-02T02:34:08.006862+00:00"
+        },
+        {
+          "id": "subtask-2-2",
+          "description": "Copy all UI components from prototypes-magic/src/components/ui/ to frontend/src/components/ui/. This includes: button, card, tabs, badge, input, select, textarea, table, progress, accordion, label, separator, slider, scroll-area, sonner, toggle-group, tooltip, and the utils.ts cn() utility.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/components/ui/"
+          ],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/button/Button.tsx",
+            "prototypes-magic/src/components/ui/card/Card.tsx",
+            "prototypes-magic/src/components/ui/tabs/Tabs.tsx"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "ls frontend/src/components/ui/button/Button.tsx frontend/src/components/ui/card/Card.tsx frontend/src/components/ui/tabs/Tabs.tsx frontend/src/components/ui/utils.ts && echo 'UI components OK'",
+            "expected": "UI components OK"
+          },
+          "status": "completed",
+          "notes": "Direct copy — do not modify component implementations. Ensure utils.ts with cn() function is included. Update any import paths if needed (they should use relative '../utils')."
+        },
+        {
+          "id": "subtask-2-3",
+          "description": "Create TypeScript type definitions for content items, validation results, generation requests, schedules, and SEO metadata. Create the API client service (fetch wrapper with error handling, base URL config). Create main.tsx entry point.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/types/content.ts",
+            "frontend/src/services/api.ts",
+            "frontend/src/main.tsx"
+          ],
+          "patterns_from": [
+            "spec.md Data Model section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npx tsc --noEmit 2>&1 | grep -c 'error' || echo 'types OK'",
+            "expected": "types OK"
+          },
+          "status": "completed",
+          "notes": "Created frontend/src/types/content.ts (all TypeScript types: ContentItem, ContentVersion, ValidationResult, Citation, GenerationRequest, ScheduledItem, SEOMetadata, DashboardSummary, etc.), frontend/src/services/api.ts (fetch wrapper with error handling, base URL config), updated frontend/src/main.tsx to import App component, created frontend/src/App.tsx placeholder. Verification: 0 TypeScript errors.",
+          "updated_at": "2026-04-02T02:40:06.635974+00:00"
+        },
+        {
+          "id": "subtask-2-4",
+          "description": "Create App.tsx with react-router-dom routing (/, /content, /content/:id, /calendar). Create page shell components: DashboardPage, ContentListPage, EditorPage, CalendarPage — each with basic layout and placeholder content. Create StatusBadge and ContentCard reusable components.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/App.tsx",
+            "frontend/src/pages/DashboardPage.tsx",
+            "frontend/src/pages/ContentListPage.tsx",
+            "frontend/src/pages/EditorPage.tsx",
+            "frontend/src/pages/CalendarPage.tsx",
+            "frontend/src/components/StatusBadge.tsx",
+            "frontend/src/components/ContentCard.tsx"
+          ],
+          "patterns_from": [
+            "prototypes-magic/src/App.tsx",
+            "spec.md Pattern 6: React Page with Editor + Right Panel Layout"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npx vite build 2>&1 | tail -3; echo 'frontend build OK'",
+            "expected": "frontend build OK"
+          },
+          "status": "completed",
+          "notes": "Created App.tsx with react-router-dom routing, 4 page shells (Dashboard, ContentList, Editor, Calendar), and 2 reusable components (StatusBadge, ContentCard). Frontend build passes.",
+          "updated_at": "2026-04-02T02:43:39.686749+00:00"
+        }
+      ]
+    },
+    {
+      "id": "phase-3-ai-generation-backend",
+      "name": "AI Generation Backend",
+      "type": "implementation",
+      "description": "Implement the AI service abstraction layer with Claude and OpenAI providers, content type templates, and generation API endpoints with SSE streaming support.",
+      "depends_on": [
+        "phase-1-backend-foundation"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-3-1",
+          "description": "Create AIProvider Protocol interface and AIService abstraction class. Implement ClaudeProvider using AsyncAnthropic client with streaming support (.messages.stream context manager), proper error handling for APIError/RateLimitError, and model configuration from env vars.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/services/ai_service.py",
+            "backend/app/services/claude_provider.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 3: AI Service Abstraction with Streaming"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.ai_service import AIService, AIProvider; from app.services.claude_provider import ClaudeProvider; print('AI service OK')\"",
+            "expected": "AI service OK"
+          },
+          "status": "completed",
+          "notes": "Anthropic model parameter is ALWAYS required — no default. Use env var CLAUDE_MODEL with fallback to claude-sonnet-4-5-20250514. Reuse single client instance."
+        },
+        {
+          "id": "subtask-3-2",
+          "description": "Implement OpenAIProvider using AsyncOpenAI client with Chat Completions API (NOT Responses API). Support streaming via stream=True. Handle OpenAI-specific errors. Create content type templates — system prompts for short_video (150-200 words), long_video (1500-2000 words), and blog_post (SEO-optimized Portuguese article).",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/services/openai_provider.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 3: AI Service Abstraction with Streaming"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.openai_provider import OpenAIProvider; print('OpenAI provider OK')\"",
+            "expected": "OpenAI provider OK"
+          },
+          "status": "completed",
+          "notes": "Use Chat Completions API for stability. Model from env var OPENAI_MODEL, default gpt-4o-mini. Content type templates can be in ai_service.py or a separate templates module."
+        },
+        {
+          "id": "subtask-3-3",
+          "description": "Implement generation API endpoints: POST /generate for full response, POST /stream for SSE streaming, GET /models for available models and status. Update deps.py with AI service dependency injection. Wire AIService with both providers.",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            "backend/app/api/generation.py",
+            "backend/app/core/deps.py"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "spec.md Pattern 5: SSE Streaming from FastAPI to React"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.api.generation import router; print(f'Generation routes: {len(router.routes)}')\"",
+            "expected": "Generation routes: 3"
+          },
+          "status": "completed",
+          "notes": "Implemented POST /generate, POST /stream (SSE), GET /models. Added AIServiceDep to deps.py with lazy provider initialization. Verification: 3 routes."
+        }
+      ]
+    },
+    {
+      "id": "phase-4-validation-backend",
+      "name": "Validation Backend",
+      "type": "implementation",
+      "description": "Implement the validation abstraction layer with NotebookLM primary provider and AI-based fallback provider. Create validation API endpoints with history tracking.",
+      "depends_on": [
+        "phase-1-backend-foundation"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-4-1",
+          "description": "Create ValidationProvider Protocol, ValidationResult/Citation dataclasses, and ValidationService with primary→fallback failover logic. Implement NotebookLMProvider with retry logic (3 retries with exponential backoff), is_available() health check, RPCError handling, and citation parsing from AskResult.references.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/services/validation_service.py",
+            "backend/app/services/notebooklm_provider.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 4: Validation Service with Fallback"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.validation_service import ValidationService, ValidationProvider, ValidationResult, Citation; print('validation service OK')\"",
+            "expected": "validation service OK"
+          },
+          "status": "completed",
+          "notes": "Created validation_service.py (ValidationProvider Protocol, ValidationResult/Citation dataclasses, ValidationService with primary→fallback failover) and notebooklm_provider.py (retry with exponential backoff, is_available health check, RPCError handling, citation parsing). Verification passed.",
+          "updated_at": "2026-04-02T02:50:19.968438+00:00"
+        },
+        {
+          "id": "subtask-4-2",
+          "description": "Implement FallbackValidationProvider that uses Claude/GPT to perform AI-based theological validation when NotebookLM is unavailable. Should include a system prompt with Catholic theological context, score estimation, and flag generation. Always returns provider='ai_fallback' to indicate non-authoritative source.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/app/services/fallback_validation_provider.py"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 4: Validation Service with Fallback"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.fallback_validation_provider import FallbackValidationProvider; print('fallback provider OK')\"",
+            "expected": "fallback provider OK"
+          },
+          "status": "completed",
+          "notes": "The fallback should use the same AIService (Claude/GPT) with a specialized theological validation system prompt. Response must clearly indicate this is AI-estimated, not authoritatively sourced."
+        },
+        {
+          "id": "subtask-4-3",
+          "description": "Implement validation API endpoints: POST /validate/{content_id} to trigger validation, GET /history/{content_id} for validation history, GET /status for service availability. Update deps.py with validation service injection. Validation creates a version snapshot before validating.",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            "backend/app/api/validation.py",
+            "backend/app/core/deps.py"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "spec.md API Endpoints section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.api.validation import router; print(f'Validation routes: {len(router.routes)}')\"",
+            "expected": "Validation routes: 3"
+          },
+          "status": "completed",
+          "notes": "Implemented 3 validation API endpoints: POST /validate/{content_id} (triggers validation with version snapshot), GET /history/{content_id} (returns validation history), GET /status (service availability). Added ValidationServiceDep to deps.py with NotebookLM primary and FallbackValidationProvider fallback. Verification passes: 3 routes.",
+          "updated_at": "2026-04-02T02:55:06.329290+00:00"
+        }
+      ]
+    },
+    {
+      "id": "phase-5-editor-frontend",
+      "name": "Editor Frontend Integration",
+      "type": "implementation",
+      "description": "Build the content editor page with AI generation panel (SSE streaming), validation panel with citations, content CRUD hooks, and the full editor layout.",
+      "depends_on": [
+        "phase-2-frontend-foundation",
+        "phase-3-ai-generation-backend",
+        "phase-4-validation-backend"
+      ],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-5-1",
+          "description": "Create useContent hook for content CRUD operations (list with filtering, get by id, create, update, delete, status transitions). Create ContentListPage full implementation with content cards, filtering by status/type, and 'New Content' button.",
+          "service": "verbum-frontend",
+          "files_to_modify": [
+            "frontend/src/pages/ContentListPage.tsx"
+          ],
+          "files_to_create": [
+            "frontend/src/hooks/useContent.ts"
+          ],
+          "patterns_from": [
+            "frontend/src/services/api.ts"
+          ],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173/content",
+            "checks": [
+              "Content list page renders",
+              "Filter controls visible",
+              "New Content button present"
+            ]
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-5-2",
+          "description": "Create SSE streaming service for consuming AI generation events. Create useGeneration hook managing streaming state (idle, generating, error). Create GenerationPanel component with AI model selector dropdown (Claude/ChatGPT), prompt input textarea, generate button, and streaming text output display.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/services/streaming.ts",
+            "frontend/src/hooks/useGeneration.ts",
+            "frontend/src/components/GenerationPanel.tsx"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 5: SSE Streaming from FastAPI to React"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npx tsc --noEmit 2>&1 | grep -c 'error' || echo 'generation components OK'",
+            "expected": "generation components OK"
+          },
+          "status": "completed",
+          "notes": "SSE client uses ReadableStream reader to consume data: JSON lines. Handle reconnection on errors. Preserve partial content on timeout."
+        },
+        {
+          "id": "subtask-5-3",
+          "description": "Create useValidation hook for triggering validation and fetching history. Create ValidationPanel component showing score (0-100% with color coding), flag list, and provider indicator. Create CitationList component for expandable/collapsible citation display with source names and quoted text.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/hooks/useValidation.ts",
+            "frontend/src/components/ValidationPanel.tsx",
+            "frontend/src/components/CitationList.tsx"
+          ],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/progress/Progress.tsx",
+            "prototypes-magic/src/components/ui/accordion/Accordion.tsx"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npx tsc --noEmit 2>&1 | grep -c 'error' || echo 'validation components OK'",
+            "expected": "validation components OK"
+          },
+          "status": "completed",
+          "notes": "Score color coding: green (>=0.8), yellow (>=0.5), red (<0.5). Fallback provider indicator: show warning banner when provider='ai_fallback'. Citations use accordion/expandable pattern."
+        },
+        {
+          "id": "subtask-5-4",
+          "description": "Create ContentEditor component (single-column textarea/rich editor for content body). Integrate all components into EditorPage: ContentEditor in main area, GenerationPanel below editor, ValidationPanel + CitationList in the fixed right panel (w-96). Wire up content loading, saving, generation, and validation triggers.",
+          "service": "verbum-frontend",
+          "files_to_modify": [
+            "frontend/src/pages/EditorPage.tsx"
+          ],
+          "files_to_create": [
+            "frontend/src/components/ContentEditor.tsx"
+          ],
+          "patterns_from": [
+            "spec.md Pattern 6: React Page with Editor + Right Panel Layout"
+          ],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173/content/test-id",
+            "checks": [
+              "Editor renders with main area and right panel",
+              "Generation panel has model selector",
+              "Validation panel shows in right column",
+              "No console errors"
+            ]
+          },
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-6-calendar-seo-dashboard-backend",
+      "name": "Calendar, SEO, and Dashboard Backend",
+      "type": "implementation",
+      "description": "Implement schedule service with iCal export, SEO service with Portuguese readability and keyword suggestions, and dashboard aggregation API.",
+      "depends_on": [
+        "phase-1-backend-foundation"
+      ],
+      "parallel_safe": true,
+      "subtasks": [
+        {
+          "id": "subtask-6-1",
+          "description": "Create schedule service with schedule/reschedule content items, date range queries for calendar, and iCal (.ics) export using the icalendar library. Implement schedule API endpoints: GET /calendar, POST /{id}/schedule, PUT /{id}/reschedule, GET /export/ical.",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            "backend/app/api/schedule.py"
+          ],
+          "files_to_create": [
+            "backend/app/services/schedule_service.py"
+          ],
+          "patterns_from": [
+            "spec.md API Endpoints section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.schedule_service import ScheduleService; from app.api.schedule import router; print(f'Schedule routes: {len(router.routes)}')\"",
+            "expected": "Schedule routes: 4"
+          },
+          "status": "completed",
+          "notes": "Scheduling a content item changes its status to 'scheduled'. Rescheduling only updates the date. iCal export should include all scheduled+published items with proper VEVENT entries.",
+          "updated_at": "2026-04-02T12:00:00+00:00"
+        },
+        {
+          "id": "subtask-6-2",
+          "description": "Create SEO service with Portuguese readability score calculation (sentence length, word complexity), AI-powered keyword suggestion via AIService, and metadata CRUD for SEOMetadata model. Implement SEO API endpoints: GET /{id}, PUT /{id}, POST /{id}/analyze, POST /{id}/keywords.",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            "backend/app/api/seo.py"
+          ],
+          "files_to_create": [
+            "backend/app/services/seo_service.py"
+          ],
+          "patterns_from": [
+            "spec.md API Endpoints section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.services.seo_service import SEOService; from app.api.seo import router; print(f'SEO routes: {len(router.routes)}')\"",
+            "expected": "SEO routes: 4"
+          },
+          "status": "completed",
+          "notes": "SEO is for blog_post content type only. Readability score: average words per sentence, percentage of complex words (>3 syllables in Portuguese). Keyword suggestions use the AI service with a Portuguese SEO system prompt."
+        },
+        {
+          "id": "subtask-6-3",
+          "description": "Create dashboard API endpoints: GET /summary (pipeline counts per status, recent items, total counts by type) and GET /upcoming (next 7 days of scheduled content). These are read-only aggregation endpoints.",
+          "service": "verbum-backend",
+          "files_to_modify": [
+            "backend/app/api/dashboard.py",
+            "backend/app/core/deps.py"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "spec.md API Endpoints section"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && python -c \"from app.api.dashboard import router; print(f'Dashboard routes: {len(router.routes)}')\"",
+            "expected": "Dashboard routes: 2"
+          },
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-7-calendar-seo-dashboard-frontend",
+      "name": "Calendar, SEO, and Dashboard Frontend",
+      "type": "implementation",
+      "description": "Build the editorial calendar UI (week/month views), SEO panel for blog posts, dashboard with pipeline summary, and channel selector component.",
+      "depends_on": [
+        "phase-2-frontend-foundation",
+        "phase-5-editor-frontend",
+        "phase-6-calendar-seo-dashboard-backend"
+      ],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-7-1",
+          "description": "Create useSchedule hook for calendar data and scheduling operations. Create CalendarView component with week and month view toggle, content items on correct dates with type icons and status badges. Create ChannelSelector component for tagging content to channels (YouTube, Blog, etc.).",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "frontend/src/hooks/useSchedule.ts",
+            "frontend/src/components/CalendarView.tsx",
+            "frontend/src/components/ChannelSelector.tsx"
+          ],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/badge/Badge.tsx",
+            "prototypes-magic/src/components/ui/select/Select.tsx"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd frontend && npx tsc --noEmit 2>&1 | grep -c 'error' || echo 'calendar components OK'",
+            "expected": "calendar components OK"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-7-2",
+          "description": "Implement CalendarPage with CalendarView integration, filtering by type/channel, and click-to-schedule/view functionality. Create SEOPanel component with meta title, meta description, keywords, slug fields, readability score display, and keyword suggestion trigger button. Add SEOPanel to EditorPage (visible only for blog_post content type).",
+          "service": "verbum-frontend",
+          "files_to_modify": [
+            "frontend/src/pages/CalendarPage.tsx",
+            "frontend/src/pages/EditorPage.tsx"
+          ],
+          "files_to_create": [
+            "frontend/src/components/SEOPanel.tsx"
+          ],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/input/Input.tsx",
+            "prototypes-magic/src/components/ui/textarea/Textarea.tsx"
+          ],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173/calendar",
+            "checks": [
+              "Calendar renders with week/month toggle",
+              "Content items appear on dates",
+              "No console errors"
+            ]
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-7-3",
+          "description": "Implement DashboardPage with pipeline status summary (counts per status with color-coded badges), upcoming content list (next 7 days), mini calendar widget, and quick-create content button. This is the landing page at '/'.",
+          "service": "verbum-frontend",
+          "files_to_modify": [
+            "frontend/src/pages/DashboardPage.tsx"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/card/Card.tsx",
+            "prototypes-magic/src/components/ui/table/Table.tsx"
+          ],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173/",
+            "checks": [
+              "Dashboard renders with status counts",
+              "Upcoming content list visible",
+              "Quick-create button present",
+              "No console errors"
+            ]
+          },
+          "status": "completed"
+        }
+      ]
+    },
+    {
+      "id": "phase-8-testing-polish",
+      "name": "Testing and Polish",
+      "type": "implementation",
+      "description": "Create the backend test suite with mocked external services, implement content versioning UI, Portuguese localization, and end-to-end integration verification.",
+      "depends_on": [
+        "phase-5-editor-frontend",
+        "phase-6-calendar-seo-dashboard-backend",
+        "phase-7-calendar-seo-dashboard-frontend"
+      ],
+      "parallel_safe": false,
+      "subtasks": [
+        {
+          "id": "subtask-8-1",
+          "description": "Create pytest conftest.py with test database fixture (in-memory SQLite), mock AI service, mock validation service. Create test_content.py: CRUD tests, status transition tests, version creation tests, field validation tests.",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/tests/conftest.py",
+            "backend/tests/test_content.py"
+          ],
+          "patterns_from": [
+            "spec.md QA Acceptance Criteria"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && pytest tests/test_content.py -v 2>&1 | tail -5",
+            "expected": "passed"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-8-2",
+          "description": "Create test_generation.py (mock Anthropic/OpenAI clients, verify correct model params, handle errors), test_validation.py (primary→fallback failover, score/citation parsing, availability detection), test_schedule.py (schedule/reschedule, iCal format, date range queries), test_seo.py (readability calculation, keyword format, metadata CRUD).",
+          "service": "verbum-backend",
+          "files_to_modify": [],
+          "files_to_create": [
+            "backend/tests/test_generation.py",
+            "backend/tests/test_validation.py",
+            "backend/tests/test_schedule.py",
+            "backend/tests/test_seo.py"
+          ],
+          "patterns_from": [
+            "spec.md QA Acceptance Criteria"
+          ],
+          "verification": {
+            "type": "command",
+            "command": "cd backend && source venv/bin/activate && pytest tests/ -v 2>&1 | tail -10",
+            "expected": "passed"
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-8-3",
+          "description": "Implement content versioning UI in the EditorPage: version history sidebar/dropdown showing past versions with timestamps, read-only version viewer, and version-to-validation-result linking. Add Portuguese localization for all UI labels, buttons, status names, and content type names.",
+          "service": "verbum-frontend",
+          "files_to_modify": [
+            "frontend/src/pages/EditorPage.tsx",
+            "frontend/src/components/ContentEditor.tsx"
+          ],
+          "files_to_create": [],
+          "patterns_from": [
+            "prototypes-magic/src/components/ui/select/Select.tsx"
+          ],
+          "verification": {
+            "type": "browser",
+            "url": "http://localhost:5173/content/test-id",
+            "checks": [
+              "Version history accessible from editor",
+              "Past versions viewable in read-only mode",
+              "UI labels are in Portuguese",
+              "No console errors"
+            ]
+          },
+          "status": "completed"
+        },
+        {
+          "id": "subtask-8-4",
+          "description": "End-to-end integration verification: verify the full content lifecycle works (create → generate → validate → schedule → publish). Verify error handling for missing API keys, NotebookLM unavailability, and invalid status transitions. Verify Portuguese characters (ã, õ, ç, é) round-trip correctly through backend and frontend.",
+          "service": "verbum-frontend",
+          "files_to_modify": [],
+          "files_to_create": [],
+          "patterns_from": [],
+          "verification": {
+            "type": "e2e",
+            "steps": [
+              "Create a new short_video content item via frontend",
+              "Trigger AI generation with Claude/ChatGPT mock",
+              "Trigger validation and verify score + citations display",
+              "Schedule the content item on editorial calendar",
+              "Mark as published and verify dashboard updates",
+              "Verify Portuguese characters persist correctly",
+              "Verify error states when API keys are missing"
+            ]
+          },
+          "status": "completed"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_phases": 8,
+    "total_subtasks": 30,
+    "services_involved": [
+      "verbum-backend",
+      "verbum-frontend"
+    ],
+    "estimated_files_to_create": 71,
+    "parallelism": {
+      "max_parallel_phases": 3,
+      "parallel_groups": [
+        {
+          "phases": [
+            "phase-1-backend-foundation",
+            "phase-2-frontend-foundation"
+          ],
+          "reason": "Independent services (Python backend vs React frontend), zero file overlap"
+        },
+        {
+          "phases": [
+            "phase-3-ai-generation-backend",
+            "phase-4-validation-backend",
+            "phase-6-calendar-seo-dashboard-backend"
+          ],
+          "reason": "All three depend only on phase-1, work on different backend service files (ai_service vs validation_service vs schedule_service), no file conflicts"
+        }
+      ],
+      "recommended_workers": 2,
+      "speedup_estimate": "~1.3x faster than sequential execution"
+    },
+    "startup_command": "source auto-claude/.venv/bin/activate && python auto-claude/run.py --spec 002 --parallel 2"
+  },
+  "verification_strategy": {
+    "risk_level": "high",
+    "skip_validation": false,
+    "test_creation_phase": "post_implementation",
+    "test_types_required": [
+      "unit",
+      "integration",
+      "e2e"
+    ],
+    "security_scanning_required": true,
+    "staging_deployment_required": false,
+    "acceptance_criteria": [
+      "All backend unit tests pass (pytest tests/)",
+      "Content CRUD works end-to-end via API",
+      "AI generation streams text via SSE to frontend",
+      "Validation fallback triggers when NotebookLM is unavailable",
+      "Status transitions enforced (cannot skip validation)",
+      "Editorial calendar displays items on correct dates",
+      "Portuguese characters round-trip correctly (ã, õ, ç, é)",
+      "No API keys exposed in frontend network requests",
+      "CORS configured to only allow localhost:5173",
+      "No console errors in normal browser operation"
+    ],
+    "verification_steps": [
+      {
+        "name": "Backend Unit Tests",
+        "command": "cd backend && source venv/bin/activate && pytest tests/ -v",
+        "expected_outcome": "All tests pass",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Backend Integration Tests",
+        "command": "cd backend && source venv/bin/activate && pytest tests/ -v -k 'integration'",
+        "expected_outcome": "All integration tests pass",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Frontend Build",
+        "command": "cd frontend && npm run build",
+        "expected_outcome": "Build succeeds with no errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "TypeScript Type Check",
+        "command": "cd frontend && npx tsc --noEmit",
+        "expected_outcome": "No type errors",
+        "type": "test",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Security - No API Keys in Frontend",
+        "command": "grep -r 'sk-ant\\|sk-' frontend/src/ || echo 'No API keys found in frontend'",
+        "expected_outcome": "No API keys found in frontend",
+        "type": "security",
+        "required": true,
+        "blocking": true
+      },
+      {
+        "name": "Security - Secrets Scan",
+        "command": "grep -rn 'API_KEY\\s*=\\s*[\"\\x27]sk-' backend/ frontend/ --include='*.py' --include='*.ts' --include='*.tsx' || echo 'No hardcoded secrets'",
+        "expected_outcome": "No hardcoded secrets",
+        "type": "security",
+        "required": true,
+        "blocking": true
+      }
+    ],
+    "reasoning": "High risk due to 3 external API integrations (Anthropic, OpenAI, NotebookLM), API key security requirements, database schema creation from scratch, and cross-service content lifecycle. NotebookLM is flagged as unofficial/HIGH RISK. Comprehensive unit + integration + E2E testing required. Security scanning for API key exposure."
+  },
+  "qa_acceptance": {
+    "unit_tests": {
+      "required": true,
+      "commands": [
+        "cd backend && source venv/bin/activate && pytest tests/"
+      ],
+      "minimum_coverage": null
+    },
+    "integration_tests": {
+      "required": true,
+      "commands": [
+        "cd backend && source venv/bin/activate && pytest tests/ -k integration"
+      ],
+      "services_to_test": [
+        "verbum-backend"
+      ]
+    },
+    "e2e_tests": {
+      "required": true,
+      "commands": [],
+      "flows": [
+        "content-creation",
+        "ai-generation",
+        "validation-with-fallback",
+        "schedule-and-publish",
+        "full-pipeline"
+      ]
+    },
+    "browser_verification": {
+      "required": true,
+      "pages": [
+        {
+          "url": "http://localhost:5173/",
+          "checks": [
+            "Dashboard renders with pipeline status",
+            "Upcoming items list visible"
+          ]
+        },
+        {
+          "url": "http://localhost:5173/content",
+          "checks": [
+            "Content list loads",
+            "Filtering works",
+            "Create button present"
+          ]
+        },
+        {
+          "url": "http://localhost:5173/content/{id}",
+          "checks": [
+            "Editor loads content",
+            "Right panel shows validation",
+            "Generation panel has model selector"
+          ]
+        },
+        {
+          "url": "http://localhost:5173/calendar",
+          "checks": [
+            "Calendar renders with week/month toggle",
+            "Scheduled items on correct dates"
+          ]
+        }
+      ]
+    },
+    "database_verification": {
+      "required": true,
+      "checks": [
+        "tables-exist",
+        "content_items-crud",
+        "validation_records-created",
+        "content_versions-tracked",
+        "utf8-portuguese"
+      ]
+    }
+  },
+  "qa_signoff": {
+    "status": "approved",
+    "qa_session": 0,
+    "issues_found": [
+      {
+        "description": "Minor: CORS origins hardcoded to localhost:5173 (should be env-configurable for production)"
+      }
+    ],
+    "tests_passed": {},
+    "timestamp": "2026-04-02T03:42:09.209902+00:00",
+    "ready_for_qa_revalidation": false
+  },
+  "status": "human_review",
+  "planStatus": "review",
+  "xstateState": "human_review",
+  "executionPhase": "complete",
+  "updated_at": "2026-04-02T03:42:14.888Z",
+  "lastEvent": {
+    "eventId": "45409c12-ecbe-4863-bb26-4555ee27b339",
+    "sequence": 5,
+    "type": "QA_PASSED",
+    "timestamp": "2026-04-02T03:42:14.877719+00:00"
+  },
+  "last_updated": "2026-04-02T03:42:09.209912+00:00",
+  "qa_iteration_history": [
+    {
+      "iteration": 1,
+      "status": "rejected",
+      "timestamp": "2026-04-02T03:36:37.733493+00:00",
+      "issues": [
+        {
+          "type": "critical",
+          "title": "Missing UI component barrel exports",
+          "location": "frontend/src/components/ui/*/",
+          "fix_required": "Add index.ts to all 17 UI component folders"
+        },
+        {
+          "type": "critical",
+          "title": "Missing vite-env.d.ts",
+          "location": "frontend/src/",
+          "fix_required": "Create vite-env.d.ts"
+        },
+        {
+          "type": "major",
+          "title": "TypeScript strict violations",
+          "location": "ContentListPage.tsx, useGeneration.ts",
+          "fix_required": "Add types, remove unused imports"
+        }
+      ],
+      "duration_seconds": 207.6
+    },
+    {
+      "iteration": 2,
+      "status": "approved",
+      "timestamp": "2026-04-02T03:42:14.875052+00:00",
+      "issues": [],
+      "duration_seconds": 151.71
+    }
+  ],
+  "qa_stats": {
+    "total_iterations": 2,
+    "last_iteration": 2,
+    "last_status": "approved",
+    "issues_by_type": {
+      "critical": 2,
+      "major": 1
+    }
+  },
+  "reviewReason": "completed"
+}

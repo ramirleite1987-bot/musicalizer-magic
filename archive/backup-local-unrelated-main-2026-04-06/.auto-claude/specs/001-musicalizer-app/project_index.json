@@ -1,0 +1,32 @@
+{
+  "project_type": "single",
+  "services": {
+    "musicalizer": {
+      "path": ".",
+      "tech_stack": ["python", "click", "pydantic", "google-genai", "openai", "rich"],
+      "port": null,
+      "dev_command": "pip install -e '.[dev]'",
+      "test_command": "pytest tests/ -v",
+      "entry_point": "src/musicalizer/cli.py",
+      "run_command": "python -m musicalizer"
+    }
+  },
+  "infrastructure": {
+    "docker": false,
+    "database": null,
+    "ci_cd": false
+  },
+  "conventions": {
+    "linter": null,
+    "formatter": null,
+    "testing": "pytest",
+    "async": true,
+    "package_layout": "src-layout",
+    "models": "pydantic"
+  },
+  "environment_variables": {
+    "GEMINI_API_KEY": "Google Gemini API key",
+    "CHUTES_API_KEY": "Chutes API key"
+  },
+  "python_version": "3.11+"
+}

@@ -1,0 +1,243 @@
+{
+  "session_number": 24,
+  "timestamp": "2026-04-02T03:13:16.049673+00:00",
+  "subtasks_completed": [
+    "subtask-7-1"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "frontend/src/hooks/useSchedule.ts",
+        "type": "Custom React Hook",
+        "purpose": "Manages scheduled content data and scheduling operations",
+        "key_functions": [
+          "fetchItems - Fetch schedule from API",
+          "schedule - Create new scheduled item",
+          "unschedule - Remove scheduled item",
+          "reschedule - Update scheduled date",
+          "getItemsForDateRange - Filter items by date range",
+          "exportIcal - Export calendar as iCal format"
+        ],
+        "state_management": [
+          "items: ScheduledItem[]",
+          "loading: boolean",
+          "error: string | null"
+        ],
+        "async_pattern": "Uses useState + useCallback + useEffect for data fetching with proper loading/error states",
+        "api_integration": "Communicates via api service with CRUD operations"
+      },
+      {
+        "file": "frontend/src/components/CalendarView.tsx",
+        "type": "React Component",
+        "purpose": "Displays calendar with week/month toggle and scheduled content items",
+        "features": [
+          "Dual view mode (week/month)",
+          "Navigation controls (previous/next/today)",
+          "Content items with type icons and status badges",
+          "Date-based grouping and filtering",
+          "Today highlighting"
+        ],
+        "performance_optimizations": [
+          "useMemo for itemsByDate mapping",
+          "useMemo for days calculation",
+          "Type icon constants (TYPE_ICONS) mapping",
+          "Status variant constants (STATUS_VARIANT) mapping"
+        ],
+        "helper_functions": [
+          "getWeekDays - Calculate 7-day week from date",
+          "getMonthDays - Calculate 42-day month grid",
+          "formatDateKey - Normalize dates to YYYY-MM-DD"
+        ]
+      },
+      {
+        "file": "frontend/src/components/ChannelSelector.tsx",
+        "type": "React Component",
+        "purpose": "Multi-select component for tagging content to distribution channels",
+        "channels": [
+          "YouTube",
+          "Blog",
+          "Instagram",
+          "TikTok",
+          "Facebook"
+        ],
+        "interaction_patterns": [
+          "Toggle channels via buttons",
+          "Remove channels via badge X button",
+          "Visual selection feedback with border/background colors",
+          "Disabled state support"
+        ],
+        "ui_components": [
+          "Badge (custom component for display)",
+          "Lucide X icon for removal"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Custom Hook with API Integration",
+        "location": "useSchedule.ts",
+        "description": "Combines useState for local state, useCallback for memoized async operations, and useEffect for side effects",
+        "benefit": "Separates data fetching logic from UI components, enables reusability"
+      },
+      {
+        "pattern": "Const Mapping Objects for Type Safety",
+        "locations": [
+          "CalendarView.tsx (TYPE_ICONS, STATUS_VARIANT)",
+          "ChannelSelector.tsx (AVAILABLE_CHANNELS)"
+        ],
+        "description": "Uses TypeScript Record<> types with const assertions for compile-time type safety",
+        "benefit": "Prevents invalid enum values, enables IDE autocomplete"
+      },
+      {
+        "pattern": "Date Utility Functions",
+        "location": "CalendarView.tsx",
+        "description": "Helper functions for calendar math (getWeekDays, getMonthDays, formatDateKey)",
+        "benefit": "Encapsulates complex date logic, improves readability"
+      },
+      {
+        "pattern": "Multi-Select UI Pattern",
+        "location": "ChannelSelector.tsx",
+        "description": "Toggle buttons for selection + badge display for selected items with removal capability",
+        "benefit": "Clear visual feedback and easy management of selections"
+      },
+      {
+        "pattern": "Floating Promise Suppression",
+        "location": "useSchedule.ts",
+        "description": "Uses `void fetchItems()` prefix to explicitly ignore promises",
+        "benefit": "Silences TypeScript strict mode warnings for intentional fire-and-forget operations"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "issue": "iCal Export Fallback",
+        "location": "useSchedule.ts, exportIcal function",
+        "description": "Uses `import.meta.env.VITE_API_BASE_URL ?? \"/api\"` as fallback, but VITE_API_BASE_URL may not be configured in all environments",
+        "impact": "Could cause 404 errors if environment variable is not set",
+        "mitigation": "Ensure .env configuration includes VITE_API_BASE_URL or handle fetch base URL consistently"
+      },
+      {
+        "issue": "Week Starting on Sunday",
+        "location": "CalendarView.tsx, getWeekDays function",
+        "description": "Uses `date.getDay()` which assumes week starts on Sunday (0=Sunday). Some locales expect Monday as start",
+        "impact": "Incorrect week boundaries for locale-aware applications",
+        "mitigation": "Add locale parameter or configuration for week start day"
+      },
+      {
+        "issue": "Month Grid Overflow",
+        "location": "CalendarView.tsx",
+        "description": "Uses fixed 42-day grid (6 weeks) which always renders 6 rows even when only 5 needed",
+        "impact": "Unnecessary vertical whitespace in some months",
+        "mitigation": "Dynamically calculate grid size based on month boundaries"
+      },
+      {
+        "issue": "Badge X Button Hover Color",
+        "location": "ChannelSelector.tsx",
+        "description": "Uses hardcoded `hover:bg-gray-300` for badge X button, doesn't adapt to badge variant colors",
+        "impact": "Poor contrast or visual inconsistency with secondary badge variant",
+        "mitigation": "Use variant-aware hover colors or dynamic styling"
+      },
+      {
+        "issue": "No Minimum Channel Selection",
+        "location": "ChannelSelector.tsx",
+        "description": "Allows removing all channels with no validation or business logic preventing it",
+        "impact": "Could allow invalid scheduling (content with no distribution channels)",
+        "mitigation": "Add parent component validation or onError callback if minimum selection required"
+      },
+      {
+        "issue": "Missing Error Handling in Schedule Hook",
+        "location": "useSchedule.ts",
+        "description": "API errors in schedule/unschedule/reschedule operations are not caught and may propagate unhandled",
+        "impact": "Component could crash on API failure if caller doesn't catch exception",
+        "mitigation": "Wrap API calls in try-catch or add error callback parameter"
+      }
+    ],
+    "approach_outcome": {
+      "status": "SUCCESS",
+      "completion_percentage": 100,
+      "deliverables": [
+        {
+          "item": "useSchedule custom hook",
+          "status": "Complete",
+          "features": "Full CRUD operations, date range filtering, iCal export"
+        },
+        {
+          "item": "CalendarView component",
+          "status": "Complete",
+          "features": "Week/month toggle, navigation, type icons, status badges, date-grouped items"
+        },
+        {
+          "item": "ChannelSelector component",
+          "status": "Complete",
+          "features": "Multi-select with 5 predefined channels, badge display with removal"
+        }
+      ],
+      "code_quality": "High - TypeScript strict mode, proper memoization, semantic HTML",
+      "integration_ready": true,
+      "test_coverage_needed": "Unit tests for date utilities, integration tests for API operations"
+    },
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "category": "Error Handling",
+        "recommendation": "Add error handling wrapper to schedule/unschedule/reschedule operations in useSchedule to prevent unhandled promise rejections",
+        "effort": "Low",
+        "impact": "Prevents runtime crashes on API failures"
+      },
+      {
+        "priority": "HIGH",
+        "category": "Testing",
+        "recommendation": "Create unit tests for date utility functions (getWeekDays, getMonthDays) to verify edge cases around month/year boundaries",
+        "effort": "Medium",
+        "impact": "Prevents timezone/locale-related bugs in production"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Optimization",
+        "recommendation": "Extract date utility functions to separate utils/dateCalendar.ts module for reusability and testability",
+        "effort": "Low",
+        "impact": "Improves code organization and maintainability"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Localization",
+        "recommendation": "Add support for locale-specific week start day (Monday in EU, Sunday in US) in CalendarView",
+        "effort": "Medium",
+        "impact": "Improves UX for international users"
+      },
+      {
+        "priority": "MEDIUM",
+        "category": "Accessibility",
+        "recommendation": "Add ARIA labels for calendar grid cells indicating date and item count for screen readers",
+        "effort": "Low",
+        "impact": "Improves accessibility compliance"
+      },
+      {
+        "priority": "LOW",
+        "category": "UI Polish",
+        "recommendation": "Extract TYPE_ICONS and STATUS_VARIANT to separate constants/contentTypes.ts to reduce component file size",
+        "effort": "Low",
+        "impact": "Improves code organization"
+      },
+      {
+        "priority": "LOW",
+        "category": "Documentation",
+        "recommendation": "Add JSDoc comments to useSchedule hook methods documenting parameters, return types, and potential errors",
+        "effort": "Low",
+        "impact": "Improves developer experience and IDE autocomplete"
+      }
+    ],
+    "subtask_id": "subtask-7-1",
+    "session_num": 24,
+    "success": true,
+    "changed_files": [
+      "frontend/src/components/CalendarView.tsx",
+      "frontend/src/components/ChannelSelector.tsx",
+      "frontend/src/hooks/useSchedule.ts"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-7-1"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

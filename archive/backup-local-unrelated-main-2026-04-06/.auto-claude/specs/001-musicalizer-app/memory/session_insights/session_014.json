@@ -1,0 +1,144 @@
+{
+  "session_number": 14,
+  "timestamp": "2026-03-26T20:39:24.450082+00:00",
+  "subtasks_completed": [
+    "subtask-4-3"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file": "src/musicalizer/evaluator.py",
+        "type": "new_file",
+        "purpose": "Evaluation module for scoring and improving song generations",
+        "key_components": [
+          "EvaluationError custom exception",
+          "evaluate_song() async main function",
+          "_parse_response() JSON parsing helper",
+          "_validate_result() business rule validator",
+          "_stricter_prompt() prompt escalation helper"
+        ],
+        "dependencies": [
+          "musicalizer.models (EvalResult, Preset, SunoOutput, Verdict)",
+          "musicalizer.prompts (build_evaluation_prompt)",
+          "musicalizer.providers.base (LLMProvider)",
+          "pydantic (ValidationError)",
+          "json, logging (stdlib)"
+        ],
+        "lines_of_code": 97
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "name": "Retry with Progressive Escalation",
+        "description": "Failed evaluations trigger stricter prompts on retry attempts",
+        "location": "evaluate_song() loop with _stricter_prompt()",
+        "benefit": "Improves JSON output validity without wasting retries on identical prompts"
+      },
+      {
+        "name": "Multi-Exception Aggregation",
+        "description": "Catches ValidationError, JSONDecodeError, KeyError, TypeError, ValueError in single handler",
+        "location": "except clause in evaluate_song()",
+        "benefit": "Robust handling of various malformed response scenarios"
+      },
+      {
+        "name": "Business Rule Validation Layer",
+        "description": "Separate _validate_result() function enforces domain constraints",
+        "location": "_validate_result() function",
+        "benefit": "Decouples validation logic from parsing; ensures 'bad' verdicts have improvements"
+      },
+      {
+        "name": "Async/Await with Retries",
+        "description": "Async LLM provider calls wrapped in retry loop",
+        "location": "evaluate_song() calls provider.generate()",
+        "benefit": "Non-blocking I/O with automatic recovery from transient failures"
+      },
+      {
+        "name": "Structured Response Schema",
+        "description": "Pydantic model validation via response_schema parameter",
+        "location": "provider.generate(response_schema=EvalResult)",
+        "benefit": "Type-safe parsing and validation of LLM responses"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "issue": "Improvement validation enforcement",
+        "description": "ValueError raised if verdict='bad' but improvements list is empty",
+        "location": "_validate_result()",
+        "impact": "Ensures evaluations with negative verdicts are actionable; could cause unexpected retries"
+      },
+      {
+        "issue": "Prompt mutation on retry",
+        "description": "System and user prompts are re-assigned with stricter suffix on each failed attempt",
+        "location": "evaluate_song() loop",
+        "impact": "Original prompts are not preserved; may accumulate strictness if _stricter_prompt is called multiple times"
+      },
+      {
+        "issue": "Silent error aggregation",
+        "description": "last_error variable only retains the final exception after MAX_RETRIES exhausted",
+        "location": "exception handling in evaluate_song()",
+        "impact": "Earlier retry failures are logged but not surfaced in final exception message"
+      },
+      {
+        "issue": "Fixed retry count",
+        "description": "MAX_RETRIES hardcoded to 2",
+        "location": "Module-level constant",
+        "impact": "Not configurable per preset or provider; may be insufficient for unstable providers"
+      }
+    ],
+    "approach_outcome": "SUCCESS",
+    "approach_details": {
+      "implementation_strategy": "Create robust evaluation module with retry and validation",
+      "key_decisions": [
+        "Retry pattern with stricter prompts on failure",
+        "Multi-exception handling for JSON parsing and validation",
+        "Separate validation function for business rules",
+        "Logging at warning level for retries, error level for exhaustion"
+      ],
+      "test_coverage": "Not visible in diff; validation logic is present but unit tests not shown",
+      "production_readiness": "High - proper error handling, logging, and validation in place"
+    },
+    "recommendations": [
+      {
+        "priority": "medium",
+        "area": "Configuration",
+        "suggestion": "Make MAX_RETRIES configurable via Preset or environment variable",
+        "rationale": "Different models/providers may need different retry budgets"
+      },
+      {
+        "priority": "medium",
+        "area": "Prompt Escalation",
+        "suggestion": "Preserve original prompt and apply incremental strictness (e.g., attempt 1: original, attempt 2: add JSON clarification, attempt 3: add schema details)",
+        "rationale": "Current approach may over-constrain prompts after first failure"
+      },
+      {
+        "priority": "low",
+        "area": "Observability",
+        "suggestion": "Add metrics/telemetry on retry frequency per provider to identify problematic LLM models",
+        "rationale": "Would help optimize provider selection and identify when stricter prompts are needed"
+      },
+      {
+        "priority": "low",
+        "area": "Robustness",
+        "suggestion": "Add timeout parameter to provider.generate() call",
+        "rationale": "Prevents hanging on slow or stuck LLM endpoints"
+      },
+      {
+        "priority": "low",
+        "area": "Error Messages",
+        "suggestion": "Include first attempt error in EvaluationError message, not just the last one",
+        "rationale": "Better debugging visibility into root cause of evaluation failures"
+      }
+    ],
+    "subtask_id": "subtask-4-3",
+    "session_num": 14,
+    "success": true,
+    "changed_files": [
+      "src/musicalizer/evaluator.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-4-3"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

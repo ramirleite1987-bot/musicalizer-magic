@@ -1,0 +1,73 @@
+{
+  "complexity": "complex",
+  "workflow_type": "feature",
+  "confidence": 0.90,
+  "reasoning": "Greenfield project requiring multiple external API integrations (Google Gemini, Chutes API), conformance to Suno's prompt specification, a structured evaluation system, and an iterative auto-improvement loop modeled after Karpathy's autoresearch. No existing code, patterns, or infrastructure exist — all architectural decisions, provider abstractions, and data models must be designed from scratch. The combination of 2+ unfamiliar integrations, no existing codebase patterns, and a novel self-improving generation loop firmly places this in the complex tier.",
+
+  "analysis": {
+    "scope": {
+      "estimated_files": 20,
+      "estimated_services": 1,
+      "is_cross_cutting": true,
+      "notes": "Single service (monolithic) but with multiple tightly coupled internal modules: provider abstraction layer, preset system, generation engine, evaluation engine, and auto-improvement loop. Cross-cutting because the evaluation output feeds back into generation, and presets affect all layers."
+    },
+    "integrations": {
+      "external_services": ["Google Gemini API", "Chutes API", "Suno (output format conformance)"],
+      "new_dependencies": ["google-generativeai or @google/generative-ai", "chutes SDK or HTTP client", "dotenv", "zod or pydantic (schema validation)"],
+      "research_needed": true,
+      "notes": "Gemini API is well-documented but requires SDK research. Chutes API is less mainstream and requires investigation into available SDKs and authentication. Suno's prompt format (docs.suno.com) must be studied to ensure generated lyrics conform to their expected structure. Karpathy's autoresearch repo must be studied for the reflect-and-retry loop architecture."
+    },
+    "infrastructure": {
+      "docker_changes": false,
+      "database_changes": false,
+      "config_changes": true,
+      "notes": "No Docker or database needed initially — can use file-based storage for generation history and evaluation results. However, significant config is required: .env for API keys (Gemini, Chutes), preset configuration files, and output directory structure. Project scaffolding (package.json or pyproject.toml, linting, testing setup) must be created from scratch."
+    },
+    "knowledge": {
+      "patterns_exist": false,
+      "research_required": true,
+      "unfamiliar_tech": ["Chutes API", "Suno prompt format", "Karpathy autoresearch pattern", "Google Gemini API"],
+      "notes": "Greenfield project with zero existing code or patterns. Every architectural decision is new: language/framework choice, provider abstraction design, preset schema, evaluation data model, and the auto-improvement loop control flow. Research is needed for all four external references (Gemini docs, Chutes docs, Suno docs, autoresearch repo)."
+    },
+    "risk": {
+      "level": "medium",
+      "concerns": [
+        "API key security — multiple provider keys must be managed safely",
+        "Provider abstraction design — must be extensible without over-engineering",
+        "Auto-improvement loop convergence — risk of degenerate loops or quality plateaus",
+        "Suno format drift — output format must stay aligned with Suno's evolving spec",
+        "Chutes API stability — less mainstream service, documentation quality unknown"
+      ],
+      "notes": "Primary risk is architectural: designing the provider abstraction and auto-improvement loop correctly from the start. Secondary risk is external dependency reliability (Chutes API). No payment or auth-critical paths reduce overall risk."
+    }
+  },
+
+  "recommended_phases": [
+    "discovery",
+    "requirements",
+    "research",
+    "context",
+    "spec_writing",
+    "self_critique",
+    "planning",
+    "validation"
+  ],
+
+  "flags": {
+    "needs_research": true,
+    "needs_self_critique": true,
+    "needs_infrastructure_setup": false
+  },
+
+  "validation_recommendations": {
+    "risk_level": "high",
+    "skip_validation": false,
+    "minimal_mode": false,
+    "test_types_required": ["unit", "integration", "e2e"],
+    "security_scan_required": true,
+    "staging_deployment_required": false,
+    "reasoning": "Multiple external API integrations with API key management require security scanning. The auto-improvement loop (generate → evaluate → reflect → regenerate) is the core differentiator and requires E2E testing to verify the full cycle works. Integration tests are needed for each provider (Gemini, Chutes) and the evaluation pipeline. No staging deployment needed since there's no database migration or public-facing deployment — this is a CLI/library tool."
+  },
+
+  "created_at": "2026-03-26T19:45:00Z"
+}

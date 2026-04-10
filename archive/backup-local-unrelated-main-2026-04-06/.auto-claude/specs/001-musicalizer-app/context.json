@@ -1,0 +1,62 @@
+{
+  "task_description": "Build Musicalizer — a greenfield Python CLI app for AI song lyric generation, evaluation, and auto-improvement, optimized for Suno AI output format.",
+  "scoped_services": ["musicalizer"],
+  "files_to_modify": {},
+  "files_to_create": {
+    "project_root": [
+      "pyproject.toml",
+      ".env.example",
+      "README.md"
+    ],
+    "source": [
+      "src/musicalizer/__init__.py",
+      "src/musicalizer/__main__.py",
+      "src/musicalizer/cli.py",
+      "src/musicalizer/config.py",
+      "src/musicalizer/models.py",
+      "src/musicalizer/providers/__init__.py",
+      "src/musicalizer/providers/base.py",
+      "src/musicalizer/providers/gemini.py",
+      "src/musicalizer/providers/chutes.py",
+      "src/musicalizer/providers/factory.py",
+      "src/musicalizer/generator.py",
+      "src/musicalizer/evaluator.py",
+      "src/musicalizer/improver.py",
+      "src/musicalizer/presets.py",
+      "src/musicalizer/prompts.py",
+      "src/musicalizer/history.py"
+    ],
+    "presets": [
+      "presets/brazilian_catholic.json",
+      "presets/brazilian_catholic_christmas.json",
+      "presets/brazilian_catholic_marian.json"
+    ],
+    "tests": [
+      "tests/__init__.py",
+      "tests/conftest.py",
+      "tests/test_models.py",
+      "tests/test_presets.py",
+      "tests/test_providers.py",
+      "tests/test_generator.py",
+      "tests/test_evaluator.py",
+      "tests/test_improver.py",
+      "tests/test_cli.py"
+    ],
+    "output": [
+      "output/.gitkeep"
+    ]
+  },
+  "files_to_reference": [],
+  "patterns": {
+    "provider_pattern": "Strategy pattern via abstract LLMProvider base class; async generate() method; factory function for instantiation",
+    "model_pattern": "Pydantic BaseModel for all data structures; used both for validation and LLM structured output schemas",
+    "preset_pattern": "JSON files in presets/ directory; loaded and validated against Preset Pydantic model; hyphen names in CLI, underscore names in files",
+    "async_pattern": "All provider and business logic methods are async; Click CLI bridges with asyncio.run()",
+    "auto_improve_pattern": "Karpathy AutoResearch: Generate → Evaluate → Reflect → Regenerate with plateau detection and best-score tracking"
+  },
+  "existing_implementations": {
+    "description": "Greenfield project — no existing implementations. All patterns defined in spec.md.",
+    "relevant_files": []
+  },
+  "created_at": "2026-03-26T16:46:59.252127"
+}

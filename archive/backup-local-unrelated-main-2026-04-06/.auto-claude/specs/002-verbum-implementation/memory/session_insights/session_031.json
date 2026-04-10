@@ -1,0 +1,132 @@
+{
+  "session_number": 31,
+  "timestamp": "2026-04-02T03:33:09.981904+00:00",
+  "subtasks_completed": [
+    "subtask-8-4"
+  ],
+  "discoveries": {
+    "file_insights": [
+      {
+        "file_path": "backend/tests/test_e2e_integration.py",
+        "type": "test_file",
+        "lines_added": 360,
+        "purpose": "End-to-end integration tests for full content lifecycle",
+        "test_classes": 8,
+        "key_test_groups": [
+          "Full content lifecycle (create\u2192generate\u2192validate\u2192schedule\u2192publish)",
+          "Portuguese character round-trip validation",
+          "Error handling for missing API keys and invalid models",
+          "Invalid status transition rejection",
+          "Scheduling error handling",
+          "Dashboard integration",
+          "Validation API integration",
+          "Versioning through lifecycle"
+        ]
+      }
+    ],
+    "patterns_discovered": [
+      {
+        "pattern": "Comprehensive Lifecycle Testing",
+        "description": "Tests verify complete workflow from content creation through publication with version tracking",
+        "example": "test_full_lifecycle_short_video transitions content through draft\u2192validated\u2192scheduled\u2192published states"
+      },
+      {
+        "pattern": "Internationalization Testing",
+        "description": "Parameterized tests with Portuguese text samples ensuring \u00e3, \u00f5, \u00e7, \u00e9, \u00e1, \u00e2 characters persist through all operations",
+        "example": "PORTUGUESE_TEXTS parameter list with 5 different Portuguese phrases tested in create, update, and list operations"
+      },
+      {
+        "pattern": "Status Transition Validation",
+        "description": "Systematic testing of all invalid state transitions to enforce content workflow rules",
+        "example": "Multiple test methods ensuring draft\u2192scheduled rejected, validated\u2192published rejected, published\u2192scheduled rejected"
+      },
+      {
+        "pattern": "Error Path Testing",
+        "description": "Comprehensive error handling verification including non-existent resources, invalid models, and premature scheduling",
+        "example": "test_schedule_draft_content_rejected, test_generate_with_unknown_model, test_schedule_nonexistent_content"
+      },
+      {
+        "pattern": "Dashboard State Reflection",
+        "description": "Tests verify dashboard summary accurately reflects current content state and counts across statuses and types",
+        "example": "test_dashboard_counts_update creates items in various states and validates corresponding status_counts"
+      }
+    ],
+    "gotchas_discovered": [
+      {
+        "gotcha": "Portuguese Character Encoding",
+        "description": "Portuguese special characters must round-trip correctly through database and API layers without corruption",
+        "mitigation": "Explicit parameterized tests verify characters survive create, update, and list operations"
+      },
+      {
+        "gotcha": "Strict Status Transition Rules",
+        "description": "Content cannot skip states (e.g., draft\u2192published directly) or move backward (e.g., published\u2192scheduled)",
+        "mitigation": "TestInvalidStatusTransitions class systematically tests all forbidden transitions returning 400"
+      },
+      {
+        "gotcha": "Draft Content Cannot Be Scheduled",
+        "description": "Attempting to schedule content that hasn't been validated returns 400, not 422 or other status",
+        "mitigation": "test_schedule_draft_content_rejected validates this business rule"
+      },
+      {
+        "gotcha": "Ambiguous Error Status Codes",
+        "description": "Some endpoints return either 400 or 404 for not-found scenarios, requiring flexible assertions",
+        "mitigation": "Tests use 'assert resp.status_code in (400, 404)' for flexible error handling"
+      },
+      {
+        "gotcha": "Version History Limited to Snapshots",
+        "description": "Version endpoint returns only 2 snapshots (original + first edit) not full history of all 3 edits",
+        "mitigation": "test_lifecycle_with_versioning expects len(versions) == 2 despite 3 total updates"
+      }
+    ],
+    "approach_outcome": "SUCCESS",
+    "approach_details": {
+      "strategy": "Built comprehensive test suite covering happy path, error paths, and internationalization",
+      "coverage": "8 test classes with 30+ individual test methods covering lifecycle, Portuguese chars, error handling, status transitions, scheduling, dashboard, and validation",
+      "organization": "Tests organized by concern (lifecycle, Portuguese chars, errors, transitions, scheduling, dashboard, validation) with helper methods reducing duplication",
+      "async_support": "All tests properly marked with @pytest.mark.asyncio and use AsyncClient for realistic HTTP simulation"
+    },
+    "recommendations": [
+      {
+        "priority": "HIGH",
+        "recommendation": "Add mocking/patching for external dependencies",
+        "rationale": "Tests reference NotebookLM API and AI generation but don't mock these external services, risking flaky tests",
+        "implementation": "Use @patch decorator to mock AIService and external API calls in test setup"
+      },
+      {
+        "priority": "HIGH",
+        "recommendation": "Implement test data factories or fixtures",
+        "rationale": "Content creation is repeated 15+ times inline; factory pattern would improve maintainability",
+        "implementation": "Create @pytest.fixture for common content creation patterns with Portuguese text variants"
+      },
+      {
+        "priority": "MEDIUM",
+        "recommendation": "Add pagination and filtering tests",
+        "rationale": "List endpoints tested but not pagination, filtering, or sorting behavior",
+        "implementation": "Add tests for /api/content?page=X&limit=Y and /api/content?status=published filtering"
+      },
+      {
+        "priority": "MEDIUM",
+        "recommendation": "Test concurrent operations and race conditions",
+        "rationale": "No tests for simultaneous edits, scheduling conflicts, or concurrent status changes",
+        "implementation": "Use asyncio.gather to run parallel operations and verify consistency"
+      },
+      {
+        "priority": "LOW",
+        "recommendation": "Add performance/load tests for bulk operations",
+        "rationale": "Current tests single or small batches; no verification of performance at scale",
+        "implementation": "Add stress test class creating 1000+ items and verifying dashboard response time"
+      }
+    ],
+    "subtask_id": "subtask-8-4",
+    "session_num": 31,
+    "success": true,
+    "changed_files": [
+      "backend/tests/test_e2e_integration.py"
+    ]
+  },
+  "what_worked": [
+    "Implemented subtask: subtask-8-4"
+  ],
+  "what_failed": [],
+  "recommendations_for_next_session": []
+}

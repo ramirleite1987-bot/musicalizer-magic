@@ -93,7 +93,18 @@ export async function updateVersion(
       ? { ...existing.feedback, ...updates.feedback }
       : undefined;
 
-  const { style, dimensionScores, feedback, id: _id, trackId: _trackId, createdAt: _createdAt, ...scalarUpdates } = updates;
+  /* Remove campos mergeados ou não atualizáveis do spread para `.set()`. */
+  /* eslint-disable @typescript-eslint/no-unused-vars -- omitir chaves via desestruturação */
+  const {
+    style,
+    dimensionScores,
+    feedback,
+    id: _id,
+    trackId: _trackId,
+    createdAt: _createdAt,
+    ...scalarUpdates
+  } = updates;
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 
   await db
     .update(trackVersions)
