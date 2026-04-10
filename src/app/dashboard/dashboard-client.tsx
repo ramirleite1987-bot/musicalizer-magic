@@ -37,11 +37,13 @@ import {
 interface DashboardClientProps {
   initialTracks: Track[];
   initialThemes: Theme[];
+  loadWarning?: string | null;
 }
 
 export function DashboardClient({
   initialTracks,
   initialThemes,
+  loadWarning = null,
 }: DashboardClientProps) {
   const [tracks] = useState<Track[]>(initialTracks);
   const [themes] = useState<Theme[]>(initialThemes);
@@ -276,6 +278,15 @@ export function DashboardClient({
           version={selectedVersion}
           onGenerate={handleGenerate}
         />
+
+        {loadWarning ? (
+          <div
+            role="alert"
+            className="mx-6 mt-4 rounded-md border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-foreground"
+          >
+            {loadWarning}
+          </div>
+        ) : null}
 
         {selectedTrack && selectedVersion ? (
           <div className="flex-1 flex flex-col min-h-0">
