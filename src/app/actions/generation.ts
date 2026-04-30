@@ -4,6 +4,7 @@ import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createGeneration, resolveProvider } from "@/lib/music";
+import { validateForGeneration } from "@/lib/music/validation";
 import { revalidatePath } from "next/cache";
 
 export async function startGeneration(versionId: string) {
@@ -17,6 +18,8 @@ export async function startGeneration(versionId: string) {
 
   if (!version) throw new Error("Version not found");
   if (version.status === "generating") throw new Error("Already generating");
+
+  validateForGeneration(version.style);
 
   const provider = resolveProvider(version.style);
 
