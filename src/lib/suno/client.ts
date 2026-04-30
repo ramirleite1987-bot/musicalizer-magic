@@ -45,6 +45,15 @@ function buildSunoPrompt(params: SunoGenerationParams): string {
   return parts.join(". ");
 }
 
+// Suno's API expects a `mv` (model version) string. The UI offers friendly
+// labels like "v5.5"; map them to the API's chirp-prefixed identifiers when
+// they're not already prefixed.
+export function toSunoModelVersion(version: string): string {
+  if (!version) return "chirp-v4";
+  if (version.startsWith("chirp-")) return version;
+  return `chirp-${version.replace(/\./g, "-")}`;
+}
+
 export async function createGeneration(
   params: SunoGenerationParams
 ): Promise<SunoGenerationResponse> {
@@ -54,6 +63,7 @@ export async function createGeneration(
     prompt: sunoPrompt,
     duration: parseDuration(params.style.duration),
     make_instrumental: params.style.vocalStyle === "None",
+    mv: toSunoModelVersion(params.style.sunoApiVersion),
   };
 
   if (params.lyrics && params.style.vocalStyle !== "None") {
@@ -97,6 +107,6 @@ function parseDuration(duration: string): number {
   if (!match) return 120;
   const num = parseInt(match[1], 10);
   if (duration.includes("s")) return num;
-  if (duration.includes("min")) return num * 60;
+  if (duration.includes("min") || duration.includes("m")) return num * 60;
   return num;
 }

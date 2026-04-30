@@ -16,7 +16,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { TrackVersion } from "@/types/music";
+import {
+  MINIMAX_BITRATES,
+  MINIMAX_FORMATS,
+  MINIMAX_MODELS,
+  MINIMAX_SAMPLE_RATES,
+  SUNO_VERSIONS,
+  type AudioQuality,
+  type MinimaxAudioFormat,
+  type MusicProvider,
+  type TrackVersion,
+} from "@/types/music";
+
+const DEFAULT_MINIMAX_AUDIO_QUALITY: AudioQuality = {
+  sampleRate: 44100,
+  bitrate: 256000,
+  format: "mp3",
+};
 
 const GENRES = [
   "Pop", "Rock", "Hip-Hop", "R&B", "Electronic", "Jazz", "Classical",
@@ -39,7 +55,10 @@ const VOCAL_STYLES = [
 
 const DURATIONS = ["30s", "1m", "2m", "3m", "4m", "custom"];
 
-const SUNO_VERSIONS = ["v3", "v3.5", "v4", "chirp-v3-0", "chirp-v3-5"];
+const PROVIDERS: { value: MusicProvider; label: string }[] = [
+  { value: "suno", label: "Suno" },
+  { value: "minimax", label: "Minimax (Hailuo)" },
+];
 
 const COMMON_INSTRUMENTS = [
   "Piano", "Guitar", "Bass", "Drums", "Synthesizer", "Violin",
@@ -332,25 +351,142 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       <Separator />
 
-      {/* Suno API Version */}
+      {/* Provider */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Suno API Version</Label>
+        <Label className="text-sm font-medium">Music Provider</Label>
         <Select
-          value={style.sunoApiVersion}
-          onValueChange={(v) => v && updateStyle({ sunoApiVersion: v })}
+          value={style.provider ?? "suno"}
+          onValueChange={(v) => v && updateStyle({ provider: v as MusicProvider })}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select version" />
+            <SelectValue placeholder="Select provider" />
           </SelectTrigger>
           <SelectContent>
-            {SUNO_VERSIONS.map((sv) => (
-              <SelectItem key={sv} value={sv}>
-                {sv}
+            {PROVIDERS.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
+
+      {(style.provider ?? "suno") === "suno" ? (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Suno API Version</Label>
+          <Select
+            value={style.sunoApiVersion}
+            onValueChange={(v) => v && updateStyle({ sunoApiVersion: v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select version" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUNO_VERSIONS.map((sv) => (
+                <SelectItem key={sv} value={sv}>
+                  {sv}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      ) : (
+        <>
+          <div className="space-y-2">
+            <Label className="text-sm font-medium">Minimax Model</Label>
+            <Select
+              value={style.minimaxModel || "music-1.5"}
+              onValueChange={(v) => v && updateStyle({ minimaxModel: v })}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select model" />
+              </SelectTrigger>
+              <SelectContent>
+                {MINIMAX_MODELS.map((m) => (
+                  <SelectItem key={m} value={m}>
+                    {m}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-3">
+            <Label className="text-sm font-medium">Audio Quality</Label>
+            {(() => {
+              const q = style.audioQuality ?? DEFAULT_MINIMAX_AUDIO_QUALITY;
+              const setQuality = (patch: Partial<AudioQuality>) =>
+                updateStyle({ audioQuality: { ...q, ...patch } });
+              return (
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="space-y-1">
+                    <span className="text-xs text-zinc-500">Sample rate</span>
+                    <Select
+                      value={String(q.sampleRate)}
+                      onValueChange={(v) =>
+                        v && setQuality({ sampleRate: parseInt(v, 10) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MINIMAX_SAMPLE_RATES.map((r) => (
+                          <SelectItem key={r} value={String(r)}>
+                            {r.toLocaleString()} Hz
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-zinc-500">Bitrate</span>
+                    <Select
+                      value={String(q.bitrate)}
+                      onValueChange={(v) =>
+                        v && setQuality({ bitrate: parseInt(v, 10) })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MINIMAX_BITRATES.map((b) => (
+                          <SelectItem key={b} value={String(b)}>
+                            {Math.round(b / 1000)} kbps
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-1">
+                    <span className="text-xs text-zinc-500">Format</span>
+                    <Select
+                      value={q.format}
+                      onValueChange={(v) =>
+                        v && setQuality({ format: v as MinimaxAudioFormat })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {MINIMAX_FORMATS.map((f) => (
+                          <SelectItem key={f} value={f}>
+                            {f.toUpperCase()}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        </>
+      )}
     </div>
   );
 }

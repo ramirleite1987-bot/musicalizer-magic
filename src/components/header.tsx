@@ -63,12 +63,19 @@ export function Header({ track, version, onGenerate }: HeaderProps) {
           </Badge>
         )}
 
-        {/* Suno version badge */}
-        {version?.style?.sunoApiVersion && (
-          <Badge variant="outline" className="text-xs text-zinc-500">
-            Suno {version.style.sunoApiVersion}
-          </Badge>
-        )}
+        {/* Provider + model badge */}
+        {version?.style && (() => {
+          const provider = version.style.provider ?? "suno";
+          const label =
+            provider === "minimax"
+              ? `Minimax ${version.style.minimaxModel || "music-1.5"}`
+              : `Suno ${version.style.sunoApiVersion || ""}`.trim();
+          return (
+            <Badge variant="outline" className="text-xs text-zinc-500">
+              {label}
+            </Badge>
+          );
+        })()}
 
         {/* Best version badge */}
         {version?.isBest && (

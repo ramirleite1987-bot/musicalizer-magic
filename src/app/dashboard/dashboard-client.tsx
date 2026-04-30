@@ -121,8 +121,13 @@ export function DashboardClient({
   const handleGenerate = useCallback(() => {
     if (!selectedTrack || !selectedVersion || isPending) return;
     const versionId = selectedVersion.id;
+    const provider = selectedVersion.style.provider ?? "suno";
+    const modelLabel =
+      provider === "minimax"
+        ? `Minimax ${selectedVersion.style.minimaxModel || "music-1.5"}`
+        : `Suno ${selectedVersion.style.sunoApiVersion}`;
     const toastId = toast.loading("Requesting generation…", {
-      description: `${selectedTrack.name} v${selectedVersion.versionNumber} · Suno ${selectedVersion.style.sunoApiVersion}`,
+      description: `${selectedTrack.name} v${selectedVersion.versionNumber} · ${modelLabel}`,
     });
 
     startGeneration(versionId)

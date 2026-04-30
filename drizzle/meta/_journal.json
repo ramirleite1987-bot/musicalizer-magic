@@ -8,6 +8,13 @@
       "when": 1775580613465,
       "tag": "0000_sharp_the_order",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1777795200000,
+      "tag": "0001_add_music_providers",
+      "breakpoints": true
     }
   ]
 }

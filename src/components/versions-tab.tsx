@@ -171,7 +171,13 @@ export function VersionsTab({
                     {version.style?.genre || "—"}
                   </TableCell>
                   <TableCell className="text-xs text-zinc-500">
-                    {version.style?.sunoApiVersion || "—"}
+                    {(() => {
+                      const provider = version.style?.provider ?? "suno";
+                      if (provider === "minimax") {
+                        return `Minimax ${version.style?.minimaxModel || "music-1.5"}`;
+                      }
+                      return version.style?.sunoApiVersion || "—";
+                    })()}
                   </TableCell>
                   <TableCell>
                     {version.isBest && (

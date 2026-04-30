@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { tracks } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import type { Track, TrackVersion } from "@/types/music";
+import type { MusicProvider, Track, TrackVersion } from "@/types/music";
 
 export async function getTracks(): Promise<Track[]> {
   const db = getDb();
@@ -41,6 +41,8 @@ export async function getTracks(): Promise<Track[]> {
       audioFileName: v.audioFileName ?? null,
       audioUrl: v.audioUrl ?? null,
       sunoTaskId: v.sunoTaskId ?? null,
+      provider: ((v.provider ?? v.style?.provider ?? "suno") as MusicProvider),
+      providerTaskId: v.providerTaskId ?? v.sunoTaskId ?? null,
     })),
   }));
 }
