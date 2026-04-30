@@ -18,6 +18,18 @@ export const MINIMAX_MODELS = [
   "music-01",
 ] as const;
 
+export type MinimaxAudioFormat = "mp3" | "wav" | "pcm";
+
+export const MINIMAX_SAMPLE_RATES = [22050, 32000, 44100, 48000] as const;
+export const MINIMAX_BITRATES = [128000, 192000, 256000, 320000] as const;
+export const MINIMAX_FORMATS: MinimaxAudioFormat[] = ["mp3", "wav", "pcm"];
+
+export interface AudioQuality {
+  sampleRate: number;
+  bitrate: number;
+  format: MinimaxAudioFormat;
+}
+
 export interface DimensionScores {
   melody: number;
   harmony: number;
@@ -40,6 +52,7 @@ export interface TrackStyle {
   provider?: MusicProvider;
   sunoApiVersion: string;
   minimaxModel?: string;
+  audioQuality?: AudioQuality;
 }
 
 export interface TrackFeedback {

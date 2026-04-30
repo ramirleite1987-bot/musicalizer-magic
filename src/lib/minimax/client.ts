@@ -1,4 +1,4 @@
-import type { TrackStyle } from "@/types/music";
+import type { AudioQuality, TrackStyle } from "@/types/music";
 
 const MINIMAX_API_BASE =
   process.env.MINIMAX_API_BASE_URL ?? "https://api.minimaxi.chat/v1";
@@ -44,6 +44,25 @@ function buildMinimaxPrompt(params: MinimaxGenerationParams): string {
   if (params.prompt) parts.push(params.prompt);
 
   return parts.join(". ");
+}
+
+export const DEFAULT_AUDIO_QUALITY: AudioQuality = {
+  sampleRate: 44100,
+  bitrate: 256000,
+  format: "mp3",
+};
+
+export function buildAudioSetting(style: TrackStyle): {
+  sample_rate: number;
+  bitrate: number;
+  format: AudioQuality["format"];
+} {
+  const q = style.audioQuality ?? DEFAULT_AUDIO_QUALITY;
+  return {
+    sample_rate: q.sampleRate ?? DEFAULT_AUDIO_QUALITY.sampleRate,
+    bitrate: q.bitrate ?? DEFAULT_AUDIO_QUALITY.bitrate,
+    format: q.format ?? DEFAULT_AUDIO_QUALITY.format,
+  };
 }
 
 function parseDurationSeconds(duration: string): number {
@@ -93,11 +112,7 @@ export async function createGeneration(
   const body: Record<string, unknown> = {
     model: params.style.minimaxModel || "music-1.5",
     prompt: description,
-    audio_setting: {
-      sample_rate: 44100,
-      bitrate: 256000,
-      format: "mp3",
-    },
+    audio_setting: buildAudioSetting(params.style),
     duration: parseDurationSeconds(params.style.duration),
   };
 

@@ -18,6 +18,11 @@ const DEFAULT_STYLE: TrackStyle = {
   provider: "suno",
   sunoApiVersion: "v5.5",
   minimaxModel: "music-1.5",
+  audioQuality: {
+    sampleRate: 44100,
+    bitrate: 256000,
+    format: "mp3",
+  },
 };
 
 const DEFAULT_DIMENSION_SCORES: DimensionScores = {
