@@ -64,7 +64,9 @@ interface MinimaxRawResponse {
   base_resp?: { status_code?: number; status_msg?: string };
 }
 
-function normalizeStatus(raw: string | undefined): MinimaxStatusResponse["status"] {
+export function normalizeMinimaxStatus(
+  raw: string | undefined
+): MinimaxStatusResponse["status"] {
   switch (raw) {
     case "succeeded":
     case "success":
@@ -135,7 +137,7 @@ export async function createGeneration(
 
   return {
     taskId,
-    status: normalizeStatus(data.status),
+    status: normalizeMinimaxStatus(data.status),
   };
 }
 
@@ -163,7 +165,7 @@ export async function getGenerationStatus(
     };
   }
 
-  const status = normalizeStatus(data.status);
+  const status = normalizeMinimaxStatus(data.status);
   const audioUrl = data.audio_url ?? data.output?.audio_url;
 
   return {

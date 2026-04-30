@@ -48,7 +48,7 @@ function buildSunoPrompt(params: SunoGenerationParams): string {
 // Suno's API expects a `mv` (model version) string. The UI offers friendly
 // labels like "v5.5"; map them to the API's chirp-prefixed identifiers when
 // they're not already prefixed.
-function toSunoModelVersion(version: string): string {
+export function toSunoModelVersion(version: string): string {
   if (!version) return "chirp-v4";
   if (version.startsWith("chirp-")) return version;
   return `chirp-${version.replace(/\./g, "-")}`;
