@@ -3,11 +3,26 @@
 import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import type { MusicProvider } from "@/types/music";
 import { createGeneration, resolveProvider } from "@/lib/music";
-import { validateForGeneration } from "@/lib/music/validation";
+import {
+  InvalidTrackStyleError,
+  validateForGeneration,
+} from "@/lib/music/validation";
 import { revalidatePath } from "next/cache";
 
-export async function startGeneration(versionId: string) {
+export interface ValidationIssue {
+  path: string;
+  message: string;
+}
+
+export type StartGenerationResult =
+  | { ok: true; taskId: string; provider: MusicProvider }
+  | { ok: false; error: string; issues?: ValidationIssue[] };
+
+export async function startGeneration(
+  versionId: string
+): Promise<StartGenerationResult> {
   const db = getDb();
 
   const [version] = await db
@@ -16,10 +31,25 @@ export async function startGeneration(versionId: string) {
     .where(eq(trackVersions.id, versionId))
     .limit(1);
 
-  if (!version) throw new Error("Version not found");
-  if (version.status === "generating") throw new Error("Already generating");
+  if (!version) return { ok: false, error: "Version not found" };
+  if (version.status === "generating")
+    return { ok: false, error: "Already generating" };
 
-  validateForGeneration(version.style);
+  try {
+    validateForGeneration(version.style);
+  } catch (e) {
+    if (e instanceof InvalidTrackStyleError) {
+      return {
+        ok: false,
+        error: "Track style failed validation",
+        issues: e.issues.map((i) => ({
+          path: i.path.join(".") || "<root>",
+          message: i.message,
+        })),
+      };
+    }
+    throw e;
+  }
 
   const provider = resolveProvider(version.style);
 
@@ -43,5 +73,5 @@ export async function startGeneration(versionId: string) {
 
   revalidatePath("/dashboard");
 
-  return { taskId: result.taskId, provider };
+  return { ok: true, taskId: result.taskId, provider };
 }

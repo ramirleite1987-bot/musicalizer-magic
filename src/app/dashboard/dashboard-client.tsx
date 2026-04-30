@@ -131,7 +131,18 @@ export function DashboardClient({
     });
 
     startGeneration(versionId)
-      .then(() => {
+      .then((result) => {
+        if (!result.ok) {
+          const description = result.issues?.length
+            ? result.issues.map((i) => `${i.path}: ${i.message}`).join("\n")
+            : result.error;
+          toast.error("Cannot start generation", {
+            id: toastId,
+            description,
+          });
+          return;
+        }
+
         toast.loading("Generating audio…", {
           id: toastId,
           description: "Polling for completion — this may take ~30s.",
@@ -147,13 +158,12 @@ export function DashboardClient({
                 id: toastId,
                 description: `${selectedTrack.name} v${selectedVersion.versionNumber}`,
               });
-              // Trigger a soft-reload so the Server Component re-fetches
               window.location.reload();
             } else if (data.status === "failed") {
               clearInterval(interval);
               toast.error("Generation failed", {
                 id: toastId,
-                description: data.error ?? "Unknown error from Suno",
+                description: data.error ?? `Unknown error from ${result.provider}`,
               });
             }
           } catch {
