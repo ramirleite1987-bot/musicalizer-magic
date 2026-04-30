@@ -15,7 +15,9 @@ const DEFAULT_STYLE: TrackStyle = {
   instruments: [],
   vocalStyle: "None",
   duration: "2min",
-  sunoApiVersion: "v4",
+  provider: "suno",
+  sunoApiVersion: "v5.5",
+  minimaxModel: "music-1.5",
 };
 
 const DEFAULT_DIMENSION_SCORES: DimensionScores = {
@@ -58,6 +60,8 @@ export async function createVersion(
     audioFileName: data.audioFileName ?? null,
     audioUrl: data.audioUrl ?? null,
     sunoTaskId: data.sunoTaskId ?? null,
+    provider: data.provider ?? data.style?.provider ?? "suno",
+    providerTaskId: data.providerTaskId ?? null,
   });
 
   revalidatePath("/dashboard");
@@ -157,6 +161,8 @@ export async function cloneVersion(versionId: string) {
     audioFileName: null,
     audioUrl: null,
     sunoTaskId: null,
+    provider: source.provider ?? source.style?.provider ?? "suno",
+    providerTaskId: null,
   }).returning();
 
   revalidatePath("/dashboard");

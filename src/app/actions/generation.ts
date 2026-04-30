@@ -3,7 +3,7 @@
 import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { createGeneration } from "@/lib/suno/client";
+import { createGeneration, resolveProvider } from "@/lib/music";
 import { revalidatePath } from "next/cache";
 
 export async function startGeneration(versionId: string) {
@@ -18,6 +18,8 @@ export async function startGeneration(versionId: string) {
   if (!version) throw new Error("Version not found");
   if (version.status === "generating") throw new Error("Already generating");
 
+  const provider = resolveProvider(version.style);
+
   const result = await createGeneration({
     prompt: version.prompt,
     negativePrompt: version.negativePrompt,
@@ -29,12 +31,14 @@ export async function startGeneration(versionId: string) {
     .update(trackVersions)
     .set({
       status: "generating",
-      sunoTaskId: result.taskId,
+      provider,
+      providerTaskId: result.taskId,
+      sunoTaskId: provider === "suno" ? result.taskId : null,
       updatedAt: new Date(),
     })
     .where(eq(trackVersions.id, versionId));
 
   revalidatePath("/dashboard");
 
-  return { taskId: result.taskId };
+  return { taskId: result.taskId, provider };
 }

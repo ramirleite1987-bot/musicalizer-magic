@@ -61,6 +61,8 @@ export const trackVersions = pgTable("track_versions", {
   audioFileName: varchar("audio_file_name", { length: 500 }),
   audioUrl: varchar("audio_url", { length: 1000 }),
   sunoTaskId: varchar("suno_task_id", { length: 255 }),
+  provider: varchar("provider", { length: 32 }).default("suno").notNull(),
+  providerTaskId: varchar("provider_task_id", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

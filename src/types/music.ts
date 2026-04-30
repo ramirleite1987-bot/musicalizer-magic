@@ -1,5 +1,23 @@
 export type TrackStatus = "draft" | "generating" | "complete" | "archived";
 
+export type MusicProvider = "suno" | "minimax";
+
+export const SUNO_VERSIONS = [
+  "v5.5",
+  "v5",
+  "v4.5",
+  "v4",
+  "v3.5",
+  "v3",
+  "chirp-v3-5",
+  "chirp-v3-0",
+] as const;
+
+export const MINIMAX_MODELS = [
+  "music-1.5",
+  "music-01",
+] as const;
+
 export interface DimensionScores {
   melody: number;
   harmony: number;
@@ -19,7 +37,9 @@ export interface TrackStyle {
   instruments: string[];
   vocalStyle: string;
   duration: string;
+  provider?: MusicProvider;
   sunoApiVersion: string;
+  minimaxModel?: string;
 }
 
 export interface TrackFeedback {
@@ -61,6 +81,8 @@ export interface TrackVersion {
   audioFileName: string | null;
   audioUrl: string | null;
   sunoTaskId: string | null;
+  provider?: MusicProvider;
+  providerTaskId?: string | null;
 }
 
 export interface Track {

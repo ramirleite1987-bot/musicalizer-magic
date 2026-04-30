@@ -16,7 +16,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import type { TrackVersion } from "@/types/music";
+import {
+  MINIMAX_MODELS,
+  SUNO_VERSIONS,
+  type MusicProvider,
+  type TrackVersion,
+} from "@/types/music";
 
 const GENRES = [
   "Pop", "Rock", "Hip-Hop", "R&B", "Electronic", "Jazz", "Classical",
@@ -39,7 +44,10 @@ const VOCAL_STYLES = [
 
 const DURATIONS = ["30s", "1m", "2m", "3m", "4m", "custom"];
 
-const SUNO_VERSIONS = ["v3", "v3.5", "v4", "chirp-v3-0", "chirp-v3-5"];
+const PROVIDERS: { value: MusicProvider; label: string }[] = [
+  { value: "suno", label: "Suno" },
+  { value: "minimax", label: "Minimax (Hailuo)" },
+];
 
 const COMMON_INSTRUMENTS = [
   "Piano", "Guitar", "Bass", "Drums", "Synthesizer", "Violin",
@@ -332,25 +340,65 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       <Separator />
 
-      {/* Suno API Version */}
+      {/* Provider */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Suno API Version</Label>
+        <Label className="text-sm font-medium">Music Provider</Label>
         <Select
-          value={style.sunoApiVersion}
-          onValueChange={(v) => v && updateStyle({ sunoApiVersion: v })}
+          value={style.provider ?? "suno"}
+          onValueChange={(v) => v && updateStyle({ provider: v as MusicProvider })}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select version" />
+            <SelectValue placeholder="Select provider" />
           </SelectTrigger>
           <SelectContent>
-            {SUNO_VERSIONS.map((sv) => (
-              <SelectItem key={sv} value={sv}>
-                {sv}
+            {PROVIDERS.map((p) => (
+              <SelectItem key={p.value} value={p.value}>
+                {p.label}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
+
+      {(style.provider ?? "suno") === "suno" ? (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Suno API Version</Label>
+          <Select
+            value={style.sunoApiVersion}
+            onValueChange={(v) => v && updateStyle({ sunoApiVersion: v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select version" />
+            </SelectTrigger>
+            <SelectContent>
+              {SUNO_VERSIONS.map((sv) => (
+                <SelectItem key={sv} value={sv}>
+                  {sv}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">Minimax Model</Label>
+          <Select
+            value={style.minimaxModel || "music-1.5"}
+            onValueChange={(v) => v && updateStyle({ minimaxModel: v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select model" />
+            </SelectTrigger>
+            <SelectContent>
+              {MINIMAX_MODELS.map((m) => (
+                <SelectItem key={m} value={m}>
+                  {m}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      )}
     </div>
   );
 }
