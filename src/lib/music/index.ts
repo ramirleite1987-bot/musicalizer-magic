@@ -1,4 +1,8 @@
-import type { MusicProvider, TrackStyle } from "@/types/music";
+import type {
+  MinimaxAudioFormat,
+  MusicProvider,
+  TrackStyle,
+} from "@/types/music";
 import * as suno from "@/lib/suno/client";
 import * as minimax from "@/lib/minimax/client";
 
@@ -39,4 +43,25 @@ export async function getGenerationStatus(
 ): Promise<StatusResponse> {
   if (provider === "minimax") return minimax.getGenerationStatus(taskId);
   return suno.getGenerationStatus(taskId);
+}
+
+const CONTENT_TYPES: Record<MinimaxAudioFormat, string> = {
+  mp3: "audio/mpeg",
+  wav: "audio/wav",
+  pcm: "audio/L16",
+};
+
+export interface AudioFileMeta {
+  extension: MinimaxAudioFormat;
+  contentType: string;
+}
+
+// Suno only emits mp3 today, so the format only varies for Minimax.
+export function inferAudioFile(
+  provider: MusicProvider,
+  style: TrackStyle
+): AudioFileMeta {
+  const format: MinimaxAudioFormat =
+    provider === "minimax" ? style.audioQuality?.format ?? "mp3" : "mp3";
+  return { extension: format, contentType: CONTENT_TYPES[format] };
 }

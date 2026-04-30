@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { getGenerationStatus, resolveProvider } from "@/lib/music";
+import { getGenerationStatus, inferAudioFile, resolveProvider } from "@/lib/music";
 import { put } from "@vercel/blob";
 
 type RouteContext = {
@@ -42,11 +42,13 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
 
     if (status.status === "complete" && status.audioUrl) {
       const audioRes = await fetch(status.audioUrl);
-      const audioBlob = await audioRes.blob();
-      const fileName = `${provider}-${taskId}.mp3`;
+      const audioBuffer = await audioRes.arrayBuffer();
+      const { extension, contentType } = inferAudioFile(provider, version.style);
+      const fileName = `${provider}-${taskId}.${extension}`;
 
-      const blob = await put(`audio/${fileName}`, audioBlob, {
+      const blob = await put(`audio/${fileName}`, audioBuffer, {
         access: "public",
+        contentType,
       });
 
       await db
