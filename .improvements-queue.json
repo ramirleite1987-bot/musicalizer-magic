@@ -81,7 +81,7 @@
       "id": 12,
       "title": "Confetti + Best Version Celebration",
       "description": "Add a delightful confetti animation (using canvas-confetti) when a user marks a version as the best. Also add a subtle pulse animation to the star icon in the sidebar for the track's best version. Small UX delight that makes the app memorable.",
-      "status": "pending",
+      "status": "done",
       "priority": "low"
     }
   ]

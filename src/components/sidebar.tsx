@@ -171,6 +171,7 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
             const rating = getTrackRating(track);
             const status = getTrackStatus(track);
             const isSelected = track.id === selectedTrackId;
+            const hasBestVersion = track.versions.some((v) => v.isBest);
             const trackThemes = track.themeIds
               .map(getThemeById)
               .filter(Boolean) as Theme[];
@@ -204,7 +205,12 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
                     </span>
                     {rating > 0 && (
                       <div className="flex items-center gap-0.5 flex-shrink-0">
-                        <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                        <Star
+                          className={cn(
+                            "w-3 h-3 text-yellow-400 fill-yellow-400",
+                            hasBestVersion && "animate-pulse"
+                          )}
+                        />
                         <span className="text-xs text-zinc-500">{rating}</span>
                       </div>
                     )}

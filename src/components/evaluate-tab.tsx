@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Star, Trophy, TrendingUp, TrendingDown } from "lucide-react";
+import { fireConfetti } from "@/lib/confetti";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -117,7 +118,11 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
           </p>
         </div>
         <Button
-          onClick={onMarkBest}
+          onClick={() => {
+            const marking = !version.isBest;
+            onMarkBest();
+            if (marking) fireConfetti();
+          }}
           variant={version.isBest ? "secondary" : "outline"}
           size="sm"
           className={cn(
