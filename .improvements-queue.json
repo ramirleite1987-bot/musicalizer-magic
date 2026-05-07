@@ -4,7 +4,7 @@
       "id": 1,
       "title": "Waveform Visualization",
       "description": "Add audio waveform display in the versions tab player using WaveSurfer.js. Show a visual waveform for uploaded/generated audio files with playback position indicator and click-to-seek.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
