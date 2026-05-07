@@ -38,6 +38,7 @@ import {
   useKeyboardShortcuts,
   KeyboardShortcutsHelp,
 } from "@/components/keyboard-shortcuts";
+import { GenerationProgressCard } from "@/components/generation-progress-card";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -69,6 +70,14 @@ export function DashboardClient({
   const [activeTab, setActiveTab] = useState("versions");
   const [showHelp, setShowHelp] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  // Active generation progress card state
+  const [activeGeneration, setActiveGeneration] = useState<{
+    versionId: string;
+    provider: string;
+    model: string;
+    versionLabel: string;
+  } | null>(null);
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
   const selectedVersion =
@@ -145,47 +154,23 @@ export function DashboardClient({
     const provider = selectedVersion.style.provider ?? "suno";
     const modelLabel =
       provider === "minimax"
-        ? `Minimax ${selectedVersion.style.minimaxModel || "music-1.5"}`
-        : `Suno ${selectedVersion.style.sunoApiVersion}`;
-    const toastId = toast.loading("Requesting generation…", {
-      description: `${selectedTrack.name} v${selectedVersion.versionNumber} · ${modelLabel}`,
-    });
+        ? `${selectedVersion.style.minimaxModel || "music-1.5"}`
+        : `${selectedVersion.style.sunoApiVersion}`;
+    const versionLabel = `${selectedTrack.name} v${selectedVersion.versionNumber}`;
 
     startGeneration(versionId)
       .then(() => {
-        toast.loading("Generating audio…", {
-          id: toastId,
-          description: "Polling for completion — this may take ~30s.",
+        // Switch to versions tab so the progress card is visible
+        setActiveTab("versions");
+        setActiveGeneration({
+          versionId,
+          provider,
+          model: modelLabel,
+          versionLabel,
         });
-
-        const interval = setInterval(async () => {
-          try {
-            const res = await fetch(`/api/generation/${versionId}/status`);
-            const data = await res.json();
-            if (data.status === "complete") {
-              clearInterval(interval);
-              toast.success("Audio ready!", {
-                id: toastId,
-                description: `${selectedTrack.name} v${selectedVersion.versionNumber}`,
-              });
-              // Trigger a soft-reload so the Server Component re-fetches
-              window.location.reload();
-            } else if (data.status === "failed") {
-              clearInterval(interval);
-              toast.error("Generation failed", {
-                id: toastId,
-                description: data.error ?? "Unknown error from Suno",
-              });
-            }
-          } catch {
-            clearInterval(interval);
-            toast.error("Polling error", { id: toastId });
-          }
-        }, 5000);
       })
       .catch((err: Error) => {
         toast.error("Could not start generation", {
-          id: toastId,
           description: err.message,
         });
       });
@@ -228,6 +213,15 @@ export function DashboardClient({
       });
     });
   }, [selectedVersionId]);
+
+  const handleGenerationComplete = useCallback(() => {
+    // Reload so the Server Component re-fetches updated version data
+    window.location.reload();
+  }, []);
+
+  const handleGenerationDismiss = useCallback(() => {
+    setActiveGeneration(null);
+  }, []);
 
   const handleAssignTheme = useCallback(
     (themeId: string) => {
@@ -429,6 +423,18 @@ export function DashboardClient({
                     value="versions"
                     className="m-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-2 duration-300"
                   >
+                    {activeGeneration && (
+                      <div className="px-4 pt-4">
+                        <GenerationProgressCard
+                          versionId={activeGeneration.versionId}
+                          provider={activeGeneration.provider}
+                          model={activeGeneration.model}
+                          versionLabel={activeGeneration.versionLabel}
+                          onComplete={handleGenerationComplete}
+                          onDismiss={handleGenerationDismiss}
+                        />
+                      </div>
+                    )}
                     <VersionsTab
                       versions={selectedTrack.versions}
                       selectedVersionId={selectedVersionId}

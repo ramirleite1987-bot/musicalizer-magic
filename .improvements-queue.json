@@ -60,7 +60,7 @@
       "id": 9,
       "title": "Generation Progress Indicator",
       "description": "Replace the current simple polling toast with a rich inline progress card in the Versions tab showing: provider name, model, elapsed time, animated progress bar, and status updates (queued → processing → uploading → done). Persist the card until dismissed.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
