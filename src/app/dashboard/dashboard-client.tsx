@@ -33,6 +33,13 @@ import {
   assignTheme as assignThemeAction,
   removeTheme as removeThemeAction,
 } from "@/app/actions/themes";
+import {
+  useKeyboardShortcuts,
+  KeyboardShortcutsHelp,
+} from "@/components/keyboard-shortcuts";
+
+// Tab names ordered to match shortcut keys 1-6
+const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
 
 interface DashboardClientProps {
   initialTracks: Track[];
@@ -59,6 +66,7 @@ export function DashboardClient({
     }
   );
   const [activeTab, setActiveTab] = useState("versions");
+  const [showHelp, setShowHelp] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
@@ -247,6 +255,55 @@ export function DashboardClient({
     []
   );
 
+  // -----------------------------------------------------------------------
+  // Keyboard shortcut handlers
+  // -----------------------------------------------------------------------
+
+  const handleNextTrack = useCallback(() => {
+    if (tracks.length === 0) return;
+    const currentIndex = tracks.findIndex((t) => t.id === selectedTrackId);
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % tracks.length;
+    handleSelectTrack(tracks[nextIndex].id);
+  }, [tracks, selectedTrackId, handleSelectTrack]);
+
+  const handlePrevTrack = useCallback(() => {
+    if (tracks.length === 0) return;
+    const currentIndex = tracks.findIndex((t) => t.id === selectedTrackId);
+    const prevIndex =
+      currentIndex === -1
+        ? tracks.length - 1
+        : (currentIndex - 1 + tracks.length) % tracks.length;
+    handleSelectTrack(tracks[prevIndex].id);
+  }, [tracks, selectedTrackId, handleSelectTrack]);
+
+  const handleSwitchTab = useCallback((index: number) => {
+    const name = TAB_NAMES[index];
+    if (name) setActiveTab(name);
+  }, []);
+
+  const handleCloneVersion = useCallback(() => {
+    // Clone behaves the same as new version (cloneVersionAction copies current)
+    handleNewVersion();
+  }, [handleNewVersion]);
+
+  const handleToggleHelp = useCallback(() => {
+    setShowHelp((prev) => !prev);
+  }, []);
+
+  const handleCloseHelp = useCallback(() => {
+    setShowHelp(false);
+  }, []);
+
+  useKeyboardShortcuts({
+    onNextTrack: handleNextTrack,
+    onPrevTrack: handlePrevTrack,
+    onSwitchTab: handleSwitchTab,
+    onGenerate: handleGenerate,
+    onNewVersion: handleNewVersion,
+    onCloneVersion: handleCloneVersion,
+    onToggleHelp: handleToggleHelp,
+  });
+
   const handleGenerateThemes = useCallback(
     async (
       source: "url" | "document",
@@ -434,6 +491,8 @@ export function DashboardClient({
           </div>
         )}
       </div>
+
+      <KeyboardShortcutsHelp open={showHelp} onClose={handleCloseHelp} />
     </div>
   );
 }

@@ -25,7 +25,7 @@
       "id": 4,
       "title": "Keyboard Shortcuts",
       "description": "Add keyboard shortcuts for power users: J/K to navigate between tracks in sidebar, 1-6 to switch tabs, G to trigger generation, N for new version, C to clone current version. Show a keyboard shortcut help panel accessible via '?' key.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {
