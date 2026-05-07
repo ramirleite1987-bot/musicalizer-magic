@@ -39,7 +39,7 @@
       "id": 6,
       "title": "Track Statistics Summary Card",
       "description": "Add a stats card visible in the dashboard sidebar or header showing per-track analytics: total versions, average rating, best dimension scores, generation success rate, most used provider. Display as a compact collapsible card.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import type { Track, Theme } from "@/types/music";
+import { TrackStatsCard } from "@/components/track-stats-card";
 
 const COLOR_MAP: Record<string, string> = {
   blue: "bg-blue-500",
@@ -121,7 +122,7 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
       </div>
 
       {/* Track List */}
-      <ScrollArea className="flex-1">
+      <ScrollArea className="flex-1 min-h-0">
         <div className="p-2 space-y-1">
           {filteredTracks.map((track) => {
             const rating = getTrackRating(track);
@@ -211,6 +212,12 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
           )}
         </div>
       </ScrollArea>
+
+      {/* Stats card for selected track */}
+      {(() => {
+        const selectedTrack = tracks.find((t) => t.id === selectedTrackId);
+        return selectedTrack ? <TrackStatsCard track={selectedTrack} /> : null;
+      })()}
     </div>
   );
 }
