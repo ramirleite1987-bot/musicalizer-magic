@@ -67,7 +67,7 @@
       "id": 10,
       "title": "Quick Tags on Tracks",
       "description": "Add a tag input field in the sidebar track list item and in the track header. Tags are free-form strings (e.g. #collab #client-x #needs-work). Tags are stored in the tracks table (add a tags jsonb column via migration). Filter by tag in the sidebar search.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

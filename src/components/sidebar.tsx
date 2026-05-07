@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Music, Search, Star } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Music, Search, Star, Tag } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -15,6 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { Track, Theme } from "@/types/music";
 import { TrackStatsCard } from "@/components/track-stats-card";
+import { TrackTags } from "@/components/track-tags";
 
 const COLOR_MAP: Record<string, string> = {
   blue: "bg-blue-500",
@@ -39,13 +40,42 @@ interface SidebarProps {
 export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: SidebarProps) {
   const [search, setSearch] = useState("");
   const [themeFilter, setThemeFilter] = useState("all");
+  // Local optimistic tag overrides keyed by trackId
+  const [tagOverrides, setTagOverrides] = useState<Record<string, string[]>>({});
 
-  const filteredTracks = tracks.filter((track) => {
-    const matchesSearch = track.name.toLowerCase().includes(search.toLowerCase());
-    const matchesTheme =
-      themeFilter === "all" || track.themeIds.includes(themeFilter);
-    return matchesSearch && matchesTheme;
-  });
+  const getTrackTags = (track: Track): string[] =>
+    tagOverrides[track.id] ?? track.tags ?? [];
+
+  const handleTagsChange = (trackId: string, tags: string[]) => {
+    setTagOverrides((prev) => ({ ...prev, [trackId]: tags }));
+  };
+
+  const searchLower = search.toLowerCase().trim();
+  // Detect if search looks like a tag query (starts with #)
+  const isTagSearch = searchLower.startsWith("#");
+  const tagQuery = isTagSearch ? searchLower.slice(1) : searchLower;
+
+  const filteredTracks = useMemo(() =>
+    tracks.filter((track) => {
+      const tags = getTrackTags(track);
+      let matchesSearch: boolean;
+      if (isTagSearch) {
+        // Only match tags when query starts with #
+        matchesSearch = tags.some((t) => t.includes(tagQuery));
+      } else {
+        // Match name OR any tag
+        matchesSearch =
+          !searchLower ||
+          track.name.toLowerCase().includes(searchLower) ||
+          tags.some((t) => t.includes(searchLower));
+      }
+      const matchesTheme =
+        themeFilter === "all" || track.themeIds.includes(themeFilter);
+      return matchesSearch && matchesTheme;
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [tracks, searchLower, isTagSearch, tagQuery, themeFilter, tagOverrides]
+  );
 
   const getTrackRating = (track: Track) => {
     const bestVersion = track.versions.find((v) => v.isBest);
@@ -81,14 +111,27 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
       {/* Search */}
       <div className="p-3 space-y-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-400" />
+          {isTagSearch && searchLower.length > 1 ? (
+            <Tag className="absolute left-2.5 top-2.5 w-4 h-4 text-violet-400" />
+          ) : (
+            <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-400" />
+          )}
           <Input
-            placeholder="Search tracks..."
+            placeholder="Search tracks or #tag..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-8 h-8 text-sm"
+            className={cn(
+              "pl-8 h-8 text-sm",
+              isTagSearch && searchLower.length > 1 &&
+                "border-violet-300 dark:border-violet-700 ring-1 ring-violet-200 dark:ring-violet-800"
+            )}
           />
         </div>
+        {isTagSearch && searchLower.length > 1 && (
+          <p className="text-[10px] text-violet-500 dark:text-violet-400 px-1">
+            Filtering by tag: {search.trim()}
+          </p>
+        )}
 
         {/* Theme filter */}
         <Select value={themeFilter} onValueChange={(v) => setThemeFilter(v ?? "all")}>
@@ -132,10 +175,11 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
               .map(getThemeById)
               .filter(Boolean) as Theme[];
 
+            const trackTags = getTrackTags(track);
+
             return (
-              <button
+              <div
                 key={track.id}
-                onClick={() => onSelectTrack(track.id)}
                 className={cn(
                   "w-full text-left px-3 py-2.5 rounded-lg transition-colors group",
                   isSelected
@@ -143,65 +187,82 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
                     : "hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-transparent"
                 )}
               >
-                <div className="flex items-start justify-between gap-1 mb-1">
-                  <span
-                    className={cn(
-                      "text-sm font-medium leading-tight truncate",
-                      isSelected
-                        ? "text-violet-700 dark:text-violet-300"
-                        : "text-zinc-900 dark:text-zinc-100"
-                    )}
-                  >
-                    {track.name}
-                  </span>
-                  {rating > 0 && (
-                    <div className="flex items-center gap-0.5 flex-shrink-0">
-                      <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                      <span className="text-xs text-zinc-500">{rating}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-zinc-500">{track.genre}</span>
-                    {status === "generating" && (
-                      <Badge
-                        variant="secondary"
-                        className="text-[10px] h-4 px-1 bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
-                      >
-                        gen
-                      </Badge>
+                <button
+                  onClick={() => onSelectTrack(track.id)}
+                  className="w-full text-left"
+                >
+                  <div className="flex items-start justify-between gap-1 mb-1">
+                    <span
+                      className={cn(
+                        "text-sm font-medium leading-tight truncate",
+                        isSelected
+                          ? "text-violet-700 dark:text-violet-300"
+                          : "text-zinc-900 dark:text-zinc-100"
+                      )}
+                    >
+                      {track.name}
+                    </span>
+                    {rating > 0 && (
+                      <div className="flex items-center gap-0.5 flex-shrink-0">
+                        <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                        <span className="text-xs text-zinc-500">{rating}</span>
+                      </div>
                     )}
                   </div>
 
-                  {/* Theme dots */}
-                  {trackThemes.length > 0 && (
-                    <div className="flex items-center gap-0.5">
-                      {trackThemes.slice(0, 3).map((theme) => (
-                        <div
-                          key={theme.id}
-                          title={theme.name}
-                          className={cn(
-                            "w-2 h-2 rounded-full",
-                            COLOR_MAP[theme.color] ?? "bg-zinc-400"
-                          )}
-                        />
-                      ))}
-                      {trackThemes.length > 3 && (
-                        <span className="text-[10px] text-zinc-400">
-                          +{trackThemes.length - 3}
-                        </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      <span className="text-xs text-zinc-500">{track.genre}</span>
+                      {status === "generating" && (
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] h-4 px-1 bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
+                        >
+                          gen
+                        </Badge>
                       )}
                     </div>
-                  )}
-                </div>
 
-                <div className="mt-1 text-xs text-zinc-400">
-                  {track.versions.length} version
-                  {track.versions.length !== 1 ? "s" : ""}
+                    {/* Theme dots */}
+                    {trackThemes.length > 0 && (
+                      <div className="flex items-center gap-0.5">
+                        {trackThemes.slice(0, 3).map((theme) => (
+                          <div
+                            key={theme.id}
+                            title={theme.name}
+                            className={cn(
+                              "w-2 h-2 rounded-full",
+                              COLOR_MAP[theme.color] ?? "bg-zinc-400"
+                            )}
+                          />
+                        ))}
+                        {trackThemes.length > 3 && (
+                          <span className="text-[10px] text-zinc-400">
+                            +{trackThemes.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mt-1 text-xs text-zinc-400">
+                    {track.versions.length} version
+                    {track.versions.length !== 1 ? "s" : ""}
+                  </div>
+                </button>
+
+                {/* Tags row — always visible, click inside doesn't propagate to track select */}
+                <div
+                  className="mt-1.5"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <TrackTags
+                    trackId={track.id}
+                    tags={trackTags}
+                    onTagsChange={(tags) => handleTagsChange(track.id, tags)}
+                  />
                 </div>
-              </button>
+              </div>
             );
           })}
 
