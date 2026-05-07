@@ -18,7 +18,7 @@
       "id": 3,
       "title": "Side-by-side Version Comparison Modal",
       "description": "Add a 'Compare' button in the Versions tab. Opens a modal that lets users select two versions and displays them side-by-side: prompts diff, style diffs, evaluation scores comparison, ratings. Highlight differences in color.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import {
   Plus, Upload, Star, CheckCircle2, Clock, Loader2, AlertCircle,
-  Music2, Trash2, Volume2
+  Music2, Trash2, Volume2, GitCompare
 } from "lucide-react";
 import { WaveformPlayer } from "@/components/waveform-player";
 import { Button } from "@/components/ui/button";
@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import type { TrackVersion } from "@/types/music";
+import { VersionCompareModal } from "@/components/version-compare-modal";
 
 interface VersionsTabProps {
   versions: TrackVersion[];
@@ -61,6 +62,7 @@ export function VersionsTab({
 }: VersionsTabProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [compareOpen, setCompareOpen] = useState(false);
 
   const selectedVersion = versions.find((v) => v.id === selectedVersionId);
 
@@ -92,10 +94,22 @@ export function VersionsTab({
         <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
           Versions ({versions.length})
         </h3>
-        <Button onClick={onNewVersion} size="sm" variant="outline" className="gap-1.5">
-          <Plus className="w-3.5 h-3.5" />
-          New Version
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            onClick={() => setCompareOpen(true)}
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            disabled={versions.length < 2}
+          >
+            <GitCompare className="w-3.5 h-3.5" />
+            Compare
+          </Button>
+          <Button onClick={onNewVersion} size="sm" variant="outline" className="gap-1.5">
+            <Plus className="w-3.5 h-3.5" />
+            New Version
+          </Button>
+        </div>
       </div>
 
       {/* Versions table */}
@@ -258,6 +272,13 @@ export function VersionsTab({
           )}
         </div>
       )}
+
+      {/* Version comparison modal */}
+      <VersionCompareModal
+        versions={versions}
+        open={compareOpen}
+        onClose={() => setCompareOpen(false)}
+      />
     </div>
   );
 }
