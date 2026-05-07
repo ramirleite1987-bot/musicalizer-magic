@@ -1,0 +1,88 @@
+{
+  "improvements": [
+    {
+      "id": 1,
+      "title": "Waveform Visualization",
+      "description": "Add audio waveform display in the versions tab player using WaveSurfer.js. Show a visual waveform for uploaded/generated audio files with playback position indicator and click-to-seek.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "title": "AI Prompt Improvement Suggestions",
+      "description": "Add a 'Suggest Improvements' button in the Prompt tab. When clicked, call Anthropic Claude with the current prompt, style settings, and evaluation scores/feedback to generate 3 concrete suggestions to improve the prompt. Show the suggestions inline with a one-click 'Apply' button.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 3,
+      "title": "Side-by-side Version Comparison Modal",
+      "description": "Add a 'Compare' button in the Versions tab. Opens a modal that lets users select two versions and displays them side-by-side: prompts diff, style diffs, evaluation scores comparison, ratings. Highlight differences in color.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 4,
+      "title": "Keyboard Shortcuts",
+      "description": "Add keyboard shortcuts for power users: J/K to navigate between tracks in sidebar, 1-6 to switch tabs, G to trigger generation, N for new version, C to clone current version. Show a keyboard shortcut help panel accessible via '?' key.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 5,
+      "title": "Prompt Templates Library",
+      "description": "Add a 'Templates' button in the Prompt tab that opens a panel with pre-built prompt templates organized by genre (Electronic, Hip-Hop, Cinematic, Ambient, etc.). Each template includes a sample prompt and style config. One-click to apply to current version.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 6,
+      "title": "Track Statistics Summary Card",
+      "description": "Add a stats card visible in the dashboard sidebar or header showing per-track analytics: total versions, average rating, best dimension scores, generation success rate, most used provider. Display as a compact collapsible card.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 7,
+      "title": "Export Track as JSON",
+      "description": "Add an Export button in the track header (or context menu). Exports the full track data (all versions, prompts, styles, scores, feedback) as a downloadable JSON file. Also add an Import button that reads a JSON and creates a new track from it.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 8,
+      "title": "Auto-Generate Track Name with AI",
+      "description": "Add a magic wand icon button next to the track name input field in the create/edit track form. When clicked, sends the current prompt and style to Claude and returns 3 creative track name suggestions. User picks one or keeps their own.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 9,
+      "title": "Generation Progress Indicator",
+      "description": "Replace the current simple polling toast with a rich inline progress card in the Versions tab showing: provider name, model, elapsed time, animated progress bar, and status updates (queued → processing → uploading → done). Persist the card until dismissed.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 10,
+      "title": "Quick Tags on Tracks",
+      "description": "Add a tag input field in the sidebar track list item and in the track header. Tags are free-form strings (e.g. #collab #client-x #needs-work). Tags are stored in the tracks table (add a tags jsonb column via migration). Filter by tag in the sidebar search.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 11,
+      "title": "Evaluation Radar Chart",
+      "description": "In the Evaluate tab, replace or complement the 7 dimension sliders with a spider/radar chart visualization using a lightweight charting library (recharts is already available via shadcn ecosystem). Show the radar chart comparing current version vs best version overlay.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 12,
+      "title": "Confetti + Best Version Celebration",
+      "description": "Add a delightful confetti animation (using canvas-confetti) when a user marks a version as the best. Also add a subtle pulse animation to the star icon in the sidebar for the track's best version. Small UX delight that makes the app memorable.",
+      "status": "pending",
+      "priority": "low"
+    }
+  ]
+}
