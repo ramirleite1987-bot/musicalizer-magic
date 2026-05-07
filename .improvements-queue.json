@@ -11,7 +11,7 @@
       "id": 2,
       "title": "AI Prompt Improvement Suggestions",
       "description": "Add a 'Suggest Improvements' button in the Prompt tab. When clicked, call Anthropic Claude with the current prompt, style settings, and evaluation scores/feedback to generate 3 concrete suggestions to improve the prompt. Show the suggestions inline with a one-click 'Apply' button.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
