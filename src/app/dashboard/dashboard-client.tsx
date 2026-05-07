@@ -26,6 +26,7 @@ import {
   cloneVersion as cloneVersionAction,
   markBest as markBestAction,
 } from "@/app/actions/versions";
+import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
 import {
   createTheme as createThemeAction,
@@ -125,6 +126,18 @@ export function DashboardClient({
       });
     });
   }, [selectedTrackId, selectedVersionId]);
+
+  const handleRenameTrack = useCallback(
+    (newName: string) => {
+      if (!selectedTrackId) return;
+      startTransition(async () => {
+        await updateTrackAction(selectedTrackId, { name: newName });
+        toast.success("Track renamed", { description: newName });
+        window.location.reload();
+      });
+    },
+    [selectedTrackId]
+  );
 
   const handleGenerate = useCallback(() => {
     if (!selectedTrack || !selectedVersion || isPending) return;
@@ -344,6 +357,7 @@ export function DashboardClient({
             // Reload the page so the server component re-fetches the new track
             window.location.href = `/dashboard?track=${newTrackId}`;
           }}
+          onRenameTrack={handleRenameTrack}
         />
 
         {loadWarning ? (

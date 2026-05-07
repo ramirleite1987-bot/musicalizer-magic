@@ -53,7 +53,7 @@
       "id": 8,
       "title": "Auto-Generate Track Name with AI",
       "description": "Add a magic wand icon button next to the track name input field in the create/edit track form. When clicked, sends the current prompt and style to Claude and returns 3 creative track name suggestions. User picks one or keeps their own.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

@@ -4,6 +4,48 @@ import { generateText, Output } from "ai";
 import { z } from "zod";
 import type { TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
 
+const trackNamesSchema = z.object({
+  names: z
+    .array(z.string().max(50))
+    .length(3),
+});
+
+export async function generateTrackNames(params: {
+  prompt: string;
+  negativePrompt?: string;
+  style: Partial<TrackStyle>;
+  genre?: string;
+}): Promise<string[]> {
+  const { prompt, style, genre } = params;
+
+  const styleDescription = [
+    genre ? `Genre: ${genre}` : style.genre ? `Genre: ${style.genre}` : null,
+    style.moods && style.moods.length > 0 ? `Moods: ${style.moods.join(", ")}` : null,
+    style.tempo ? `Tempo: ${style.tempo} BPM` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const userPrompt = `You are a creative music producer assistant. Generate 3 short, evocative, and memorable track names based on the following music details.
+
+Prompt / description:
+"""
+${prompt || "(no prompt provided)"}
+"""
+
+${styleDescription ? `Style:\n${styleDescription}` : ""}
+
+Return exactly 3 track names. Each name should be concise (max 50 characters), creative, and capture the essence of the music. Do not include numbers, quotes, or extra explanation — just the names.`;
+
+  const { output } = await generateText({
+    model: "anthropic/claude-sonnet-4.6",
+    output: Output.object({ schema: trackNamesSchema }),
+    prompt: userPrompt,
+  });
+
+  return output?.names ?? [];
+}
+
 const suggestionSchema = z.object({
   suggestions: z
     .array(
