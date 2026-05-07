@@ -26,6 +26,7 @@ import {
   cloneVersion as cloneVersionAction,
   markBest as markBestAction,
 } from "@/app/actions/versions";
+import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
 import {
   createTheme as createThemeAction,
@@ -33,6 +34,14 @@ import {
   assignTheme as assignThemeAction,
   removeTheme as removeThemeAction,
 } from "@/app/actions/themes";
+import {
+  useKeyboardShortcuts,
+  KeyboardShortcutsHelp,
+} from "@/components/keyboard-shortcuts";
+import { GenerationProgressCard } from "@/components/generation-progress-card";
+
+// Tab names ordered to match shortcut keys 1-6
+const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
 
 interface DashboardClientProps {
   initialTracks: Track[];
@@ -59,7 +68,16 @@ export function DashboardClient({
     }
   );
   const [activeTab, setActiveTab] = useState("versions");
+  const [showHelp, setShowHelp] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  // Active generation progress card state
+  const [activeGeneration, setActiveGeneration] = useState<{
+    versionId: string;
+    provider: string;
+    model: string;
+    versionLabel: string;
+  } | null>(null);
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
   const selectedVersion =
@@ -118,53 +136,41 @@ export function DashboardClient({
     });
   }, [selectedTrackId, selectedVersionId]);
 
+  const handleRenameTrack = useCallback(
+    (newName: string) => {
+      if (!selectedTrackId) return;
+      startTransition(async () => {
+        await updateTrackAction(selectedTrackId, { name: newName });
+        toast.success("Track renamed", { description: newName });
+        window.location.reload();
+      });
+    },
+    [selectedTrackId]
+  );
+
   const handleGenerate = useCallback(() => {
     if (!selectedTrack || !selectedVersion || isPending) return;
     const versionId = selectedVersion.id;
     const provider = selectedVersion.style.provider ?? "suno";
     const modelLabel =
       provider === "minimax"
-        ? `Minimax ${selectedVersion.style.minimaxModel || "music-1.5"}`
-        : `Suno ${selectedVersion.style.sunoApiVersion}`;
-    const toastId = toast.loading("Requesting generation…", {
-      description: `${selectedTrack.name} v${selectedVersion.versionNumber} · ${modelLabel}`,
-    });
+        ? `${selectedVersion.style.minimaxModel || "music-1.5"}`
+        : `${selectedVersion.style.sunoApiVersion}`;
+    const versionLabel = `${selectedTrack.name} v${selectedVersion.versionNumber}`;
 
     startGeneration(versionId)
       .then(() => {
-        toast.loading("Generating audio…", {
-          id: toastId,
-          description: "Polling for completion — this may take ~30s.",
+        // Switch to versions tab so the progress card is visible
+        setActiveTab("versions");
+        setActiveGeneration({
+          versionId,
+          provider,
+          model: modelLabel,
+          versionLabel,
         });
-
-        const interval = setInterval(async () => {
-          try {
-            const res = await fetch(`/api/generation/${versionId}/status`);
-            const data = await res.json();
-            if (data.status === "complete") {
-              clearInterval(interval);
-              toast.success("Audio ready!", {
-                id: toastId,
-                description: `${selectedTrack.name} v${selectedVersion.versionNumber}`,
-              });
-              // Trigger a soft-reload so the Server Component re-fetches
-              window.location.reload();
-            } else if (data.status === "failed") {
-              clearInterval(interval);
-              toast.error("Generation failed", {
-                id: toastId,
-                description: data.error ?? "Unknown error from Suno",
-              });
-            }
-          } catch {
-            clearInterval(interval);
-            toast.error("Polling error", { id: toastId });
-          }
-        }, 5000);
       })
       .catch((err: Error) => {
         toast.error("Could not start generation", {
-          id: toastId,
           description: err.message,
         });
       });
@@ -208,6 +214,15 @@ export function DashboardClient({
     });
   }, [selectedVersionId]);
 
+  const handleGenerationComplete = useCallback(() => {
+    // Reload so the Server Component re-fetches updated version data
+    window.location.reload();
+  }, []);
+
+  const handleGenerationDismiss = useCallback(() => {
+    setActiveGeneration(null);
+  }, []);
+
   const handleAssignTheme = useCallback(
     (themeId: string) => {
       if (!selectedTrackId) return;
@@ -247,6 +262,55 @@ export function DashboardClient({
     []
   );
 
+  // -----------------------------------------------------------------------
+  // Keyboard shortcut handlers
+  // -----------------------------------------------------------------------
+
+  const handleNextTrack = useCallback(() => {
+    if (tracks.length === 0) return;
+    const currentIndex = tracks.findIndex((t) => t.id === selectedTrackId);
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % tracks.length;
+    handleSelectTrack(tracks[nextIndex].id);
+  }, [tracks, selectedTrackId, handleSelectTrack]);
+
+  const handlePrevTrack = useCallback(() => {
+    if (tracks.length === 0) return;
+    const currentIndex = tracks.findIndex((t) => t.id === selectedTrackId);
+    const prevIndex =
+      currentIndex === -1
+        ? tracks.length - 1
+        : (currentIndex - 1 + tracks.length) % tracks.length;
+    handleSelectTrack(tracks[prevIndex].id);
+  }, [tracks, selectedTrackId, handleSelectTrack]);
+
+  const handleSwitchTab = useCallback((index: number) => {
+    const name = TAB_NAMES[index];
+    if (name) setActiveTab(name);
+  }, []);
+
+  const handleCloneVersion = useCallback(() => {
+    // Clone behaves the same as new version (cloneVersionAction copies current)
+    handleNewVersion();
+  }, [handleNewVersion]);
+
+  const handleToggleHelp = useCallback(() => {
+    setShowHelp((prev) => !prev);
+  }, []);
+
+  const handleCloseHelp = useCallback(() => {
+    setShowHelp(false);
+  }, []);
+
+  useKeyboardShortcuts({
+    onNextTrack: handleNextTrack,
+    onPrevTrack: handlePrevTrack,
+    onSwitchTab: handleSwitchTab,
+    onGenerate: handleGenerate,
+    onNewVersion: handleNewVersion,
+    onCloneVersion: handleCloneVersion,
+    onToggleHelp: handleToggleHelp,
+  });
+
   const handleGenerateThemes = useCallback(
     async (
       source: "url" | "document",
@@ -282,6 +346,12 @@ export function DashboardClient({
           track={selectedTrack}
           version={selectedVersion}
           onGenerate={handleGenerate}
+          themes={themes}
+          onImported={(newTrackId) => {
+            // Reload the page so the server component re-fetches the new track
+            window.location.href = `/dashboard?track=${newTrackId}`;
+          }}
+          onRenameTrack={handleRenameTrack}
         />
 
         {loadWarning ? (
@@ -353,6 +423,18 @@ export function DashboardClient({
                     value="versions"
                     className="m-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-2 duration-300"
                   >
+                    {activeGeneration && (
+                      <div className="px-4 pt-4">
+                        <GenerationProgressCard
+                          versionId={activeGeneration.versionId}
+                          provider={activeGeneration.provider}
+                          model={activeGeneration.model}
+                          versionLabel={activeGeneration.versionLabel}
+                          onComplete={handleGenerationComplete}
+                          onDismiss={handleGenerationDismiss}
+                        />
+                      </div>
+                    )}
                     <VersionsTab
                       versions={selectedTrack.versions}
                       selectedVersionId={selectedVersionId}
@@ -371,6 +453,14 @@ export function DashboardClient({
                       version={selectedVersion}
                       history={selectedTrack.versions}
                       onChange={handleUpdateVersion}
+                      onStyleChange={(styleUpdates) =>
+                        handleUpdateVersion({
+                          style: {
+                            ...selectedVersion.style,
+                            ...styleUpdates,
+                          },
+                        })
+                      }
                     />
                   </TabsContent>
 
@@ -434,6 +524,8 @@ export function DashboardClient({
           </div>
         )}
       </div>
+
+      <KeyboardShortcutsHelp open={showHelp} onClose={handleCloseHelp} />
     </div>
   );
 }

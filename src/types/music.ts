@@ -102,6 +102,7 @@ export interface Track {
   id: string;
   name: string;
   genre: string;
+  tags: string[];
   themeIds: string[];
   versions: TrackVersion[];
   createdAt: string;

@@ -20,6 +20,7 @@ export async function getTracks(): Promise<Track[]> {
     id: row.id,
     name: row.name,
     genre: row.genre,
+    tags: (row.tags as string[]) ?? [],
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     themeIds: row.trackThemes.map((tt) => tt.themeId),
@@ -74,5 +75,17 @@ export async function updateTrack(
 export async function deleteTrack(id: string) {
   const db = getDb();
   await db.delete(tracks).where(eq(tracks.id, id));
+  revalidatePath("/dashboard");
+}
+
+export async function updateTrackTags(
+  trackId: string,
+  tags: string[]
+): Promise<void> {
+  const db = getDb();
+  await db
+    .update(tracks)
+    .set({ tags, updatedAt: new Date() })
+    .where(eq(tracks.id, trackId));
   revalidatePath("/dashboard");
 }
