@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { History, Sparkles, Loader2, X, Check } from "lucide-react";
+import { History, Sparkles, Loader2, X, Check, BookOpen } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -13,20 +13,22 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import type { TrackVersion } from "@/types/music";
+import type { TrackStyle, TrackVersion } from "@/types/music";
 import { suggestPromptImprovements } from "@/app/actions/ai-suggestions";
 import type { PromptSuggestion } from "@/app/actions/ai-suggestions";
 import { toast } from "sonner";
+import { PromptTemplatesPanel } from "@/components/prompt-templates-panel";
 
 interface PromptTabProps {
   version: TrackVersion;
   history: TrackVersion[];
   onChange: (updates: Partial<TrackVersion>) => void;
+  onStyleChange?: (style: Partial<TrackStyle>) => void;
 }
 
 const MAX_PROMPT_LENGTH = 3000;
 
-export function PromptTab({ version, history, onChange }: PromptTabProps) {
+export function PromptTab({ version, history, onChange, onStyleChange }: PromptTabProps) {
   const [prompt, setPrompt] = useState(version.prompt);
   const [negativePrompt, setNegativePrompt] = useState(version.negativePrompt);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -34,6 +36,7 @@ export function PromptTab({ version, history, onChange }: PromptTabProps) {
     null
   );
   const [appliedIndex, setAppliedIndex] = useState<number | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   const handlePromptChange = (value: string) => {
     setPrompt(value);
@@ -87,10 +90,33 @@ export function PromptTab({ version, history, onChange }: PromptTabProps) {
     setAppliedIndex(null);
   };
 
+  const handleApplyTemplate = (
+    templatePrompt: string,
+    templateNegativePrompt: string,
+    style: Partial<TrackStyle>
+  ) => {
+    handlePromptChange(templatePrompt);
+    handleNegativePromptChange(templateNegativePrompt);
+    if (onStyleChange) {
+      onStyleChange(style);
+    }
+    toast.success("Template applied", {
+      description: "Prompt, negative prompt, and style settings updated.",
+    });
+  };
+
   const pastVersions = history.filter((v) => v.id !== version.id);
 
   return (
     <div className="flex flex-col gap-5 p-4">
+      {/* Templates panel */}
+      {showTemplates && (
+        <PromptTemplatesPanel
+          onApply={handleApplyTemplate}
+          onClose={() => setShowTemplates(false)}
+        />
+      )}
+
       {/* Prompt */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
@@ -108,6 +134,15 @@ export function PromptTab({ version, history, onChange }: PromptTabProps) {
             >
               {prompt.length}/{MAX_PROMPT_LENGTH}
             </span>
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => setShowTemplates(true)}
+              className="h-7 px-2 text-xs gap-1"
+            >
+              <BookOpen className="w-3 h-3" />
+              Templates
+            </Button>
             <Button
               size="sm"
               variant="outline"

@@ -32,7 +32,7 @@
       "id": 5,
       "title": "Prompt Templates Library",
       "description": "Add a 'Templates' button in the Prompt tab that opens a panel with pre-built prompt templates organized by genre (Electronic, Hip-Hop, Cinematic, Ambient, etc.). Each template includes a sample prompt and style config. One-click to apply to current version.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

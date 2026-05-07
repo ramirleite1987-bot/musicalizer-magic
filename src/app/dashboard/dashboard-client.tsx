@@ -428,6 +428,14 @@ export function DashboardClient({
                       version={selectedVersion}
                       history={selectedTrack.versions}
                       onChange={handleUpdateVersion}
+                      onStyleChange={(styleUpdates) =>
+                        handleUpdateVersion({
+                          style: {
+                            ...selectedVersion.style,
+                            ...styleUpdates,
+                          },
+                        })
+                      }
                     />
                   </TabsContent>
 
