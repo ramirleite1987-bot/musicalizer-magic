@@ -46,7 +46,7 @@
       "id": 7,
       "title": "Export Track as JSON",
       "description": "Add an Export button in the track header (or context menu). Exports the full track data (all versions, prompts, styles, scores, feedback) as a downloadable JSON file. Also add an Import button that reads a JSON and creates a new track from it.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

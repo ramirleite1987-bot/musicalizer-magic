@@ -339,6 +339,11 @@ export function DashboardClient({
           track={selectedTrack}
           version={selectedVersion}
           onGenerate={handleGenerate}
+          themes={themes}
+          onImported={(newTrackId) => {
+            // Reload the page so the server component re-fetches the new track
+            window.location.href = `/dashboard?track=${newTrackId}`;
+          }}
         />
 
         {loadWarning ? (
