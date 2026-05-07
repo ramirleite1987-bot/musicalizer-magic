@@ -9,16 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Progress } from "@/components/ui/progress";
-import {
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  Radar,
-  ResponsiveContainer,
-  Legend,
-} from "recharts";
 import { cn } from "@/lib/utils";
 import type { TrackVersion, DimensionScores } from "@/types/music";
+import { RadarChart } from "@/components/radar-chart";
 
 interface EvaluateTabProps {
   version: TrackVersion;
@@ -87,12 +80,6 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
     onChange({ feedback: { ...feedback, [key]: value } });
   };
 
-  const radarData = DIMENSIONS.map(({ key, label }) => ({
-    dimension: label,
-    current: scores[key] ?? 0,
-    best: bestVersion?.dimensionScores[key] ?? 0,
-  }));
-
   const avgScore =
     DIMENSIONS.reduce((sum, { key }) => sum + (scores[key] ?? 0), 0) /
     DIMENSIONS.length;
@@ -148,6 +135,9 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
 
       {/* Radar Chart */}
       <div className="space-y-3">
+        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+          Score Overview
+        </p>
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium">Dimension Scores</Label>
           <div className="flex items-center gap-2">
@@ -175,40 +165,16 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
           </div>
         </div>
 
-        <div className="h-64 w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <RadarChart data={radarData}>
-              <PolarGrid stroke="#e4e4e7" />
-              <PolarAngleAxis
-                dataKey="dimension"
-                tick={{ fontSize: 11, fill: "#71717a" }}
-              />
-              <Radar
-                name="Current"
-                dataKey="current"
-                stroke="#7c3aed"
-                fill="#7c3aed"
-                fillOpacity={0.25}
-                strokeWidth={2}
-              />
-              {bestVersion && bestVersion.id !== version.id && (
-                <Radar
-                  name="Best"
-                  dataKey="best"
-                  stroke="#f59e0b"
-                  fill="#f59e0b"
-                  fillOpacity={0.15}
-                  strokeWidth={2}
-                  strokeDasharray="4 4"
-                />
-              )}
-              {bestVersion && bestVersion.id !== version.id && (
-                <Legend
-                  wrapperStyle={{ fontSize: "12px" }}
-                />
-              )}
-            </RadarChart>
-          </ResponsiveContainer>
+        <div className="flex justify-center py-2">
+          <RadarChart
+            scores={scores}
+            bestScores={
+              bestVersion && bestVersion.id !== version.id
+                ? bestVersion.dimensionScores
+                : undefined
+            }
+            size={280}
+          />
         </div>
 
         {/* Dimension sliders */}

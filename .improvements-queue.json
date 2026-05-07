@@ -74,7 +74,7 @@
       "id": 11,
       "title": "Evaluation Radar Chart",
       "description": "In the Evaluate tab, replace or complement the 7 dimension sliders with a spider/radar chart visualization using a lightweight charting library (recharts is already available via shadcn ecosystem). Show the radar chart comparing current version vs best version overlay.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
