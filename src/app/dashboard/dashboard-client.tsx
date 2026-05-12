@@ -8,6 +8,7 @@ import { VersionsTab } from "@/components/versions-tab";
 import { PromptTab } from "@/components/prompt-tab";
 import { LyricsTab } from "@/components/lyrics-tab";
 import { StyleTab } from "@/components/style-tab";
+import { StylePromptExtractorTab } from "@/components/style-prompt-extractor-tab";
 import { EvaluateTab } from "@/components/evaluate-tab";
 import { ThemesTab } from "@/components/themes-tab";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +18,7 @@ import {
   Sparkles,
   Mic2,
   Settings2,
+  WandSparkles,
   Activity,
   Palette,
 } from "lucide-react";
@@ -326,6 +328,13 @@ export function DashboardClient({
                     Style
                   </TabsTrigger>
                   <TabsTrigger
+                    value="extract"
+                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                  >
+                    <WandSparkles className="w-4 h-4" />
+                    Extract
+                  </TabsTrigger>
+                  <TabsTrigger
                     value="themes"
                     className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
                   >
@@ -386,6 +395,18 @@ export function DashboardClient({
                   >
                     <StyleTab
                       version={selectedVersion}
+                      onChange={handleUpdateVersion}
+                    />
+                  </TabsContent>
+
+                  <TabsContent
+                    value="extract"
+                    className="m-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-2 duration-300"
+                  >
+                    <StylePromptExtractorTab
+                      key={`${selectedTrack.id}-${selectedVersion.id}`}
+                      track={selectedTrack}
+                      selectedVersion={selectedVersion}
                       onChange={handleUpdateVersion}
                     />
                   </TabsContent>

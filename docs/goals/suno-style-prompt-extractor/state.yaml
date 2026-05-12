@@ -1,0 +1,322 @@
+# GoalBuddy v2 state.yaml
+# Board truth lives here. goal.md is the editable charter; notes/ holds long receipts only.
+
+version: 2
+
+goal:
+  title: "Suno Style Prompt Extractor"
+  slug: "suno-style-prompt-extractor"
+  kind: specific # specific | open_ended | existing_plan | recovery | audit
+  tranche: "Ship an end-to-end practical style prompt extractor for existing app songs/tracks and external song inputs, shaped for later true audio analysis."
+  status: done # active | blocked | done
+  intake:
+    original_request: "I wanna be able to extract a style prompt to suno from a song or a set of songs."
+    interpreted_outcome: "Users can extract a Suno-ready style prompt from one song or a set of songs."
+    input_shape: specific # vague | specific | existing_plan | recovery | audit
+    audience: "Musicalizer Magic users"
+    authority: requested # requested | approved | inferred | needs_approval | blocked
+    proof_type: demo # test | demo | artifact | metric | review | source_backed_answer | decision
+    completion_proof: "A user can select existing app songs/tracks or provide external song inputs, generate a practical Suno style prompt, and copy or reuse it in the app, with verification commands and manual test steps recorded."
+    likely_misfire: "Overbuilding true audio analysis or backend-only plumbing while failing to deliver a usable first end-to-end extractor."
+    blind_spots_considered:
+      - "Existing app songs/tracks versus external links or uploads."
+      - "Practical metadata and prompt extraction versus true audio analysis."
+      - "Need for a staged architecture that can later support real audio analysis."
+      - "Prompt quality, source attribution, provider cost, and user control."
+      - "Package-manager and verification-command conflict between operator instructions and project docs."
+    existing_plan_facts:
+      - "Support both existing app songs/tracks and external inputs."
+      - "Use a hybrid staged approach."
+      - "First tranche should be an end-to-end usable flow."
+      - "Ship practical extraction first from available song data, lyrics, prompts, themes, titles, and user-provided external song info/links."
+      - "Leave true audio analysis as a later implementation slice unless low-risk support already exists."
+
+rules:
+  pm_owns_state: true
+  one_active_task: true
+  max_write_workers: 1
+  no_implementation_without_worker_or_pm_task: true
+  no_completion_without_judge_or_pm_audit: true
+  planning_is_not_completion: true
+  queued_required_worker_blocks_completion: true
+  continuous_until_full_outcome: true
+  missing_input_or_credentials_do_not_stop_goal: true
+  preserve_and_validate_existing_plan: true
+  intake_misfire_must_be_audited: true
+
+agents:
+  # installed | bundled_not_installed | missing | unknown
+  # If non-installed, /goal can continue through PM fallback; install agents before /goal only when dedicated delegation is required.
+  scout: bundled_not_installed
+  worker: bundled_not_installed
+  judge: bundled_not_installed
+
+visual_board:
+  # none | local | github_projects | both | unknown
+  selected: local
+  local:
+    status: generated # not_requested | starting | live | generated | blocked
+    url: null
+    command: "npx goalbuddy board docs/goals/suno-style-prompt-extractor"
+  github_projects:
+    status: not_requested # not_requested | needs_approval | dry_run_ready | synced | blocked
+    url: null
+    command: "npx goalbuddy extend github-projects"
+    missing: []
+
+active_task: null
+
+tasks:
+  - id: T001
+    type: scout
+    assignee: Scout
+    status: done
+    reasoning_hint: medium # default | low | medium | high | xhigh
+    objective: "Map the current app architecture, data model, song/track/version surfaces, prompt/lyrics/theme flows, existing Suno integration points, UI conventions, and verification commands relevant to a style prompt extractor."
+    inputs:
+      - "AGENTS.md instructions provided by the operator"
+      - "package.json"
+      - "src"
+      - "components"
+      - "app"
+      - "drizzle"
+      - "docs"
+    constraints:
+      - "Read-only."
+      - "Do not edit implementation files."
+      - "Do not load named implementation skills during Scout unless the PM explicitly activates a task that requires them."
+      - "Prefer concrete file-path evidence over generic advice."
+      - "Identify whether package-manager reality supports pnpm commands, npm commands, or both."
+      - "Identify large files/functions that must not be grown."
+      - "Identify all existing places where Suno prompts, song metadata, lyrics, themes, tracks, versions, and evaluations are stored or displayed."
+      - "Confirm the local UI component/Radix import rule before proposing edits."
+    expected_output:
+      - "Architecture map with file-path evidence."
+      - "Relevant data and UI integration points."
+      - "Resolved or explicitly uncertain verification command strategy."
+      - "Risks and constraints for practical extraction and later audio analysis."
+      - "Candidate Worker slices with allowed_files, verify commands, and stop_if conditions."
+    receipt:
+      result: done
+      note: "notes/T001-scout.md"
+      summary: "Mapped the dashboard, DB, Suno prompt builder, UI constraints, Next.js docs, and verification commands. Recommended a deterministic helper plus focused dashboard tab as the first vertical slice."
+      evidence:
+        - "AGENTS.md"
+        - "package.json"
+        - "package-lock.json"
+        - "src/types/music.ts"
+        - "src/lib/db/schema.ts"
+        - "src/app/actions/tracks.ts"
+        - "src/app/actions/versions.ts"
+        - "src/lib/suno/client.ts"
+        - "src/app/dashboard/dashboard-client.tsx"
+        - "src/components/prompt-tab.tsx"
+        - "src/components/style-tab.tsx"
+        - "src/components/versions-tab.tsx"
+      spawned_tasks: []
+
+  - id: T002
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Review Scout findings and choose the safest staged implementation path for the end-to-end practical style prompt extractor."
+    inputs:
+      - "T001 receipt"
+      - "docs/goals/suno-style-prompt-extractor/goal.md"
+      - "docs/goals/suno-style-prompt-extractor/state.yaml"
+    constraints:
+      - "Do not implement."
+      - "Preserve the hybrid staged approach."
+      - "Prefer a vertical slice that users can exercise end-to-end."
+      - "Keep edits small and split across focused files."
+      - "Do not select a task that requires true audio analysis unless Scout proves it is already low-risk and locally verifiable."
+      - "Respect the Radix wrapper rule and file-size constraints."
+    expected_output:
+      - "Decision."
+      - "Exact Worker objective for the first implementation slice."
+      - "allowed_files."
+      - "verify commands, including format/typecheck/lint/build strategy."
+      - "stop_if conditions."
+      - "Deferred tasks for true audio analysis, if any."
+    receipt:
+      result: done
+      decision: "Implement a deterministic practical style prompt extractor first: pure helper plus focused dashboard tab, with no DB migration, no provider call, no URL fetching, and no true audio analysis."
+      next_allowed_task: T003
+      allowed_files:
+        - "src/lib/music/style-prompt-extractor.ts"
+        - "src/test/style_prompt_extractor.test.ts"
+        - "src/components/style-prompt-extractor-tab.tsx"
+        - "src/app/dashboard/dashboard-client.tsx"
+      verify:
+        - "npm test -- src/test/style_prompt_extractor.test.ts"
+        - "pnpm exec oxfmt --write"
+        - "npm run typecheck"
+        - "npm run lint"
+        - "npm run build"
+      stop_if:
+        - "Need files outside allowed_files."
+        - "Need a DB schema or migration."
+        - "Need external URL fetching, provider calls, secrets, or true audio analysis."
+        - "Need direct @radix-ui/* imports outside src/components/ui."
+        - "Verification requires mutating package manager lockfiles."
+      deferred_tasks:
+        - "True audio analysis provider/local-analyzer decision."
+        - "Stored extraction history or reusable prompt library, if product need emerges."
+      summary: "Chose the smallest end-to-end slice that satisfies the first tranche: users can combine selected app versions and external song references/notes into a Suno-ready prompt, copy it, and apply it to the selected version."
+
+  - id: T003
+    type: worker
+    assignee: Worker
+    status: done
+    reasoning_hint: medium
+    objective: "Build a deterministic practical style prompt extractor with a pure helper, tests, and a focused dashboard tab that supports selected app versions plus external song references, then lets users copy or apply the generated Suno prompt."
+    allowed_files:
+      - "src/lib/music/style-prompt-extractor.ts"
+      - "src/test/style_prompt_extractor.test.ts"
+      - "src/components/style-prompt-extractor-tab.tsx"
+      - "src/app/dashboard/dashboard-client.tsx"
+    verify:
+      - "npm test -- src/test/style_prompt_extractor.test.ts"
+      - "pnpm exec oxfmt --write"
+      - "npm run typecheck"
+      - "npm run lint"
+      - "npm run build"
+    stop_if:
+      - "Need files outside allowed_files."
+      - "The source data model is ambiguous."
+      - "The UI entry point is ambiguous."
+      - "External input handling requires network access, secrets, or provider choices not approved by the operator."
+      - "True audio analysis becomes required for the selected slice."
+      - "Direct @radix-ui/* imports outside src/components/ui become necessary."
+      - "Verification requires mutating package manager lockfiles."
+      - "Verification fails twice."
+    receipt:
+      result: done
+      changed_files:
+        - "src/lib/music/style-prompt-extractor.ts"
+        - "src/test/style_prompt_extractor.test.ts"
+        - "src/components/style-prompt-extractor-tab.tsx"
+        - "src/app/dashboard/dashboard-client.tsx"
+      tdd_red:
+        cmd: "npm test -- src/test/style_prompt_extractor.test.ts"
+        summary: "Initial TDD run failed because '@/lib/music/style-prompt-extractor' did not exist yet."
+      verification_caveats:
+        - cmd: "pnpm exec oxfmt --write"
+          summary: "Attempted twice. The repo does not have an oxfmt binary available: ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL Command \"oxfmt\" not found."
+      commands:
+        - cmd: "npm test -- src/test/style_prompt_extractor.test.ts"
+          status: "pass"
+          summary: "Focused extractor and component tests passed after implementation."
+        - cmd: "npm run typecheck"
+          status: "pass"
+        - cmd: "npm run lint"
+          status: "pass"
+        - cmd: "npm test"
+          status: "pass"
+          summary: "3 test files, 7 tests passed."
+        - cmd: "npm run build"
+          status: "pass"
+        - cmd: "git diff --check"
+          status: "pass"
+      manual_checks:
+        - "Opened http://localhost:3000/dashboard. The route rendered, but this local checkout has no DATABASE_URL, so the dashboard showed the expected load warning and no tracks. The extractor tab itself is covered with mocked track data in src/test/style_prompt_extractor.test.ts."
+      summary: "Added a deterministic style prompt extraction helper, tests for app/external sources, a dashboard Extract tab for selected app versions plus external references, and copy/apply actions for the generated Suno prompt."
+
+  - id: T004
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit the first implemented slice and decide whether the full first-tranche outcome is complete or whether another safe Worker slice is required."
+    inputs:
+      - "T003 receipt"
+      - "Current dirty diff"
+      - "Verification results"
+      - "Manual test notes"
+    constraints:
+      - "Do not implement."
+      - "Reject completion if users cannot exercise an end-to-end practical extraction flow."
+      - "Reject completion if either existing app songs/tracks or external song inputs are unsupported without a recorded reason."
+      - "Reject completion if required verification commands are missing or stale."
+      - "Reject completion if the requested PR description code block has not been prepared."
+    expected_output:
+      - "complete | not_complete"
+      - "full_first_tranche_complete: true | false"
+      - "missing evidence"
+      - "next Worker task if not complete"
+    receipt:
+      result: done
+      decision: "complete"
+      full_first_tranche_complete: true
+      evidence:
+        - "src/lib/music/style-prompt-extractor.ts builds deterministic prompts from app versions and external references."
+        - "src/components/style-prompt-extractor-tab.tsx gives users app-version selection, external reference fields, generated prompt output, copy, and apply-to-current-version actions."
+        - "src/app/dashboard/dashboard-client.tsx wires the new Extract tab into the existing dashboard tab flow."
+        - "src/test/style_prompt_extractor.test.ts covers app-source extraction, external-reference extraction, and tab rendering/updating with mock track data."
+        - "npm test, npm run typecheck, npm run lint, npm run build, and git diff --check passed."
+      missing_evidence:
+        - "pnpm exec oxfmt --write did not pass because oxfmt is not available in this repo; the command was attempted twice and returned Command \"oxfmt\" not found."
+        - "Browser verification could load /dashboard but could not exercise real DB-backed tracks because DATABASE_URL is not set locally."
+      next_allowed_task: T999
+      pr_description_ready: true
+      summary: "The first tranche is implemented and usable in the dashboard when track data is available. No additional Worker slice is required for the practical extractor; true audio analysis remains deferred."
+
+  - id: T005
+    type: worker
+    assignee: Worker
+    status: blocked
+    reasoning_hint: medium
+    objective: "Execute the next safe implementation slice selected by T004 if the first slice does not complete the end-to-end outcome."
+    allowed_files: []
+    verify: []
+    stop_if:
+      - "Need files outside allowed_files."
+      - "Behavior is ambiguous."
+      - "Verification fails twice."
+      - "The task requires credentials, paid provider calls, production data, destructive operations, or unapproved true audio analysis."
+    receipt:
+      result: blocked
+      summary: "No follow-up Worker slice is required for the first tranche because T004 audited the implemented slice as complete. True audio analysis remains deferred outside this tranche."
+
+  - id: T999
+    type: judge
+    assignee: Judge
+    status: done
+    reasoning_hint: high
+    objective: "Audit whether the current tranche is complete against the original user outcome."
+    inputs:
+      - "All done task receipts"
+      - "Last verification"
+      - "Current dirty diff"
+      - "PR description code block"
+    constraints:
+      - "Do not implement."
+      - "Reject completion if required Worker work is still queued or active."
+      - "Reject completion if the practical extractor is backend-only or mock-only."
+      - "Reject completion if the broader first-tranche outcome still has safe local follow-up slices."
+      - "Reject stopping only because a slice needs owner input, credentials, production access, destructive operations, or policy decisions."
+    expected_output:
+      - "complete | not_complete"
+      - "full_outcome_complete: true | false"
+      - "missing evidence"
+      - "next task if not complete"
+    receipt:
+      result: done
+      decision: "complete"
+      full_outcome_complete: true
+      note: "notes/T999-completion-audit.md"
+      summary: "Final audit maps the original request to implemented helper, dashboard tab, tests, and verification evidence. The practical Suno style prompt extractor tranche is complete with recorded caveats for missing oxfmt and local DATABASE_URL."
+
+checks:
+  dirty_fingerprint: unknown
+  last_verification:
+    result: pass_with_caveat
+    task: T003
+    commands:
+      - "npm test -- src/test/style_prompt_extractor.test.ts"
+      - "npm run typecheck"
+      - "npm run lint"
+      - "npm test"
+      - "npm run build"
+      - "git diff --check"
