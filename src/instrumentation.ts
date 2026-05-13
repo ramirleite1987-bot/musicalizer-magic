@@ -18,4 +18,16 @@ export async function register() {
       return originalFetch(input, init);
     }) as typeof fetch;
   }
+
+  // Auto-apply pending schema migrations on cold start (idempotent — uses IF NOT EXISTS)
+  if (process.env.DATABASE_URL) {
+    try {
+      const { neon } = await import("@neondatabase/serverless");
+      const sql = neon(process.env.DATABASE_URL);
+      await sql`ALTER TABLE tracks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]'::jsonb`;
+    } catch (err) {
+      // Non-fatal: if the column already exists or DB is unreachable, continue normally
+      console.warn("[instrumentation] auto-migration warning:", err);
+    }
+  }
 }
