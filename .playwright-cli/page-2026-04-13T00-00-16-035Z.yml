@@ -1,0 +1,29 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e6]:
+          - img [ref=e8]
+          - generic [ref=e12]: Musicalizer Magic
+        - button "Create track" [ref=e13]:
+          - img
+      - generic [ref=e14]:
+        - generic [ref=e15]:
+          - img [ref=e16]
+          - textbox "Search tracks..." [ref=e19]
+        - combobox [ref=e20]:
+          - generic [ref=e21]: all
+          - img: ▼
+        - textbox [ref=e22]: all
+      - paragraph [ref=e24]: 0 tracks
+      - generic [ref=e27]: No tracks found
+    - generic [ref=e28]:
+      - paragraph [ref=e30]: Select a track to get started
+      - alert [ref=e31]: DATABASE_URL is not set. Add it to .env (see .env.example) or configure it in your host (e.g. Vercel → Environment Variables).
+      - generic [ref=e33]:
+        - img [ref=e34]
+        - paragraph [ref=e38]: Select a track from the sidebar to view its details.
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=e44] [cursor=pointer]:
+    - img [ref=e45]
+  - alert [ref=e48]

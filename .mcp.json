@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "musicalizer-hermes": {
+      "command": "npm",
+      "args": ["run", "--silent", "mcp:hermes"]
+    }
+  }
+}

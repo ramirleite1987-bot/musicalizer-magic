@@ -28,6 +28,11 @@ import {
   cloneVersion as cloneVersionAction,
   markBest as markBestAction,
 } from "@/app/actions/versions";
+import {
+  createTrack as createTrackAction,
+  updateTrack as updateTrackAction,
+  deleteTrack as deleteTrackAction,
+} from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
 import {
   createTheme as createThemeAction,
@@ -61,7 +66,7 @@ export function DashboardClient({
     }
   );
   const [activeTab, setActiveTab] = useState("versions");
-  const [isPending, startTransition] = useTransition();
+  const [, startTransition] = useTransition();
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
   const selectedVersion =
@@ -81,6 +86,59 @@ export function DashboardClient({
       } else {
         setSelectedVersionId(null);
       }
+    },
+    [tracks]
+  );
+
+  const handleCreateTrack = useCallback(
+    (data: { name: string; genre: string }) => {
+      startTransition(async () => {
+        try {
+          await createTrackAction(data);
+          toast.success(`Track "${data.name}" created`);
+          window.location.reload();
+        } catch {
+          toast.error("Failed to create track");
+        }
+      });
+    },
+    []
+  );
+
+  const handleUpdateTrack = useCallback(
+    (id: string, data: { name?: string; genre?: string }) => {
+      startTransition(async () => {
+        try {
+          await updateTrackAction(id, data);
+          toast.success("Track updated");
+          window.location.reload();
+        } catch {
+          toast.error("Failed to update track");
+        }
+      });
+    },
+    []
+  );
+
+  const handleDeleteTrack = useCallback(
+    (id: string) => {
+      const track = tracks.find((t) => t.id === id);
+      startTransition(async () => {
+        try {
+          await deleteTrackAction(id);
+          toast.success(`Track "${track?.name}" deleted`);
+          setSelectedTrackId((prev) => {
+            if (prev === id) {
+              const remaining = tracks.filter((t) => t.id !== id);
+              return remaining[0]?.id ?? null;
+            }
+            return prev;
+          });
+          window.location.reload();
+        } catch {
+          toast.error("Failed to delete track");
+        }
+      });
     },
     [tracks]
   );
@@ -121,7 +179,7 @@ export function DashboardClient({
   }, [selectedTrackId, selectedVersionId]);
 
   const handleGenerate = useCallback(() => {
-    if (!selectedTrack || !selectedVersion || isPending) return;
+    if (!selectedTrack || !selectedVersion) return;
     const versionId = selectedVersion.id;
     const toastId = toast.loading("Requesting generation…", {
       description: `${selectedTrack.name} v${selectedVersion.versionNumber} · Suno ${selectedVersion.style.sunoApiVersion}`,
@@ -144,7 +202,6 @@ export function DashboardClient({
                 id: toastId,
                 description: `${selectedTrack.name} v${selectedVersion.versionNumber}`,
               });
-              // Trigger a soft-reload so the Server Component re-fetches
               window.location.reload();
             } else if (data.status === "failed") {
               clearInterval(interval);
@@ -165,7 +222,7 @@ export function DashboardClient({
           description: err.message,
         });
       });
-  }, [selectedTrack, selectedVersion, isPending]);
+  }, [selectedTrack, selectedVersion]);
 
   const handleUploadAudio = useCallback(
     async (file: File) => {
@@ -272,6 +329,9 @@ export function DashboardClient({
         themes={themes}
         selectedTrackId={selectedTrackId}
         onSelectTrack={handleSelectTrack}
+        onCreateTrack={handleCreateTrack}
+        onUpdateTrack={handleUpdateTrack}
+        onDeleteTrack={handleDeleteTrack}
       />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background/95">

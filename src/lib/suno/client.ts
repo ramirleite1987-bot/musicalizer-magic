@@ -1,6 +1,9 @@
 import type { TrackStyle } from "@/types/music";
+import { getRequiredEnv } from "@/lib/env";
+import { z } from "zod";
 
-const SUNO_API_BASE = process.env.SUNO_API_BASE_URL ?? "https://api.suno.ai/v2";
+const DEFAULT_SUNO_API_BASE = "https://api.suno.ai/v2";
+const SUNO_REQUEST_TIMEOUT_MS = 30_000;
 
 interface SunoGenerationParams {
   prompt: string;
@@ -9,26 +12,40 @@ interface SunoGenerationParams {
   style: TrackStyle;
 }
 
-interface SunoGenerationResponse {
+export interface SunoGenerationResponse {
   taskId: string;
   status: "queued" | "processing" | "complete" | "failed";
 }
 
-interface SunoStatusResponse {
+export interface SunoStatusResponse {
   taskId: string;
   status: "queued" | "processing" | "complete" | "failed";
   audioUrl?: string;
   error?: string;
 }
 
+const sunoGenerationResponseSchema = z.object({
+  taskId: z.string().min(1),
+  status: z.enum(["queued", "processing", "complete", "failed"]),
+});
+
+const sunoStatusResponseSchema = sunoGenerationResponseSchema.extend({
+  audioUrl: z.string().url().optional(),
+  error: z.string().optional(),
+});
+
 function getHeaders() {
   return {
-    Authorization: `Bearer ${process.env.SUNO_API_KEY}`,
+    Authorization: `Bearer ${getRequiredEnv("SUNO_API_KEY")}`,
     "Content-Type": "application/json",
   };
 }
 
-function buildSunoPrompt(params: SunoGenerationParams): string {
+function getSunoApiBase() {
+  return process.env.SUNO_API_BASE_URL ?? DEFAULT_SUNO_API_BASE;
+}
+
+export function buildSunoPrompt(params: SunoGenerationParams): string {
   const parts: string[] = [];
 
   if (params.style.genre) parts.push(params.style.genre);
@@ -64,10 +81,11 @@ export async function createGeneration(
     body.negative_prompt = params.negativePrompt;
   }
 
-  const res = await fetch(`${SUNO_API_BASE}/generate`, {
+  const res = await fetch(`${getSunoApiBase()}/generate`, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(SUNO_REQUEST_TIMEOUT_MS),
   });
 
   if (!res.ok) {
@@ -75,21 +93,22 @@ export async function createGeneration(
     throw new Error(`Suno API error: ${res.status} - ${error}`);
   }
 
-  return res.json();
+  return sunoGenerationResponseSchema.parse(await res.json());
 }
 
 export async function getGenerationStatus(
   taskId: string
 ): Promise<SunoStatusResponse> {
-  const res = await fetch(`${SUNO_API_BASE}/status/${taskId}`, {
+  const res = await fetch(`${getSunoApiBase()}/status/${taskId}`, {
     headers: getHeaders(),
+    signal: AbortSignal.timeout(SUNO_REQUEST_TIMEOUT_MS),
   });
 
   if (!res.ok) {
     throw new Error(`Suno status check failed: ${res.status}`);
   }
 
-  return res.json();
+  return sunoStatusResponseSchema.parse(await res.json());
 }
 
 function parseDuration(duration: string): number {

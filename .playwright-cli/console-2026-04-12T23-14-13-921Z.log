@@ -1,0 +1,2043 @@
+[     260ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[     298ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  320421ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  320465ms] [LOG] [Fast Refresh] done in 116ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  376802ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  377100ms] [ERROR] ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  377222ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  377961ms] [ERROR] ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  377962ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  377993ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  378023ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  378071ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  378084ms] [ERROR] ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  378086ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  378088ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard:0
+[  378201ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[  378232ms] Error: ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found
+
+
+    at <unknown> (Error: ./src/components/sidebar.tsx:17:1)
+    at <unknown> (https://nextjs.org/docs/messages/module-not-found)
+    at Object.getCompilationErrors (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/base-server.js:1745:26)
+[  378231ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  378287ms] [ERROR] ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  378349ms] [ERROR] ./src/components/sidebar.tsx:17:1
+Module not found: Can't resolve '@/components/ui/dropdown-menu'
+  15 |   SelectValue,
+  16 | } from "@/components/ui/select";
+> 17 | import {
+     | ^^^^^^^
+> 18 |   DropdownMenu,
+     | ^^^^^^^^^^^^^^^
+> 19 |   DropdownMenuContent,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 20 |   DropdownMenuItem,
+     | ^^^^^^^^^^^^^^^^^^^
+> 21 |   DropdownMenuTrigger,
+     | ^^^^^^^^^^^^^^^^^^^^^^
+> 22 | } from "@/components/ui/dropdown-menu";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  23 | import { cn } from "@/lib/utils";
+  24 | import type { Track, Theme } from "@/types/music";
+  25 |
+
+Import map: aliased to relative './src/components/ui/dropdown-menu' inside of [project]/
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+https://nextjs.org/docs/messages/module-not-found @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  378380ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  393701ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  393869ms] [LOG] [Fast Refresh] done in 76ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  394172ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  394188ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  394262ms] [ERROR] In HTML, %s cannot be a descendant of <%s>.
+This will cause a hydration error.%s <button> button 
+
+  ...
+    <RedirectBoundary>
+      <RedirectErrorBoundary router={{...}}>
+        <InnerLayoutRouter url="/dashboard" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} segmentPath={[...]} ...>
+          <SegmentViewNode type="page" pagePath="dashboard/...">
+            <SegmentTrieNode>
+            <DashboardPage>
+              <DashboardClient initialTracks={[...]} initialThemes={[...]} loadWarning="DATABASE_U...">
+                <div className="flex h-scr...">
+                  <Sidebar tracks={[...]} themes={[...]} selectedTrackId={null} ...>
+                    <div className="w-64 flex-...">
+                      <div className="p-4 border...">
+                        <div className="flex items...">
+                          <div>
+                          <Dialog>
+                            <div className="relative" ref={null}>
+                              <DialogTrigger asChild={true}>
+>                               <button type="button" className={undefined} asChild={true} ref={null}>
+                                  <Button size="icon-xs" variant="ghost" className="h-6 w-6" title="Create track">
+                                    <Button data-slot="button" className={"group/bu..."} title="Create track">
+>                                     <button
+>                                       type="button"
+>                                       onClick={function onClick}
+>                                       onMouseDown={function onMouseDown}
+>                                       onKeyDown={function}
+>                                       onKeyUp={function onKeyUp}
+>                                       onPointerDown={function onPointerDown}
+>                                       tabIndex={0}
+>                                       disabled={false}
+>                                       data-slot="button"
+>                                       title="Create track"
+>                                       ref={function}
+>                                       className={"group/button inline-flex shrink-0 items-center justify-center bor..."}
+>                                     >
+                              ...
+                      ...
+                  ...
+          ...
+        ...
+ @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  394263ms] [ERROR] <%s> cannot contain a nested %s.
+See this log for the ancestor stack trace. button <button> @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  394270ms] [ERROR] React does not recognize the `%s` prop on a DOM element. If you intentionally want it to appear in the DOM as a custom attribute, spell it as lowercase `%s` instead. If you accidentally passed it from a parent component, remove it from the DOM element. asChild aschild @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  394285ms] [ERROR] Unknown event handler property `%s`. It will be ignored. onOpenChange @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:3272
+[  394298ms] Error: Hydration failed because the server rendered HTML didn't match the client. As a result this tree will be regenerated on the client. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+    at throwOnHydrationMismatch (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:3318:56)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6758:918)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopConcurrentByScheduler (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9551:58)
+    at renderRootConcurrent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9534:71)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:2647:64)
+[  403263ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  403284ms] [LOG] [Fast Refresh] done in 46ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  414498ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  414651ms] [LOG] [Fast Refresh] done in 187ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  417600ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  417625ms] [LOG] [Fast Refresh] done in 39ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  484798ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  484932ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  484955ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  484980ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  485002ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard:0
+[  485047ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[  485054ms] Error: ./src/components/sidebar.tsx:12:1
+Export SelectValue doesn't exist in target module
+  10 | import type { Track, Theme } from "@/types/music";
+  11 | import type { SelectTriggerProps } from "@base-ui/react/select";
+> 12 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+  15 |
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/components/sidebar.tsx:12:1)
+    at Object.getCompilationErrors (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/base-server.js:1745:26)
+[  485062ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  485064ms] [ERROR] ./src/components/sidebar.tsx:12:1
+Export SelectValue doesn't exist in target module
+  10 | import type { Track, Theme } from "@/types/music";
+  11 | import type { SelectTriggerProps } from "@base-ui/react/select";
+> 12 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+  15 |
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  485064ms] [ERROR] ./src/components/sidebar.tsx:12:1
+Export SelectValue doesn't exist in target module
+  10 | import type { Track, Theme } from "@/types/music";
+  11 | import type { SelectTriggerProps } from "@base-ui/react/select";
+> 12 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+  15 |
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-ssr] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  485096ms] [ERROR] ./src/components/sidebar.tsx:12:1
+Export SelectValue doesn't exist in target module
+  10 | import type { Track, Theme } from "@/types/music";
+  11 | import type { SelectTriggerProps } from "@base-ui/react/select";
+> 12 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+  15 |
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  485096ms] [ERROR] ./src/components/sidebar.tsx:12:1
+Export SelectValue doesn't exist in target module
+  10 | import type { Track, Theme } from "@/types/music";
+  11 | import type { SelectTriggerProps } from "@base-ui/react/select";
+> 12 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+  15 |
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-ssr] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  492022ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  492237ms] [LOG] [Fast Refresh] done in 90ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  492587ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  492807ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  493035ms] Error: Switched to client rendering because the server rendering errored:
+
+BaseSelect is not defined
+    at Sidebar (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/.next/dev/server/chunks/ssr/src_0-hyl48._.js:916:273)
+    at Object.react_stack_bottom_frame (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:311311)
+    at renderWithHooks (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:118339)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:133011)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at performWork (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:223847)
+    at /Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:103213
+    at node:internal/process/task_queues:149:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:452:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+[  493255ms] [ERROR] %o
+
+%s ReferenceError: BaseSelect is not defined
+    at Sidebar (http://localhost:3000/_next/static/chunks/src_0dcb_2r._.js:962:224)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:15037:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6081:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:2647:64) The above error occurred in the <Sidebar> component. It was handled by the <ErrorBoundaryHandler> error boundary. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:1998
+[  502069ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  502104ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  502117ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  502132ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  502150ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  502169ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard:0
+[  502206ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[  502214ms] Error: ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/components/sidebar.tsx:11:1)
+    at Object.getCompilationErrors (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/base-server.js:1745:26)
+[  502214ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  502220ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502220ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-ssr] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502224ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502224ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-ssr] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502254ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-client] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502254ms] [ERROR] ./src/components/sidebar.tsx:11:1
+Export SelectValue doesn't exist in target module
+   9 | import { cn } from "@/lib/utils";
+  10 | import type { Track, Theme } from "@/types/music";
+> 11 | import { Select as BaseSelect, SelectValue } from "@base-ui/react/select";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  12 | import type { SelectTriggerProps } from "@base-ui/react/select";
+  13 | import { Dialog } from "@base-ui/react/dialog";
+  14 | import type { ButtonProps } from "@base-ui/react/button";
+
+The export SelectValue was not found in module [project]/node_modules/@base-ui/react/esm/select/index.js [app-ssr] (ecmascript).
+Did you mean to import Select?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  502321ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  563555ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  563846ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564258ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564290ms] [LOG] [Fast Refresh] done in 133ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564392ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564427ms] [LOG] [Fast Refresh] done in 137ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564528ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564554ms] [LOG] [Fast Refresh] done in 126ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  564604ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  564618ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  564660ms] Error: Switched to client rendering because the server rendering errored:
+
+Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:195276)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:182673)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at performWork (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:223847)
+    at /Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:103213
+    at node:internal/process/task_queues:149:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:452:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+[  565439ms] [ERROR] %o
+
+%s Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
+
+Check the render method of `Sidebar`.
+    at createFiberFromTypeAndProps (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:3167:32)
+    at createFiberFromElement (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:3178:16)
+    at createChild (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4016:40)
+    at reconcileChildrenArray (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4129:72)
+    at reconcileChildFibersImpl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4236:51)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4261:39
+    at reconcileChildren (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:5898:51)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6086:9)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:2647:64) The above error occurred in the <Sidebar> component. It was handled by the <ErrorBoundaryHandler> error boundary. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:1998
+[  596511ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  596710ms] [LOG] [Fast Refresh] done in 298ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  600302ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  600457ms] [LOG] [Fast Refresh] done in 241ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  616627ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  616680ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  616712ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  616768ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  616794ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard:0
+[  616834ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[  616871ms] Error: ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/components/sidebar.tsx:16:1)
+    at Object.getCompilationErrors (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/base-server.js:1745:26)
+[  616872ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616880ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616921ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 | ...
+  15 | ...
+> 16 | ...l as DialogPortal, Backdrop as DialogBackdrop, Popup as DialogPopup, Title as DialogTit...
+     |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | ...
+  18 | ..."@/types/music";
+  19 | ...
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  616980ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  638254ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  638463ms] [LOG] [Fast Refresh] done in 81ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  638775ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  638790ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  639033ms] Error: Switched to client rendering because the server rendering errored:
+
+DialogRoot is not defined
+    at Sidebar (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/.next/dev/server/chunks/ssr/src_07wwgh~._.js:1277:265)
+    at Object.react_stack_bottom_frame (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:311311)
+    at renderWithHooks (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:118339)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:133011)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at performWork (/Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:223847)
+    at /Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:103213
+    at node:internal/process/task_queues:149:7
+    at AsyncResource.runInAsyncScope (node:async_hooks:214:14)
+    at AsyncResource.runMicrotask (node:internal/process/task_queues:146:8)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at process.processImmediate (node:internal/timers:452:9)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+[  639392ms] [ERROR] %o
+
+%s ReferenceError: DialogRoot is not defined
+    at Sidebar (http://localhost:3000/_next/static/chunks/src_0cj0.ae._.js:1345:216)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:15037:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6081:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:2647:64) The above error occurred in the <Sidebar> component. It was handled by the <ErrorBoundaryHandler> error boundary. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:1998
+[  654848ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  654921ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  654960ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  654990ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard?_rsc=1271e:0
+[  655041ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/dashboard:0
+[  655103ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_react-dom_0bruynb._.js:15305
+[  655123ms] Error: ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+
+    at <unknown> (Error: ./src/components/sidebar.tsx:16:1)
+    at Object.getCompilationErrors (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/hot-reloader-turbopack.js:1189:59)
+    at DevBundlerService.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/lib/dev-bundler-service.js:44:55)
+    at DevServer.getCompilationError (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:719:42)
+    at DevServer.findPageComponents (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/dev/next-dev-server.js:689:43)
+    at async DevServer.renderErrorToResponseImpl (file:///Users/ramir-mm-g2i/Workspace/musicalizer-magic/node_modules/next/dist/server/base-server.js:1745:26)
+[  655145ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655159ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Backdrop doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Backdrop was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Popup doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Popup was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Portal doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Portal was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Root doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Root was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655187ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-client] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  655188ms] [ERROR] ./src/components/sidebar.tsx:16:1
+Export Title doesn't exist in target module
+  14 |   SelectValue,
+  15 | } from "@/components/ui/select";
+> 16 | import * as Dialog from "@base-ui/react/dialog";
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  17 | import { cn } from "@/lib/utils";
+  18 | import type { Track, Theme } from "@/types/music";
+  19 |
+
+The export Title was not found in module [project]/node_modules/@base-ui/react/esm/dialog/index.js [app-ssr] (ecmascript).
+Did you mean to import Dialog?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  Client Component Browser:
+    ./src/components/sidebar.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component Browser]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/sidebar.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Client Component SSR]
+    ./src/app/dashboard/dashboard-client.tsx [Server Component]
+    ./src/app/dashboard/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1945
+[  715017ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  715168ms] [LOG] [Fast Refresh] done in 102ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_0u_w_5s._.js:1226
+[  715446ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[  715458ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2731411ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=JuIJx6NiElfxPhMTZ-ctD' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[ 2732414ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=JuIJx6NiElfxPhMTZ-ctD' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[ 2733876ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2734341ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2734362ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2775729ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2776141ms] [ERROR] %o
+
+%s ReferenceError: isPending is not defined
+    at DashboardClient (http://localhost:3000/_next/static/chunks/src_0cj0.ae._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fdashboard%252Fdashboard-client.tsx+%255Bapp-client%255D+%2528ecmascript%2529:259:9)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:15037:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6081:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6691:24)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10179:316)
+    at flushSyncWork$1 (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9230:86)
+    at Object.scheduleRefresh (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:299:13)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:391:33
+    at Set.forEach (<anonymous>)
+    at Object.performReactRefresh (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:384:38)
+    at applyUpdate (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:878:31)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:886:13 The above error occurred in the <DashboardClient> component. It was handled by the <ErrorBoundaryHandler> error boundary. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:1998
+[ 2776163ms] [LOG] [Fast Refresh] done in 507ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2786329ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2786334ms] [ERROR] %o
+
+%s ReferenceError: isPending is not defined
+    at DashboardClient (http://localhost:3000/_next/static/chunks/src_0cj0.ae._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fdashboard%252Fdashboard-client.tsx+%255Bapp-client%255D+%2528ecmascript%2529:258:9)
+    at Object.react_stack_bottom_frame (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:15037:24)
+    at renderWithHooks (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:4620:24)
+    at updateFunctionComponent (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6081:21)
+    at beginWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:6665:639)
+    at runWithFiberInDEV (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:965:74)
+    at performUnitOfWork (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9555:97)
+    at workLoopSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9449:40)
+    at renderRootSync (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9433:13)
+    at performWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9098:47)
+    at performSyncWorkOnRoot (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:10179:316)
+    at flushSyncWork$1 (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:9230:86)
+    at Object.scheduleRefresh (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_react-dom_058-ah~._.js:299:13)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:391:33
+    at Set.forEach (<anonymous>)
+    at Object.performReactRefresh (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:384:38)
+    at applyUpdate (http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:878:31)
+    at http://localhost:3000/_next/static/chunks/node_modules_next_dist_compiled_0rpq4pf._.js:886:13 The above error occurred in the <DashboardClient> component. It was handled by the <ErrorBoundaryHandler> error boundary. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:1998
+[ 2786354ms] [LOG] [Fast Refresh] done in 66ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2798231ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2798257ms] [LOG] [Fast Refresh] done in 37ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2839218ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=CSpNnXHXl9YYbTSn0i_pm' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[ 2840220ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=CSpNnXHXl9YYbTSn0i_pm' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[ 2841289ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2841760ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2841783ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2866640ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[ 2866959ms] [LOG] [Fast Refresh] done in 420ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[48386549ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed:  @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[48387555ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[48388559ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[48389562ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[48390566ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[48392070ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_115brz8._.js:2431
+[50742068ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50743070ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50744074ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50745077ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50746080ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50751086ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50756092ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50761110ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50766132ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50771185ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50776328ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
+[50781414ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=GlgVmlHm2TCIoaphCEbCb' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_0fhqo1d._.js:13299
