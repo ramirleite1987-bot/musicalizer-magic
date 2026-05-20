@@ -516,6 +516,7 @@ export function DashboardClient({
                       version={selectedVersion}
                       history={selectedTrack.versions}
                       onChange={handleUpdateVersion}
+                      onSelectVersion={setSelectedVersionId}
                       onStyleChange={(styleUpdates) =>
                         handleUpdateVersion({
                           style: {

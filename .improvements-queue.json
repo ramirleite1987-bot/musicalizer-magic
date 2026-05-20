@@ -51,7 +51,7 @@
       "id": 18,
       "title": "Prompt Evolution Timeline",
       "description": "Add a 'History' view in the Prompt tab that shows how the prompt evolved across all versions in a vertical timeline. Each step shows version number, the prompt text, rating stars, and a small diff highlight against the previous version. Makes it easy to see the creative progression.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
