@@ -30,7 +30,7 @@
       "id": 15,
       "title": "Audio Download Button",
       "description": "Add a Download button in the WaveformPlayer and in the versions list for each version that has an audioUrl. Triggers a browser download of the audio file with filename '{track-name}-v{N}.mp3'. Use fetch + createObjectURL for cross-origin Vercel Blob URLs.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

@@ -3,8 +3,9 @@
 import { useRef, useState } from "react";
 import {
   Plus, Upload, Star, CheckCircle2, Clock, Loader2, AlertCircle,
-  Music2, Trash2, Volume2, GitCompare
+  Music2, Trash2, Volume2, GitCompare, Download
 } from "lucide-react";
+import { downloadAudio } from "@/lib/download-audio";
 import { WaveformPlayer } from "@/components/waveform-player";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +28,7 @@ interface VersionsTabProps {
   onNewVersion: () => void;
   onUploadAudio: (file: File) => void;
   onRemoveAudio: () => void;
+  trackName?: string;
 }
 
 const STATUS_CONFIG = {
@@ -59,10 +61,12 @@ export function VersionsTab({
   onNewVersion,
   onUploadAudio,
   onRemoveAudio,
+  trackName,
 }: VersionsTabProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const selectedVersion = versions.find((v) => v.id === selectedVersionId);
 
@@ -86,6 +90,21 @@ export function VersionsTab({
   };
 
   const handleDragLeave = () => setIsDragging(false);
+
+  const handleVersionDownload = async (version: TrackVersion, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!version.audioUrl || downloadingId === version.id) return;
+    const safeName = (trackName ?? "track").replace(/[^a-zA-Z0-9-_ ]/g, "").trim().replace(/\s+/g, "-") || "track";
+    const filename = `${safeName}-v${version.versionNumber}.mp3`;
+    setDownloadingId(version.id);
+    try {
+      await downloadAudio(version.audioUrl, filename);
+    } catch (err) {
+      console.error("Audio download failed:", err);
+    } finally {
+      setDownloadingId(null);
+    }
+  };
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -124,12 +143,13 @@ export function VersionsTab({
               <TableHead className="text-xs">Suno</TableHead>
               <TableHead className="text-xs w-16">Best</TableHead>
               <TableHead className="text-xs">Created</TableHead>
+              <TableHead className="text-xs w-10"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {versions.length === 0 && (
               <TableRow>
-                <TableCell colSpan={7} className="text-center text-sm text-zinc-400 py-8">
+                <TableCell colSpan={8} className="text-center text-sm text-zinc-400 py-8">
                   No versions yet. Create one to get started.
                 </TableCell>
               </TableRow>
@@ -189,6 +209,22 @@ export function VersionsTab({
                   </TableCell>
                   <TableCell className="text-xs text-zinc-400">
                     {new Date(version.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    {version.audioUrl && (
+                      <button
+                        onClick={(e) => handleVersionDownload(version, e)}
+                        disabled={downloadingId === version.id}
+                        className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                        aria-label={`Download v${version.versionNumber}`}
+                      >
+                        {downloadingId === version.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <Download className="w-3 h-3" />
+                        )}
+                      </button>
+                    )}
                   </TableCell>
                 </TableRow>
               );

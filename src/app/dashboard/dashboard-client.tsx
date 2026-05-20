@@ -442,6 +442,7 @@ export function DashboardClient({
                       onNewVersion={handleNewVersion}
                       onUploadAudio={handleUploadAudio}
                       onRemoveAudio={handleRemoveAudio}
+                      trackName={selectedTrack.name}
                     />
                   </TabsContent>
 
