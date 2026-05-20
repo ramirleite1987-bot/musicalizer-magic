@@ -23,7 +23,7 @@
       "id": 14,
       "title": "Dark/Light Mode Toggle",
       "description": "Add a sun/moon toggle button in the header to switch between dark and light mode. Use next-themes (already installed). Persist the preference in localStorage. Ensure all components look polished in both modes.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

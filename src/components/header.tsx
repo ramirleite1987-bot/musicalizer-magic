@@ -12,6 +12,7 @@ import { parseTrackImport } from "@/lib/track-export";
 import { importTrack } from "@/app/actions/import-track";
 import { generateTrackNames } from "@/app/actions/ai-suggestions";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface HeaderProps {
   track: Track | null;
@@ -222,6 +223,7 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
             )}
             Import
           </Button>
+          <ThemeToggle />
         </div>
       </div>
     );
@@ -414,6 +416,8 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
           )}
           Import
         </Button>
+
+        <ThemeToggle />
 
         <Button
           onClick={onGenerate}
