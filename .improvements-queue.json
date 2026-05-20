@@ -65,7 +65,7 @@
       "id": 20,
       "title": "Version Archiving",
       "description": "Add an 'Archive' action on versions. Archived versions are hidden from the main list but accessible via a 'Show archived' toggle. Add archive/unarchive to the version context menu. Update the versions-tab to filter archived versions by default. This keeps the workspace clean without losing history.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     }
   ]

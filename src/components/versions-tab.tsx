@@ -1,9 +1,10 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import {
   Plus, Upload, Star, CheckCircle2, Clock, Loader2, AlertCircle,
-  Music2, Trash2, Volume2, GitCompare, Download
+  Music2, Trash2, Volume2, GitCompare, Download, Archive, ArchiveRestore,
+  Eye, EyeOff
 } from "lucide-react";
 import { downloadAudio } from "@/lib/download-audio";
 import { WaveformPlayer } from "@/components/waveform-player";
@@ -20,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { TrackVersion } from "@/types/music";
 import { VersionCompareModal } from "@/components/version-compare-modal";
+import { archiveVersion, unarchiveVersion } from "@/app/actions/versions";
 
 interface VersionsTabProps {
   versions: TrackVersion[];
@@ -67,6 +69,14 @@ export function VersionsTab({
   const [isDragging, setIsDragging] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [pendingActionId, setPendingActionId] = useState<string | null>(null);
+
+  const archivedVersions = versions.filter((v) => v.status === "archived");
+  const visibleVersions = showArchived
+    ? versions
+    : versions.filter((v) => v.status !== "archived");
 
   const selectedVersion = versions.find((v) => v.id === selectedVersionId);
 
@@ -106,14 +116,73 @@ export function VersionsTab({
     }
   };
 
+  const handleArchive = (version: TrackVersion, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPendingActionId(version.id);
+    startTransition(async () => {
+      try {
+        await archiveVersion(version.id);
+        // If the archived version was selected, auto-select first non-archived version
+        if (version.id === selectedVersionId) {
+          const firstNonArchived = versions.find(
+            (v) => v.id !== version.id && v.status !== "archived"
+          );
+          if (firstNonArchived) {
+            onSelectVersion(firstNonArchived.id);
+          }
+        }
+      } catch (err) {
+        console.error("Archive failed:", err);
+      } finally {
+        setPendingActionId(null);
+      }
+    });
+  };
+
+  const handleUnarchive = (version: TrackVersion, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setPendingActionId(version.id);
+    startTransition(async () => {
+      try {
+        await unarchiveVersion(version.id);
+      } catch (err) {
+        console.error("Unarchive failed:", err);
+      } finally {
+        setPendingActionId(null);
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4 p-4">
       {/* Header row */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-          Versions ({versions.length})
+          Versions ({visibleVersions.length})
         </h3>
         <div className="flex items-center gap-2">
+          {archivedVersions.length > 0 && (
+            <Button
+              onClick={() => setShowArchived((prev) => !prev)}
+              size="sm"
+              variant="ghost"
+              className={cn(
+                "gap-1.5 text-xs",
+                showArchived
+                  ? "text-violet-600 dark:text-violet-400"
+                  : "text-zinc-500 dark:text-zinc-400"
+              )}
+            >
+              {showArchived ? (
+                <EyeOff className="w-3.5 h-3.5" />
+              ) : (
+                <Eye className="w-3.5 h-3.5" />
+              )}
+              {showArchived
+                ? "Hide archived"
+                : `Show archived (${archivedVersions.length})`}
+            </Button>
+          )}
           <Button
             onClick={() => setCompareOpen(true)}
             size="sm"
@@ -143,21 +212,23 @@ export function VersionsTab({
               <TableHead className="text-xs">Suno</TableHead>
               <TableHead className="text-xs w-16">Best</TableHead>
               <TableHead className="text-xs">Created</TableHead>
-              <TableHead className="text-xs w-10"></TableHead>
+              <TableHead className="text-xs w-20"></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {versions.length === 0 && (
+            {visibleVersions.length === 0 && (
               <TableRow>
                 <TableCell colSpan={8} className="text-center text-sm text-zinc-400 py-8">
                   No versions yet. Create one to get started.
                 </TableCell>
               </TableRow>
             )}
-            {versions.map((version) => {
+            {visibleVersions.map((version) => {
               const isSelected = version.id === selectedVersionId;
+              const isArchived = version.status === "archived";
               const statusConfig = STATUS_CONFIG[version.status];
               const StatusIcon = statusConfig.icon;
+              const isActionPending = isPending && pendingActionId === version.id;
 
               return (
                 <TableRow
@@ -167,10 +238,11 @@ export function VersionsTab({
                     "cursor-pointer transition-colors",
                     isSelected
                       ? "bg-violet-50 dark:bg-violet-950/30"
-                      : "hover:bg-zinc-50 dark:hover:bg-zinc-900/50"
+                      : "hover:bg-zinc-50 dark:hover:bg-zinc-900/50",
+                    isArchived && "opacity-50"
                   )}
                 >
-                  <TableCell className="text-sm font-medium">
+                  <TableCell className={cn("text-sm font-medium", isArchived && "italic")}>
                     v{version.versionNumber}
                   </TableCell>
                   <TableCell>
@@ -211,20 +283,48 @@ export function VersionsTab({
                     {new Date(version.createdAt).toLocaleDateString()}
                   </TableCell>
                   <TableCell onClick={(e) => e.stopPropagation()}>
-                    {version.audioUrl && (
-                      <button
-                        onClick={(e) => handleVersionDownload(version, e)}
-                        disabled={downloadingId === version.id}
-                        className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                        aria-label={`Download v${version.versionNumber}`}
-                      >
-                        {downloadingId === version.id ? (
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                        ) : (
-                          <Download className="w-3 h-3" />
-                        )}
-                      </button>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {version.audioUrl && (
+                        <button
+                          onClick={(e) => handleVersionDownload(version, e)}
+                          disabled={downloadingId === version.id}
+                          className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          aria-label={`Download v${version.versionNumber}`}
+                        >
+                          {downloadingId === version.id ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : (
+                            <Download className="w-3 h-3" />
+                          )}
+                        </button>
+                      )}
+                      {/* Archive / Unarchive button — not available for best version */}
+                      {!version.isBest && (
+                        <button
+                          onClick={(e) =>
+                            isArchived
+                              ? handleUnarchive(version, e)
+                              : handleArchive(version, e)
+                          }
+                          disabled={isActionPending}
+                          className="w-6 h-6 rounded flex items-center justify-center text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700 dark:hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                          aria-label={
+                            isArchived
+                              ? `Unarchive v${version.versionNumber}`
+                              : `Archive v${version.versionNumber}`
+                          }
+                          title={isArchived ? "Unarchive" : "Archive"}
+                        >
+                          {isActionPending ? (
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                          ) : isArchived ? (
+                            <ArchiveRestore className="w-3 h-3" />
+                          ) : (
+                            <Archive className="w-3 h-3" />
+                          )}
+                        </button>
+                      )}
+                    </div>
                   </TableCell>
                 </TableRow>
               );

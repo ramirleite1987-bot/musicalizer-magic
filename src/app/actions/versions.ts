@@ -178,6 +178,28 @@ export async function cloneVersion(versionId: string) {
   };
 }
 
+export async function archiveVersion(versionId: string): Promise<void> {
+  const db = getDb();
+
+  await db
+    .update(trackVersions)
+    .set({ status: "archived", updatedAt: new Date() })
+    .where(eq(trackVersions.id, versionId));
+
+  revalidatePath("/dashboard");
+}
+
+export async function unarchiveVersion(versionId: string): Promise<void> {
+  const db = getDb();
+
+  await db
+    .update(trackVersions)
+    .set({ status: "draft", updatedAt: new Date() })
+    .where(eq(trackVersions.id, versionId));
+
+  revalidatePath("/dashboard");
+}
+
 export async function markBest(trackId: string, versionId: string) {
   const db = getDb();
 
