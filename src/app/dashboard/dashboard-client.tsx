@@ -40,6 +40,9 @@ import {
 } from "@/components/keyboard-shortcuts";
 import { GenerationProgressCard } from "@/components/generation-progress-card";
 import { SearchPalette } from "@/components/search-palette";
+import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
+import { OnboardingBanner } from "@/components/onboarding-banner";
+import { CreateTrackDialog } from "@/components/create-track-dialog";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -88,6 +91,7 @@ export function DashboardClient({
   const [activeTab, setActiveTab] = useState("versions");
   const [showHelp, setShowHelp] = useState(false);
   const [showSearchPalette, setShowSearchPalette] = useState(false);
+  const [showCreateTrack, setShowCreateTrack] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Active generation progress card state
@@ -425,6 +429,8 @@ export function DashboardClient({
           </div>
         ) : null}
 
+        {tracks.length > 0 && <OnboardingBanner />}
+
         {selectedTrack && selectedVersion ? (
           <div className="flex-1 flex flex-col min-h-0">
             <Tabs
@@ -581,6 +587,8 @@ export function DashboardClient({
               </ScrollArea>
             </Tabs>
           </div>
+        ) : tracks.length === 0 ? (
+          <OnboardingEmptyState onCreateTrack={() => setShowCreateTrack(true)} />
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center space-y-4">
@@ -598,6 +606,12 @@ export function DashboardClient({
         open={showSearchPalette}
         onClose={() => setShowSearchPalette(false)}
         onSelectResult={handleSearchResult}
+      />
+
+      <CreateTrackDialog
+        open={showCreateTrack}
+        onOpenChange={setShowCreateTrack}
+        onCreated={() => window.location.reload()}
       />
     </div>
   );
