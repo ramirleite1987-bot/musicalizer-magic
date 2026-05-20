@@ -4,6 +4,71 @@ import { generateText, Output } from "ai";
 import { z } from "zod";
 import type { TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
 
+const lyricsSchema = z.object({
+  lyrics: z.string().describe("The full lyrics with section labels like [Verse 1], [Chorus], [Bridge]"),
+  structure: z.string().describe("A short description of the song structure that was generated"),
+});
+
+export async function generateLyrics(params: {
+  trackName: string;
+  prompt: string;
+  genre: string;
+  moods: string[];
+  style: Partial<TrackStyle>;
+  existingLyrics?: string;
+}): Promise<{ lyrics: string; structure: string }> {
+  const { trackName, prompt, genre, moods, style, existingLyrics } = params;
+
+  const styleDescription = [
+    genre ? `Genre: ${genre}` : null,
+    moods && moods.length > 0 ? `Moods/Vibes: ${moods.join(", ")}` : null,
+    style.tempo ? `Tempo: ${style.tempo} BPM` : null,
+    style.key ? `Key: ${style.key} ${style.isMinor ? "minor" : "major"}` : null,
+    style.vocalStyle ? `Vocal style: ${style.vocalStyle}` : null,
+    style.instruments && style.instruments.length > 0
+      ? `Instruments: ${style.instruments.join(", ")}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const existingLyricsSection = existingLyrics
+    ? `\nExisting lyrics to improve/expand upon:\n"""\n${existingLyrics}\n"""\n`
+    : "";
+
+  const userPrompt = `You are an expert lyricist. Generate complete, original lyrics for a ${genre || "music"} track called "${trackName}".
+
+Musical direction:
+"""
+${prompt || "(no specific direction provided)"}
+"""
+
+Style details:
+${styleDescription || "(no additional style details)"}
+${existingLyricsSection}
+Requirements:
+- Use clear section labels: [Verse 1], [Pre-Chorus] (optional), [Chorus], [Verse 2], [Bridge], [Outro] as appropriate
+- Make the lyrics thematically consistent and emotionally resonant
+- Match the tone and energy implied by the genre and moods
+- The chorus should be catchy and memorable
+- Aim for a complete song structure (at minimum: verse, chorus, verse, chorus, bridge, chorus)
+- Each section label must be on its own line, e.g. "[Verse 1]" then the lyrics below it
+${existingLyrics ? "- Improve and expand on the existing lyrics while keeping the best parts" : ""}
+
+Return the full lyrics with all section labels included.`;
+
+  const { output } = await generateText({
+    model: "anthropic/claude-sonnet-4.6",
+    output: Output.object({ schema: lyricsSchema }),
+    prompt: userPrompt,
+  });
+
+  return {
+    lyrics: output?.lyrics ?? "",
+    structure: output?.structure ?? "verse/chorus/bridge structure",
+  };
+}
+
 const trackNamesSchema = z.object({
   names: z
     .array(z.string().max(50))

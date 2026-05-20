@@ -16,7 +16,7 @@
       "id": 13,
       "title": "AI Lyrics Generator",
       "description": "Add a 'Generate Lyrics' button in the Lyrics tab. Sends the track name, prompt, genre, themes, and mood to Claude and returns a full set of lyrics (verse/chorus/bridge structure). Show the result in a preview modal with 'Apply' and 'Regenerate' buttons.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

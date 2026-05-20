@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { History, AlignLeft, Hash } from "lucide-react";
+import { History, AlignLeft, Hash, Sparkles } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
@@ -13,7 +13,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { TrackVersion } from "@/types/music";
+import { LyricsGeneratorModal } from "@/components/lyrics-generator-modal";
+import type { TrackVersion, TrackStyle } from "@/types/music";
 
 // Common Suno structure tags
 const STRUCTURE_TAGS = [
@@ -35,10 +36,13 @@ interface LyricsTabProps {
   version: TrackVersion;
   history: TrackVersion[];
   onChange: (updates: Partial<TrackVersion>) => void;
+  trackName: string;
+  trackStyle: TrackStyle;
 }
 
-export function LyricsTab({ version, history, onChange }: LyricsTabProps) {
+export function LyricsTab({ version, history, onChange, trackName, trackStyle }: LyricsTabProps) {
   const [lyrics, setLyrics] = useState(version.lyrics);
+  const [showGenerator, setShowGenerator] = useState(false);
 
   const handleLyricsChange = (value: string) => {
     setLyrics(value);
@@ -68,15 +72,24 @@ export function LyricsTab({ version, history, onChange }: LyricsTabProps) {
   return (
     <div className="flex flex-col gap-4 p-4">
       {/* Stats row */}
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <Hash className="w-3.5 h-3.5" />
-          <span>{wordCount} words</span>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+            <Hash className="w-3.5 h-3.5" />
+            <span>{wordCount} words</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+            <AlignLeft className="w-3.5 h-3.5" />
+            <span>{lineCount} lines</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-zinc-500">
-          <AlignLeft className="w-3.5 h-3.5" />
-          <span>{lineCount} lines</span>
-        </div>
+        <button
+          onClick={() => setShowGenerator(true)}
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-violet-600 hover:bg-violet-700 text-white font-medium transition-colors"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          Generate with AI
+        </button>
       </div>
 
       {/* Structure tags sidebar */}
@@ -159,6 +172,18 @@ export function LyricsTab({ version, history, onChange }: LyricsTabProps) {
           </AccordionItem>
         </Accordion>
       )}
+
+      {/* AI Lyrics Generator Modal */}
+      <LyricsGeneratorModal
+        open={showGenerator}
+        onClose={() => setShowGenerator(false)}
+        onApply={(newLyrics) => handleLyricsChange(newLyrics)}
+        trackName={trackName}
+        prompt={version.prompt}
+        genre={trackStyle.genre}
+        style={trackStyle}
+        existingLyrics={lyrics || undefined}
+      />
     </div>
   );
 }
