@@ -58,7 +58,7 @@
       "id": 19,
       "title": "Onboarding Empty State",
       "description": "When the dashboard has no tracks, show a rich empty state instead of a blank page: a welcome message, a list of 3 key features with icons, and a prominent 'Create your first track' button. Also add a dismissible onboarding tip banner for first-time users explaining the workflow (Create track → Set style → Generate → Evaluate).",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {
