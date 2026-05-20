@@ -44,7 +44,7 @@
       "id": 17,
       "title": "Track Duplication",
       "description": "Add a 'Duplicate Track' option in a track context menu (three-dot menu in the sidebar). Creates a full copy of the track with all versions, prompts, styles, and scores, appending ' (copy)' to the name. Navigate to the duplicated track after creation.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

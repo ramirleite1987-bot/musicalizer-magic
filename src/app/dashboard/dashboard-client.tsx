@@ -57,12 +57,29 @@ export function DashboardClient({
 }: DashboardClientProps) {
   const [tracks] = useState<Track[]>(initialTracks);
   const [themes] = useState<Theme[]>(initialThemes);
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(
-    initialTracks[0]?.id ?? null
-  );
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(() => {
+    // If a ?track=<id> query param is present, select that track
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const trackParam = params.get("track");
+      if (trackParam && initialTracks.some((t) => t.id === trackParam)) {
+        return trackParam;
+      }
+    }
+    return initialTracks[0]?.id ?? null;
+  });
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     () => {
-      const firstTrack = initialTracks[0];
+      // Resolve initial track (may be from query param)
+      let firstTrack: Track | undefined;
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const trackParam = params.get("track");
+        if (trackParam) {
+          firstTrack = initialTracks.find((t) => t.id === trackParam);
+        }
+      }
+      if (!firstTrack) firstTrack = initialTracks[0];
       if (!firstTrack) return null;
       const best = firstTrack.versions.find((v) => v.isBest);
       return best?.id ?? firstTrack.versions[0]?.id ?? null;
@@ -371,6 +388,18 @@ export function DashboardClient({
         themes={themes}
         selectedTrackId={selectedTrackId}
         onSelectTrack={handleSelectTrack}
+        onTrackDuplicated={(newTrackId) => {
+          // Reload page and navigate to the duplicated track
+          window.location.href = `/dashboard?track=${newTrackId}`;
+        }}
+        onTrackDeleted={(deletedTrackId) => {
+          // If the deleted track was selected, reload to pick a new one
+          if (deletedTrackId === selectedTrackId) {
+            window.location.reload();
+          } else {
+            window.location.reload();
+          }
+        }}
       />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background/95">
