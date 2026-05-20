@@ -20,7 +20,8 @@ export async function getTracks(): Promise<Track[]> {
     id: row.id,
     name: row.name,
     genre: row.genre,
-    tags: (row.tags as string[]) ?? [],
+    // Defensive: tags column may not exist yet in older DB instances
+    tags: Array.isArray(row.tags) ? (row.tags as string[]) : [],
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
     themeIds: row.trackThemes.map((tt) => tt.themeId),
