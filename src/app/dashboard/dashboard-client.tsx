@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import { Track, TrackVersion, Theme } from "@/types/music";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
@@ -39,6 +39,7 @@ import {
   KeyboardShortcutsHelp,
 } from "@/components/keyboard-shortcuts";
 import { GenerationProgressCard } from "@/components/generation-progress-card";
+import { SearchPalette } from "@/components/search-palette";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -69,6 +70,7 @@ export function DashboardClient({
   );
   const [activeTab, setActiveTab] = useState("versions");
   const [showHelp, setShowHelp] = useState(false);
+  const [showSearchPalette, setShowSearchPalette] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Active generation progress card state
@@ -311,6 +313,36 @@ export function DashboardClient({
     onToggleHelp: handleToggleHelp,
   });
 
+  // Cmd+K / Ctrl+K shortcut to open search palette
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearchPalette((prev) => !prev);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  const handleSearchResult = useCallback(
+    (trackId: string, versionId?: string) => {
+      setSelectedTrackId(trackId);
+      if (versionId) {
+        setSelectedVersionId(versionId);
+      } else {
+        const track = tracks.find((t) => t.id === trackId);
+        if (track && track.versions.length > 0) {
+          const best = track.versions.find((v) => v.isBest);
+          setSelectedVersionId(best ? best.id : track.versions[track.versions.length - 1].id);
+        } else {
+          setSelectedVersionId(null);
+        }
+      }
+    },
+    [tracks]
+  );
+
   const handleGenerateThemes = useCallback(
     async (
       source: "url" | "document",
@@ -352,6 +384,7 @@ export function DashboardClient({
             window.location.href = `/dashboard?track=${newTrackId}`;
           }}
           onRenameTrack={handleRenameTrack}
+          onOpenSearch={() => setShowSearchPalette(true)}
         />
 
         {loadWarning ? (
@@ -529,6 +562,13 @@ export function DashboardClient({
       </div>
 
       <KeyboardShortcutsHelp open={showHelp} onClose={handleCloseHelp} />
+
+      <SearchPalette
+        tracks={tracks}
+        open={showSearchPalette}
+        onClose={() => setShowSearchPalette(false)}
+        onSelectResult={handleSearchResult}
+      />
     </div>
   );
 }

@@ -37,7 +37,7 @@
       "id": 16,
       "title": "Global Full-text Search",
       "description": "Add a global search command palette (Cmd+K / Ctrl+K) that searches across all tracks, version prompts, and lyrics in real time. Show results grouped by track with snippet previews. Clicking a result navigates to that track and selects the version. Use a Dialog/modal with an input at the top and scrollable results below.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
