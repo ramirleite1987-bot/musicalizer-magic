@@ -21,9 +21,6 @@
 // installed Playwright.
 
 import { mkdir, writeFile } from "node:fs/promises";
-import { createRequire } from "node:module";
-
-const require_ = createRequire(import.meta.url);
 
 async function loadPlaywright() {
   const candidates = ["playwright", "playwright-core"];
