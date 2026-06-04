@@ -17,7 +17,7 @@ const DEFAULT_STYLE: TrackStyle = {
   duration: "2min",
   provider: "suno",
   sunoApiVersion: "v5.5",
-  minimaxModel: "music-1.5",
+  minimaxModel: "music-3",
   audioQuality: {
     sampleRate: 44100,
     bitrate: 256000,

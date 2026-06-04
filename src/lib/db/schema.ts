@@ -78,6 +78,20 @@ export const themes = pgTable("themes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const generationEvents = pgTable("generation_events", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  versionId: uuid("version_id")
+    .references(() => trackVersions.id, { onDelete: "cascade" })
+    .notNull(),
+  provider: varchar("provider", { length: 32 }).notNull(),
+  modelLabel: varchar("model_label", { length: 64 }).notNull(),
+  status: varchar("status", { length: 16 }).default("started").notNull(),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  endedAt: timestamp("ended_at"),
+  latencyMs: integer("latency_ms"),
+  error: text("error"),
+});
+
 export const trackThemes = pgTable(
   "track_themes",
   {

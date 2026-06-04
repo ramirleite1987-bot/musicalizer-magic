@@ -14,6 +14,7 @@ export const SUNO_VERSIONS = [
 ] as const;
 
 export const MINIMAX_MODELS = [
+  "music-3",
   "music-1.5",
   "music-01",
 ] as const;

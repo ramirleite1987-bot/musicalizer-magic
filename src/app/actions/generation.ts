@@ -1,9 +1,9 @@
 "use server";
 
 import { getDb } from "@/lib/db";
-import { trackVersions } from "@/lib/db/schema";
+import { generationEvents, trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import type { MusicProvider } from "@/types/music";
+import type { MusicProvider, TrackStyle } from "@/types/music";
 import { createGeneration, resolveProvider } from "@/lib/music";
 import {
   InvalidTrackStyleError,
@@ -19,6 +19,11 @@ export interface ValidationIssue {
 export type StartGenerationResult =
   | { ok: true; taskId: string; provider: MusicProvider }
   | { ok: false; error: string; issues?: ValidationIssue[] };
+
+function modelLabelFor(provider: string, style: TrackStyle): string {
+  if (provider === "minimax") return style.minimaxModel || "music-3";
+  return style.sunoApiVersion || "v5.5";
+}
 
 export async function startGeneration(
   versionId: string
@@ -70,6 +75,13 @@ export async function startGeneration(
       updatedAt: new Date(),
     })
     .where(eq(trackVersions.id, versionId));
+
+  await db.insert(generationEvents).values({
+    versionId,
+    provider,
+    modelLabel: modelLabelFor(provider, version.style),
+    status: "started",
+  });
 
   revalidatePath("/dashboard");
 

@@ -1,13 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { trackVersions } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { generationEvents, trackVersions } from "@/lib/db/schema";
+import { and, desc, eq } from "drizzle-orm";
 import { getGenerationStatus, inferAudioFile, resolveProvider } from "@/lib/music";
 import { put } from "@vercel/blob";
 
 type RouteContext = {
   params: Promise<{ versionId: string }>;
 };
+
+type TerminalStatus = "succeeded" | "failed";
+
+async function recordEventOutcome(
+  db: ReturnType<typeof getDb>,
+  versionId: string,
+  status: TerminalStatus,
+  error: string | null
+) {
+  const [event] = await db
+    .select()
+    .from(generationEvents)
+    .where(
+      and(
+        eq(generationEvents.versionId, versionId),
+        eq(generationEvents.status, "started")
+      )
+    )
+    .orderBy(desc(generationEvents.startedAt))
+    .limit(1);
+
+  if (!event) return;
+
+  const endedAt = new Date();
+  const latencyMs = endedAt.getTime() - event.startedAt.getTime();
+  await db
+    .update(generationEvents)
+    .set({ status, endedAt, latencyMs, error })
+    .where(eq(generationEvents.id, event.id));
+}
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
   const { versionId } = await params;
@@ -61,6 +91,8 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
         })
         .where(eq(trackVersions.id, versionId));
 
+      await recordEventOutcome(db, versionId, "succeeded", null);
+
       return NextResponse.json({
         status: "complete",
         audioUrl: blob.url,
@@ -78,9 +110,12 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
         })
         .where(eq(trackVersions.id, versionId));
 
+      const errorMsg = status.error ?? "Generation failed";
+      await recordEventOutcome(db, versionId, "failed", errorMsg);
+
       return NextResponse.json({
         status: "failed",
-        error: status.error ?? "Generation failed",
+        error: errorMsg,
       });
     }
 
