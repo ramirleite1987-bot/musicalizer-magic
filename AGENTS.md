@@ -20,6 +20,8 @@ See `package.json` scripts: `npm run dev`, `npm run build`, `npm run lint`. Type
 | `npm run build` | Production build (uses `--webpack` flag) |
 | `npm run lint` / `npx eslint .` | Lint |
 | `npx tsc --noEmit` | Type check |
+| `node scripts/smoke-test.mjs` | Headless Chrome end-to-end smoke test of the dashboard (see `scripts/smoke-test.mjs` for prerequisites) |
+| `npx tsx scripts/suno-integration-test.ts` | Self-contained Suno client integration test against an in-process mock (no DB/server/token needed) |
 
 ### Local database setup
 
