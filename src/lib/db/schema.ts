@@ -79,6 +79,13 @@ export const themes = pgTable("themes", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+export const stylePresets = pgTable("style_presets", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: varchar("name", { length: 255 }).notNull(),
+  style: jsonb("style").$type<TrackStyle>().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const trackThemes = pgTable(
   "track_themes",
   {
@@ -120,3 +127,14 @@ export const trackThemesRelations = relations(trackThemes, ({ one }) => ({
     references: [themes.id],
   }),
 }));
+
+export const generationLogs = pgTable("generation_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  trackId: uuid("track_id"),
+  versionId: uuid("version_id"),
+  provider: varchar("provider", { length: 32 }).notNull(),
+  model: varchar("model", { length: 64 }),
+  status: varchar("status", { length: 32 }).notNull(),
+  durationMs: integer("duration_ms"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

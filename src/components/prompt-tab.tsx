@@ -18,17 +18,19 @@ import { suggestPromptImprovements } from "@/app/actions/ai-suggestions";
 import type { PromptSuggestion } from "@/app/actions/ai-suggestions";
 import { toast } from "sonner";
 import { PromptTemplatesPanel } from "@/components/prompt-templates-panel";
+import { PromptTimeline } from "@/components/prompt-timeline";
 
 interface PromptTabProps {
   version: TrackVersion;
   history: TrackVersion[];
   onChange: (updates: Partial<TrackVersion>) => void;
   onStyleChange?: (style: Partial<TrackStyle>) => void;
+  onSelectVersion?: (versionId: string) => void;
 }
 
 const MAX_PROMPT_LENGTH = 3000;
 
-export function PromptTab({ version, history, onChange, onStyleChange }: PromptTabProps) {
+export function PromptTab({ version, history, onChange, onStyleChange, onSelectVersion }: PromptTabProps) {
   const [prompt, setPrompt] = useState(version.prompt);
   const [negativePrompt, setNegativePrompt] = useState(version.negativePrompt);
   const [isSuggesting, setIsSuggesting] = useState(false);
@@ -37,6 +39,7 @@ export function PromptTab({ version, history, onChange, onStyleChange }: PromptT
   );
   const [appliedIndex, setAppliedIndex] = useState<number | null>(null);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
 
   const handlePromptChange = (value: string) => {
     setPrompt(value);
@@ -134,6 +137,18 @@ export function PromptTab({ version, history, onChange, onStyleChange }: PromptT
             >
               {prompt.length}/{MAX_PROMPT_LENGTH}
             </span>
+            <Button
+              size="sm"
+              variant={showTimeline ? "default" : "outline"}
+              onClick={() => setShowTimeline((v) => !v)}
+              className={cn(
+                "h-7 px-2 text-xs gap-1",
+                showTimeline && "bg-violet-600 hover:bg-violet-700 text-white border-violet-600"
+              )}
+            >
+              <History className="w-3 h-3" />
+              History
+            </Button>
             <Button
               size="sm"
               variant="outline"
@@ -252,8 +267,31 @@ export function PromptTab({ version, history, onChange, onStyleChange }: PromptT
         </p>
       </div>
 
+      {/* Prompt Evolution Timeline */}
+      {showTimeline && (
+        <div className="rounded-lg border border-violet-200 dark:border-violet-800 bg-white dark:bg-zinc-900 p-4 space-y-3">
+          <div className="flex items-center gap-2">
+            <History className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+            <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
+              Prompt Evolution
+            </span>
+            <span className="text-xs text-zinc-400 ml-1">
+              {history.length} version{history.length !== 1 ? "s" : ""}
+            </span>
+          </div>
+          <PromptTimeline
+            versions={history}
+            currentVersionId={version.id}
+            onSelectVersion={(versionId) => {
+              onSelectVersion?.(versionId);
+              setShowTimeline(false);
+            }}
+          />
+        </div>
+      )}
+
       {/* History accordion */}
-      {pastVersions.length > 0 && (
+      {!showTimeline && pastVersions.length > 0 && (
         <Accordion>
           <AccordionItem value="history" className="border border-zinc-200 dark:border-zinc-800 rounded-lg">
             <AccordionTrigger className="px-4 py-3 text-sm font-medium hover:no-underline">

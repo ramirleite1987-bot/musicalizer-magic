@@ -81,6 +81,7 @@ export interface TrackVersion {
   trackId: string;
   versionNumber: number;
   createdAt: string;
+  updatedAt: string;
   status: TrackStatus;
   prompt: string;
   negativePrompt: string;

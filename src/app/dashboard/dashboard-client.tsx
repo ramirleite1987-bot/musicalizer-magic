@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useTransition } from "react";
+import { useState, useCallback, useTransition, useEffect } from "react";
 import { Track, TrackVersion, Theme } from "@/types/music";
 import { Sidebar } from "@/components/sidebar";
 import { Header } from "@/components/header";
@@ -25,6 +25,7 @@ import {
   updateVersion as updateVersionAction,
   cloneVersion as cloneVersionAction,
   markBest as markBestAction,
+  startBatchGeneration,
 } from "@/app/actions/versions";
 import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
@@ -39,6 +40,11 @@ import {
   KeyboardShortcutsHelp,
 } from "@/components/keyboard-shortcuts";
 import { GenerationProgressCard } from "@/components/generation-progress-card";
+import { SearchPalette } from "@/components/search-palette";
+import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
+import { OnboardingBanner } from "@/components/onboarding-banner";
+import { CreateTrackDialog } from "@/components/create-track-dialog";
+import { ActivityPanel } from "@/components/activity-panel";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -56,12 +62,29 @@ export function DashboardClient({
 }: DashboardClientProps) {
   const [tracks] = useState<Track[]>(initialTracks);
   const [themes] = useState<Theme[]>(initialThemes);
-  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(
-    initialTracks[0]?.id ?? null
-  );
+  const [selectedTrackId, setSelectedTrackId] = useState<string | null>(() => {
+    // If a ?track=<id> query param is present, select that track
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const trackParam = params.get("track");
+      if (trackParam && initialTracks.some((t) => t.id === trackParam)) {
+        return trackParam;
+      }
+    }
+    return initialTracks[0]?.id ?? null;
+  });
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     () => {
-      const firstTrack = initialTracks[0];
+      // Resolve initial track (may be from query param)
+      let firstTrack: Track | undefined;
+      if (typeof window !== "undefined") {
+        const params = new URLSearchParams(window.location.search);
+        const trackParam = params.get("track");
+        if (trackParam) {
+          firstTrack = initialTracks.find((t) => t.id === trackParam);
+        }
+      }
+      if (!firstTrack) firstTrack = initialTracks[0];
       if (!firstTrack) return null;
       const best = firstTrack.versions.find((v) => v.isBest);
       return best?.id ?? firstTrack.versions[0]?.id ?? null;
@@ -69,15 +92,23 @@ export function DashboardClient({
   );
   const [activeTab, setActiveTab] = useState("versions");
   const [showHelp, setShowHelp] = useState(false);
+  const [showSearchPalette, setShowSearchPalette] = useState(false);
+  const [showCreateTrack, setShowCreateTrack] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Active generation progress card state
-  const [activeGeneration, setActiveGeneration] = useState<{
-    versionId: string;
-    provider: string;
-    model: string;
-    versionLabel: string;
-  } | null>(null);
+  // Active generation progress cards — supports multiple concurrent cards (batch)
+  const [activeGenerations, setActiveGenerations] = useState<
+    Array<{
+      versionId: string;
+      provider: string;
+      model: string;
+      versionLabel: string;
+    }>
+  >([]);
+
+  // isBatchGenerating tracks whether batch generation is being set up
+  const [isBatchGenerating, setIsBatchGenerating] = useState(false);
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
   const selectedVersion =
@@ -136,6 +167,20 @@ export function DashboardClient({
     });
   }, [selectedTrackId, selectedVersionId]);
 
+  const handleMarkBestVersion = useCallback(
+    (versionId: string) => {
+      if (!selectedTrackId) return;
+      startTransition(async () => {
+        await markBestAction(selectedTrackId, versionId);
+        toast.success("Marked as Best Version", {
+          description:
+            "This version will be used as the reference for future generations.",
+        });
+      });
+    },
+    [selectedTrackId]
+  );
+
   const handleRenameTrack = useCallback(
     (newName: string) => {
       if (!selectedTrackId) return;
@@ -162,12 +207,15 @@ export function DashboardClient({
       .then(() => {
         // Switch to versions tab so the progress card is visible
         setActiveTab("versions");
-        setActiveGeneration({
-          versionId,
-          provider,
-          model: modelLabel,
-          versionLabel,
-        });
+        setActiveGenerations((prev) => [
+          ...prev,
+          {
+            versionId,
+            provider,
+            model: modelLabel,
+            versionLabel,
+          },
+        ]);
       })
       .catch((err: Error) => {
         toast.error("Could not start generation", {
@@ -219,9 +267,38 @@ export function DashboardClient({
     window.location.reload();
   }, []);
 
-  const handleGenerationDismiss = useCallback(() => {
-    setActiveGeneration(null);
+  const handleGenerationDismiss = useCallback((versionId: string) => {
+    setActiveGenerations((prev) => prev.filter((g) => g.versionId !== versionId));
   }, []);
+
+  const handleBatchGenerate = useCallback(() => {
+    if (!selectedTrack || !selectedVersion || isBatchGenerating) return;
+    setIsBatchGenerating(true);
+    startBatchGeneration(selectedTrack.id, selectedVersion.id)
+      .then((results) => {
+        setActiveTab("versions");
+        setActiveGenerations((prev) => [
+          ...prev,
+          ...results.map((r) => ({
+            versionId: r.versionId,
+            provider: r.provider,
+            model: r.model,
+            versionLabel: `${selectedTrack.name} v${r.versionNumber}`,
+          })),
+        ]);
+        toast.success("Batch generation started", {
+          description: `3 variations are now generating.`,
+        });
+      })
+      .catch((err: Error) => {
+        toast.error("Batch generation failed", {
+          description: err.message,
+        });
+      })
+      .finally(() => {
+        setIsBatchGenerating(false);
+      });
+  }, [selectedTrack, selectedVersion, isBatchGenerating]);
 
   const handleAssignTheme = useCallback(
     (themeId: string) => {
@@ -311,6 +388,36 @@ export function DashboardClient({
     onToggleHelp: handleToggleHelp,
   });
 
+  // Cmd+K / Ctrl+K shortcut to open search palette
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setShowSearchPalette((prev) => !prev);
+      }
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  const handleSearchResult = useCallback(
+    (trackId: string, versionId?: string) => {
+      setSelectedTrackId(trackId);
+      if (versionId) {
+        setSelectedVersionId(versionId);
+      } else {
+        const track = tracks.find((t) => t.id === trackId);
+        if (track && track.versions.length > 0) {
+          const best = track.versions.find((v) => v.isBest);
+          setSelectedVersionId(best ? best.id : track.versions[track.versions.length - 1].id);
+        } else {
+          setSelectedVersionId(null);
+        }
+      }
+    },
+    [tracks]
+  );
+
   const handleGenerateThemes = useCallback(
     async (
       source: "url" | "document",
@@ -339,6 +446,18 @@ export function DashboardClient({
         themes={themes}
         selectedTrackId={selectedTrackId}
         onSelectTrack={handleSelectTrack}
+        onTrackDuplicated={(newTrackId) => {
+          // Reload page and navigate to the duplicated track
+          window.location.href = `/dashboard?track=${newTrackId}`;
+        }}
+        onTrackDeleted={(deletedTrackId) => {
+          // If the deleted track was selected, reload to pick a new one
+          if (deletedTrackId === selectedTrackId) {
+            window.location.reload();
+          } else {
+            window.location.reload();
+          }
+        }}
       />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background/95">
@@ -346,12 +465,16 @@ export function DashboardClient({
           track={selectedTrack}
           version={selectedVersion}
           onGenerate={handleGenerate}
+          onBatchGenerate={handleBatchGenerate}
+          isBatchGenerating={isBatchGenerating}
           themes={themes}
           onImported={(newTrackId) => {
             // Reload the page so the server component re-fetches the new track
             window.location.href = `/dashboard?track=${newTrackId}`;
           }}
           onRenameTrack={handleRenameTrack}
+          onOpenSearch={() => setShowSearchPalette(true)}
+          onOpenActivity={() => setShowActivity((prev) => !prev)}
         />
 
         {loadWarning ? (
@@ -362,6 +485,8 @@ export function DashboardClient({
             {loadWarning}
           </div>
         ) : null}
+
+        {tracks.length > 0 && <OnboardingBanner />}
 
         {selectedTrack && selectedVersion ? (
           <div className="flex-1 flex flex-col min-h-0">
@@ -423,16 +548,19 @@ export function DashboardClient({
                     value="versions"
                     className="m-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-2 duration-300"
                   >
-                    {activeGeneration && (
-                      <div className="px-4 pt-4">
-                        <GenerationProgressCard
-                          versionId={activeGeneration.versionId}
-                          provider={activeGeneration.provider}
-                          model={activeGeneration.model}
-                          versionLabel={activeGeneration.versionLabel}
-                          onComplete={handleGenerationComplete}
-                          onDismiss={handleGenerationDismiss}
-                        />
+                    {activeGenerations.length > 0 && (
+                      <div className="px-4 pt-4 flex flex-col gap-3">
+                        {activeGenerations.map((gen) => (
+                          <GenerationProgressCard
+                            key={gen.versionId}
+                            versionId={gen.versionId}
+                            provider={gen.provider}
+                            model={gen.model}
+                            versionLabel={gen.versionLabel}
+                            onComplete={handleGenerationComplete}
+                            onDismiss={() => handleGenerationDismiss(gen.versionId)}
+                          />
+                        ))}
                       </div>
                     )}
                     <VersionsTab
@@ -442,6 +570,8 @@ export function DashboardClient({
                       onNewVersion={handleNewVersion}
                       onUploadAudio={handleUploadAudio}
                       onRemoveAudio={handleRemoveAudio}
+                      onMarkBest={handleMarkBestVersion}
+                      trackName={selectedTrack.name}
                     />
                   </TabsContent>
 
@@ -453,6 +583,7 @@ export function DashboardClient({
                       version={selectedVersion}
                       history={selectedTrack.versions}
                       onChange={handleUpdateVersion}
+                      onSelectVersion={setSelectedVersionId}
                       onStyleChange={(styleUpdates) =>
                         handleUpdateVersion({
                           style: {
@@ -472,6 +603,8 @@ export function DashboardClient({
                       version={selectedVersion}
                       history={selectedTrack.versions}
                       onChange={handleUpdateVersion}
+                      trackName={selectedTrack.name}
+                      trackStyle={selectedVersion.style}
                     />
                   </TabsContent>
 
@@ -507,6 +640,7 @@ export function DashboardClient({
                     <EvaluateTab
                       version={selectedVersion}
                       bestVersion={bestVersion}
+                      trackName={selectedTrack?.name ?? ""}
                       onChange={handleUpdateVersion}
                       onMarkBest={handleMarkBest}
                     />
@@ -515,6 +649,8 @@ export function DashboardClient({
               </ScrollArea>
             </Tabs>
           </div>
+        ) : tracks.length === 0 ? (
+          <OnboardingEmptyState onCreateTrack={() => setShowCreateTrack(true)} />
         ) : (
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center space-y-4">
@@ -526,6 +662,28 @@ export function DashboardClient({
       </div>
 
       <KeyboardShortcutsHelp open={showHelp} onClose={handleCloseHelp} />
+
+      <SearchPalette
+        tracks={tracks}
+        open={showSearchPalette}
+        onClose={() => setShowSearchPalette(false)}
+        onSelectResult={handleSearchResult}
+      />
+
+      <CreateTrackDialog
+        open={showCreateTrack}
+        onOpenChange={setShowCreateTrack}
+        onCreated={() => window.location.reload()}
+      />
+
+      {showActivity && (
+        <ActivityPanel
+          tracks={tracks}
+          themes={themes}
+          onSelectTrack={handleSelectTrack}
+          onClose={() => setShowActivity(false)}
+        />
+      )}
     </div>
   );
 }

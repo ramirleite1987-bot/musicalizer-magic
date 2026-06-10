@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
-import { trackVersions } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { trackVersions, generationLogs } from "@/lib/db/schema";
+import { eq, and, desc } from "drizzle-orm";
 import { getGenerationStatus, inferAudioFile, resolveProvider } from "@/lib/music";
 import { put } from "@vercel/blob";
 
@@ -61,6 +61,43 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
         })
         .where(eq(trackVersions.id, versionId));
 
+      // Update generation log with final status and duration
+      try {
+        const [startedLog] = await db
+          .select()
+          .from(generationLogs)
+          .where(
+            and(
+              eq(generationLogs.versionId, versionId),
+              eq(generationLogs.status, "started")
+            )
+          )
+          .orderBy(desc(generationLogs.createdAt))
+          .limit(1);
+
+        if (startedLog) {
+          const durationMs = Date.now() - startedLog.createdAt.getTime();
+          await db
+            .update(generationLogs)
+            .set({ status: "complete", durationMs })
+            .where(eq(generationLogs.id, startedLog.id));
+        } else {
+          const model =
+            provider === "minimax"
+              ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
+              : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
+          await db.insert(generationLogs).values({
+            trackId: version.trackId,
+            versionId,
+            provider,
+            model,
+            status: "complete",
+          });
+        }
+      } catch {
+        // Non-fatal
+      }
+
       return NextResponse.json({
         status: "complete",
         audioUrl: blob.url,
@@ -77,6 +114,43 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
           updatedAt: new Date(),
         })
         .where(eq(trackVersions.id, versionId));
+
+      // Update generation log with failed status
+      try {
+        const [startedLog] = await db
+          .select()
+          .from(generationLogs)
+          .where(
+            and(
+              eq(generationLogs.versionId, versionId),
+              eq(generationLogs.status, "started")
+            )
+          )
+          .orderBy(desc(generationLogs.createdAt))
+          .limit(1);
+
+        if (startedLog) {
+          const durationMs = Date.now() - startedLog.createdAt.getTime();
+          await db
+            .update(generationLogs)
+            .set({ status: "failed", durationMs })
+            .where(eq(generationLogs.id, startedLog.id));
+        } else {
+          const model =
+            provider === "minimax"
+              ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
+              : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
+          await db.insert(generationLogs).values({
+            trackId: version.trackId,
+            versionId,
+            provider,
+            model,
+            status: "failed",
+          });
+        }
+      } catch {
+        // Non-fatal
+      }
 
       return NextResponse.json({
         status: "failed",

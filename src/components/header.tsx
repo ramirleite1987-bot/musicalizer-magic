@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -12,14 +13,19 @@ import { parseTrackImport } from "@/lib/track-export";
 import { importTrack } from "@/app/actions/import-track";
 import { generateTrackNames } from "@/app/actions/ai-suggestions";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface HeaderProps {
   track: Track | null;
   version: TrackVersion | null;
   onGenerate: () => void;
+  onBatchGenerate?: () => void;
+  isBatchGenerating?: boolean;
   themes?: Theme[];
   onImported?: (newTrackId: string) => void;
   onRenameTrack?: (newName: string) => void;
+  onOpenSearch?: () => void;
+  onOpenActivity?: () => void;
 }
 
 const STATUS_CONFIG = {
@@ -29,7 +35,7 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, themes = [], onImported, onRenameTrack }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -212,6 +218,19 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
             variant="outline"
             size="sm"
             className="gap-1.5"
+            onClick={onOpenSearch}
+            title="Search (Cmd+K)"
+          >
+            <Search className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Search</span>
+            <kbd className="hidden sm:inline-flex items-center ml-1 px-1 py-0.5 rounded border border-zinc-300 dark:border-zinc-600 text-[10px] font-mono text-zinc-400 bg-zinc-50 dark:bg-zinc-800">
+              ⌘K
+            </kbd>
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
             onClick={handleImportClick}
             disabled={isImporting}
           >
@@ -222,6 +241,25 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
             )}
             Import
           </Button>
+          <Link href="/usage">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <BarChart2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Usage</span>
+            </Button>
+          </Link>
+          {onOpenActivity && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={onOpenActivity}
+              title="Activity feed"
+            >
+              <Activity className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Activity</span>
+            </Button>
+          )}
+          <ThemeToggle />
         </div>
       </div>
     );
@@ -354,6 +392,35 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
 
       {/* Right side: badges + action buttons */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Search button */}
+        <Button
+          variant="outline"
+          size="sm"
+          className="gap-1.5"
+          onClick={onOpenSearch}
+          title="Search (Cmd+K)"
+        >
+          <Search className="w-3.5 h-3.5" />
+          <span className="hidden lg:inline">Search</span>
+          <kbd className="hidden lg:inline-flex items-center ml-1 px-1 py-0.5 rounded border border-zinc-300 dark:border-zinc-600 text-[10px] font-mono text-zinc-400 bg-zinc-50 dark:bg-zinc-800">
+            ⌘K
+          </kbd>
+        </Button>
+
+        {/* Activity feed button */}
+        {onOpenActivity && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={onOpenActivity}
+            title="Activity feed"
+          >
+            <Activity className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Activity</span>
+          </Button>
+        )}
+
         {/* Status badge */}
         {version && (
           <Badge
@@ -414,6 +481,35 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
           )}
           Import
         </Button>
+
+        {/* Usage link */}
+        <Link href="/usage">
+          <Button variant="outline" size="sm" className="gap-1.5" title="Usage dashboard">
+            <BarChart2 className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Usage</span>
+          </Button>
+        </Link>
+
+        <ThemeToggle />
+
+        {/* Batch Generate — 3 Variations */}
+        {onBatchGenerate && (
+          <Button
+            onClick={onBatchGenerate}
+            disabled={isGenerating || isBatchGenerating || !version}
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            title="Generate 3 AI-varied prompt versions at once"
+          >
+            {isBatchGenerating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <span className="text-sm leading-none">⚡</span>
+            )}
+            <span className="hidden sm:inline">3 Variations</span>
+          </Button>
+        )}
 
         <Button
           onClick={onGenerate}

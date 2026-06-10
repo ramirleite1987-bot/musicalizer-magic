@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { X, Plus } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { X, Plus, Bookmark, Trash2 } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,12 @@ import {
   type MusicProvider,
   type TrackVersion,
 } from "@/types/music";
+import {
+  getStylePresets,
+  saveStylePreset,
+  deleteStylePreset,
+  type StylePreset,
+} from "@/app/actions/style-presets";
 
 const DEFAULT_MINIMAX_AUDIO_QUALITY: AudioQuality = {
   sampleRate: 44100,
@@ -73,6 +79,26 @@ interface StyleTabProps {
 export function StyleTab({ version, onChange }: StyleTabProps) {
   const style = version.style;
   const [newInstrument, setNewInstrument] = useState("");
+  const [presets, setPresets] = useState<StylePreset[]>([]);
+  const [savingPreset, setSavingPreset] = useState(false);
+  const [presetName, setPresetName] = useState("");
+  const [loadingPresets, setLoadingPresets] = useState(false);
+
+  const loadPresets = useCallback(async () => {
+    setLoadingPresets(true);
+    try {
+      const data = await getStylePresets();
+      setPresets(data);
+    } catch {
+      // silently fail if DB unavailable
+    } finally {
+      setLoadingPresets(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadPresets();
+  }, [loadPresets]);
 
   const updateStyle = (updates: Partial<typeof style>) => {
     onChange({ style: { ...style, ...updates } });
@@ -114,8 +140,129 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
     return "Extreme";
   };
 
+  const handleLoadPreset = (presetId: string | null) => {
+    if (!presetId) return;
+    const preset = presets.find((p) => p.id === presetId);
+    if (!preset) return;
+    onChange({ style: { ...preset.style } });
+  };
+
+  const handleSavePreset = async () => {
+    const trimmed = presetName.trim();
+    if (!trimmed) return;
+    try {
+      await saveStylePreset(trimmed, style);
+      setPresetName("");
+      setSavingPreset(false);
+      await loadPresets();
+    } catch {
+      // silently fail
+    }
+  };
+
+  const handleDeletePreset = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await deleteStylePreset(id);
+      await loadPresets();
+    } catch {
+      // silently fail
+    }
+  };
+
   return (
     <div className="flex flex-col gap-5 p-4">
+      {/* Presets Row */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">Presets</Label>
+        <div className="flex gap-2 items-center">
+          <div className="flex-1">
+            <Select
+              onValueChange={handleLoadPreset}
+              disabled={loadingPresets || presets.length === 0}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder={
+                    loadingPresets
+                      ? "Loading presets..."
+                      : presets.length === 0
+                      ? "No presets saved"
+                      : "Load preset..."
+                  }
+                />
+              </SelectTrigger>
+              <SelectContent>
+                {presets.map((preset) => (
+                  <div key={preset.id} className="relative flex items-center">
+                    <SelectItem value={preset.id} className="flex-1 pr-8">
+                      {preset.name}
+                    </SelectItem>
+                    <button
+                      onClick={(e) => handleDeletePreset(preset.id, e)}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-red-500 transition-colors z-10"
+                      title="Delete preset"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {!savingPreset ? (
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 px-3 gap-1.5 shrink-0"
+              onClick={() => setSavingPreset(true)}
+              title="Save current style as preset"
+            >
+              <Bookmark className="w-3.5 h-3.5" />
+              Save
+            </Button>
+          ) : (
+            <div className="flex gap-1.5 items-center">
+              <Input
+                value={presetName}
+                onChange={(e) => setPresetName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSavePreset();
+                  if (e.key === "Escape") {
+                    setSavingPreset(false);
+                    setPresetName("");
+                  }
+                }}
+                placeholder="Preset name..."
+                className="h-9 text-sm w-36"
+                autoFocus
+              />
+              <Button
+                size="sm"
+                className="h-9 px-3 shrink-0"
+                onClick={handleSavePreset}
+                disabled={!presetName.trim()}
+              >
+                Save
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-9 px-2 shrink-0"
+                onClick={() => {
+                  setSavingPreset(false);
+                  setPresetName("");
+                }}
+              >
+                <X className="w-3.5 h-3.5" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Separator />
+
       {/* Genre */}
       <div className="space-y-2">
         <Label className="text-sm font-medium">Genre</Label>

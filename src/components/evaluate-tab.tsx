@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Star, Trophy, TrendingUp, TrendingDown } from "lucide-react";
+import { Star, Trophy, TrendingUp, TrendingDown, Sparkles, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { fireConfetti } from "@/lib/confetti";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -13,10 +14,12 @@ import { Progress } from "@/components/ui/progress";
 import { cn } from "@/lib/utils";
 import type { TrackVersion, DimensionScores } from "@/types/music";
 import { RadarChart } from "@/components/radar-chart";
+import { autoEvaluate } from "@/app/actions/ai-suggestions";
 
 interface EvaluateTabProps {
   version: TrackVersion;
   bestVersion: TrackVersion | null;
+  trackName: string;
   onChange: (updates: Partial<TrackVersion>) => void;
   onMarkBest: () => void;
 }
@@ -69,9 +72,18 @@ function StarRatingInput({
   );
 }
 
-export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: EvaluateTabProps) {
+interface AiEvalResult {
+  scores: DimensionScores;
+  justifications: Record<string, string>;
+  overallNotes: string;
+}
+
+export function EvaluateTab({ version, bestVersion, trackName, onChange, onMarkBest }: EvaluateTabProps) {
   const scores = version.dimensionScores;
   const feedback = version.feedback;
+
+  const [isEvaluating, setIsEvaluating] = useState(false);
+  const [aiResult, setAiResult] = useState<AiEvalResult | null>(null);
 
   const updateDimension = (key: keyof DimensionScores, value: number) => {
     onChange({ dimensionScores: { ...scores, [key]: value } });
@@ -79,6 +91,36 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
 
   const updateFeedback = (key: keyof typeof feedback, value: string) => {
     onChange({ feedback: { ...feedback, [key]: value } });
+  };
+
+  const handleAiEvaluate = async () => {
+    setIsEvaluating(true);
+    setAiResult(null);
+    try {
+      const result = await autoEvaluate({
+        prompt: version.prompt,
+        negativePrompt: version.negativePrompt,
+        lyrics: version.lyrics,
+        style: version.style,
+        trackName,
+      });
+      setAiResult(result);
+    } catch (err) {
+      toast.error("AI evaluation failed. Please try again.");
+      console.error(err);
+    } finally {
+      setIsEvaluating(false);
+    }
+  };
+
+  const handleAcceptAll = () => {
+    if (!aiResult) return;
+    onChange({
+      dimensionScores: aiResult.scores,
+      notes: aiResult.overallNotes,
+    });
+    setAiResult(null);
+    toast.success("AI scores applied!");
   };
 
   const avgScore =
@@ -140,9 +182,85 @@ export function EvaluateTab({ version, bestVersion, onChange, onMarkBest }: Eval
 
       {/* Radar Chart */}
       <div className="space-y-3">
-        <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
-          Score Overview
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400 dark:text-zinc-500">
+            Score Overview
+          </p>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleAiEvaluate}
+            disabled={isEvaluating}
+            className="gap-1.5 border-violet-300 text-violet-700 hover:bg-violet-50 hover:text-violet-800 dark:border-violet-700 dark:text-violet-400 dark:hover:bg-violet-950 dark:hover:text-violet-300"
+          >
+            {isEvaluating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            {isEvaluating ? "Evaluating…" : "✨ AI Evaluate"}
+          </Button>
+        </div>
+
+        {/* AI Evaluation Results Panel */}
+        {aiResult && (
+          <div className="rounded-lg border border-violet-200 dark:border-violet-800 bg-violet-50 dark:bg-violet-950/20 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="text-sm font-semibold text-violet-800 dark:text-violet-300 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4" />
+                AI Evaluation Suggestions
+              </p>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="sm"
+                  onClick={handleAcceptAll}
+                  className="h-7 px-3 text-xs bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-600"
+                >
+                  Accept All
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setAiResult(null)}
+                  className="h-7 px-3 text-xs text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                >
+                  Dismiss
+                </Button>
+              </div>
+            </div>
+            <div className="space-y-2">
+              {DIMENSIONS.map(({ key, label }) => (
+                <div key={key} className="flex items-start gap-3">
+                  <span className="text-xs text-zinc-600 dark:text-zinc-400 w-28 flex-shrink-0 pt-0.5">
+                    {label}
+                  </span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <Badge
+                      variant="secondary"
+                      className="text-xs bg-violet-100 text-violet-700 dark:bg-violet-900 dark:text-violet-300"
+                    >
+                      {aiResult.scores[key]}/10
+                    </Badge>
+                  </div>
+                  {aiResult.justifications[key] && (
+                    <p className="text-xs italic text-zinc-500 dark:text-zinc-400 leading-relaxed">
+                      {aiResult.justifications[key]}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+            {aiResult.overallNotes && (
+              <div className="pt-2 border-t border-violet-200 dark:border-violet-800">
+                <p className="text-xs font-medium text-violet-700 dark:text-violet-400 mb-1">Overall Notes</p>
+                <p className="text-xs text-zinc-600 dark:text-zinc-400 italic leading-relaxed">
+                  {aiResult.overallNotes}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="flex items-center justify-between">
           <Label className="text-sm font-medium">Dimension Scores</Label>
           <div className="flex items-center gap-2">

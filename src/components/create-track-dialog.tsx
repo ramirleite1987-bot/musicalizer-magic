@@ -1,0 +1,158 @@
+"use client";
+
+import { useState, useTransition, useRef, useEffect } from "react";
+import { Loader2, Music } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { createTrack } from "@/app/actions/tracks";
+import { toast } from "sonner";
+
+interface CreateTrackDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onCreated?: () => void;
+}
+
+const GENRE_SUGGESTIONS = [
+  "Pop",
+  "Hip Hop",
+  "Electronic",
+  "Lo-Fi",
+  "Cinematic",
+  "Jazz",
+  "Rock",
+  "Ambient",
+];
+
+export function CreateTrackDialog({
+  open,
+  onOpenChange,
+  onCreated,
+}: CreateTrackDialogProps) {
+  const [name, setName] = useState("");
+  const [genre, setGenre] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus the name input when the dialog opens
+  useEffect(() => {
+    if (open) {
+      setTimeout(() => nameInputRef.current?.focus(), 50);
+    } else {
+      setName("");
+      setGenre("");
+    }
+  }, [open]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedName = name.trim();
+    const trimmedGenre = genre.trim() || "General";
+    if (!trimmedName) return;
+
+    startTransition(async () => {
+      try {
+        await createTrack({ name: trimmedName, genre: trimmedGenre });
+        toast.success("Track created", { description: trimmedName });
+        onOpenChange(false);
+        onCreated?.();
+      } catch (err) {
+        toast.error("Failed to create track", {
+          description: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <div className="flex items-center gap-3 mb-1">
+            <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <Music className="w-5 h-5 text-white" />
+            </div>
+            <DialogTitle>Create a new track</DialogTitle>
+          </div>
+          <DialogDescription>
+            Give your track a name and an optional genre to get started.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="px-6 space-y-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="track-name">Track name</Label>
+            <Input
+              id="track-name"
+              ref={nameInputRef}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Summer Vibes"
+              disabled={isPending}
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="track-genre">
+              Genre{" "}
+              <span className="text-zinc-400 font-normal text-xs">(optional)</span>
+            </Label>
+            <Input
+              id="track-genre"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+              placeholder="e.g. Electronic"
+              disabled={isPending}
+            />
+            {/* Genre suggestions */}
+            <div className="flex flex-wrap gap-1.5 pt-0.5">
+              {GENRE_SUGGESTIONS.map((g) => (
+                <button
+                  key={g}
+                  type="button"
+                  onClick={() => setGenre(g)}
+                  disabled={isPending}
+                  className="text-xs px-2 py-0.5 rounded-full border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:border-violet-400 hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                >
+                  {g}
+                </button>
+              ))}
+            </div>
+          </div>
+        </form>
+
+        <DialogFooter>
+          <DialogClose
+            render={
+              <Button variant="outline" size="sm" disabled={isPending} type="button">
+                Cancel
+              </Button>
+            }
+          />
+          <Button
+            size="sm"
+            disabled={isPending || !name.trim()}
+            onClick={handleSubmit as unknown as React.MouseEventHandler}
+            className="bg-violet-600 hover:bg-violet-700 text-white gap-1.5"
+          >
+            {isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : null}
+            Create Track
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
