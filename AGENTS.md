@@ -12,14 +12,14 @@ This version has breaking changes — APIs, conventions, and file structure may 
 
 ### Standard commands
 
-See `package.json` scripts: `npm run dev`, `npm run build`, `npm run lint`. TypeScript check: `npx tsc --noEmit`.
-
 | Command | Purpose |
 |---------|---------|
 | `npm run dev` | Start dev server (port 3000) |
 | `npm run build` | Production build (uses `--webpack` flag) |
-| `npm run lint` / `npx eslint .` | Lint |
-| `npx tsc --noEmit` | Type check |
+| `npm run lint` | Lint (ESLint 9 flat config) |
+| `npm run typecheck` | Type check (`tsc --noEmit`) |
+| `npm test` | Run unit tests (Vitest + jsdom + Testing Library, in `src/test/`) |
+| `npm run db:generate` / `db:migrate` / `db:push` / `db:seed` / `db:studio` | Drizzle workflows (need `DATABASE_URL`) |
 | `node scripts/smoke-test.mjs` | Headless Chrome end-to-end smoke test of the dashboard (see `scripts/smoke-test.mjs` for prerequisites) |
 | `npx tsx scripts/suno-integration-test.ts` | Self-contained Suno client integration test against an in-process mock (no DB/server/token needed) |
 
@@ -36,7 +36,8 @@ The app uses `@neondatabase/serverless` (neon-http driver), which requires an HT
 ### Required secrets (env vars)
 
 - `DATABASE_URL` — Neon Postgres connection string (required for the dashboard to load data on deploy; optional locally if you use the proxy setup above).
-- Optional: `ANTHROPIC_API_KEY`, `SUNO_API_KEY`, `SUNO_API_BASE_URL`, `BLOB_READ_WRITE_TOKEN`.
+- Optional: `ANTHROPIC_API_KEY`, `SUNO_API_KEY`, `SUNO_API_BASE_URL`, `MINIMAX_API_KEY`, `MINIMAX_API_BASE_URL`, `BLOB_READ_WRITE_TOKEN`.
+- The full template lives in `.env.example` — keep it updated (with placeholders only) when adding a new env var.
 
 ### Gotchas
 
@@ -47,4 +48,5 @@ The app uses `@neondatabase/serverless` (neon-http driver), which requires an HT
 - **drizzle-kit push**: May not work locally the same way as against Neon if tooling expects the websocket driver; you can create or migrate tables with `psql` against `localhost:5432` when using the local stack.
 - **Migrations**: SQL snapshots live under `drizzle/`; apply with `npm run db:migrate` (requires `DATABASE_URL` and `tsx`). Schema source remains `src/lib/db/schema.ts`.
 - `.env` is gitignored; copy from `.env.example` and fill in values. For local dev, set `DATABASE_URL` and `NEON_LOCAL_PROXY` as described above.
-- No automated test suite is configured in `package.json` (no test runner script).
+- Unit tests run with Vitest (`npm test`); they live in `src/test/*.test.{ts,tsx}` and need no DB or API keys.
+- `src/instrumentation.ts` also runs idempotent DDL (`ADD COLUMN/CREATE TABLE IF NOT EXISTS`) on server cold start — if you change `src/lib/db/schema.ts`, generate a migration under `drizzle/` AND keep that bootstrap DDL consistent.
