@@ -121,7 +121,7 @@
       "id": 28,
       "title": "Style Presets Save/Load",
       "description": "Let users save the current Style tab configuration as a named preset (stored in a style_presets DB table) and load it into any version. Presets dropdown at the top of the Style tab with save/delete management.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

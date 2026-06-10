@@ -1,0 +1,6 @@
+CREATE TABLE IF NOT EXISTS style_presets (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  style JSONB NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW() NOT NULL
+);
