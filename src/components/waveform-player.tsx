@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Play, Pause, Music2 } from "lucide-react";
+import { Play, Pause, Music2, Download, Loader2 } from "lucide-react";
+import { downloadAudio } from "@/lib/download-audio";
 
 interface WaveformPlayerProps {
   audioUrl: string;
@@ -24,6 +25,7 @@ export function WaveformPlayer({ audioUrl, fileName }: WaveformPlayerProps) {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [error, setError] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   // Clean up wavesurfer instance when url changes or on unmount
   useEffect(() => {
@@ -111,6 +113,18 @@ export function WaveformPlayer({ audioUrl, fileName }: WaveformPlayerProps) {
     };
   }, [audioUrl]);
 
+  const handleDownload = async () => {
+    if (isDownloading) return;
+    setIsDownloading(true);
+    try {
+      await downloadAudio(audioUrl, fileName ?? "audio.mp3");
+    } catch (err) {
+      console.error("Audio download failed:", err);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
   const togglePlay = () => {
     const ws = wavesurferRef.current;
     if (!ws) return;
@@ -186,6 +200,19 @@ export function WaveformPlayer({ audioUrl, fileName }: WaveformPlayerProps) {
             <span className="text-zinc-600"> / {formatTime(duration)}</span>
           )}
         </span>
+
+        <button
+          onClick={handleDownload}
+          disabled={isDownloading}
+          className="w-7 h-7 rounded-md hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center text-zinc-400 hover:text-zinc-200 transition-colors flex-shrink-0"
+          aria-label="Download audio"
+        >
+          {isDownloading ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+          ) : (
+            <Download className="w-3.5 h-3.5" />
+          )}
+        </button>
       </div>
     </div>
   );

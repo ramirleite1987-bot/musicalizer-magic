@@ -1,7 +1,7 @@
 "use server";
 
 import { getDb } from "@/lib/db";
-import { trackVersions } from "@/lib/db/schema";
+import { trackVersions, generationLogs } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createGeneration, resolveProvider } from "@/lib/music";
 import { validateForGeneration } from "@/lib/music/validation";
@@ -40,6 +40,23 @@ export async function startGeneration(versionId: string) {
       updatedAt: new Date(),
     })
     .where(eq(trackVersions.id, versionId));
+
+  // Log the generation start
+  try {
+    const model =
+      provider === "minimax"
+        ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
+        : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
+    await db.insert(generationLogs).values({
+      trackId: version.trackId,
+      versionId,
+      provider,
+      model,
+      status: "started",
+    });
+  } catch {
+    // Non-fatal
+  }
 
   revalidatePath("/dashboard");
 

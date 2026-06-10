@@ -1,72 +1,203 @@
 {
   "improvements": [
-    { "id": 1, "title": "Waveform Visualization", "status": "done", "priority": "high" },
-    { "id": 2, "title": "AI Prompt Improvement Suggestions", "status": "done", "priority": "high" },
-    { "id": 3, "title": "Side-by-side Version Comparison Modal", "status": "done", "priority": "high" },
-    { "id": 4, "title": "Keyboard Shortcuts", "status": "done", "priority": "medium" },
-    { "id": 5, "title": "Prompt Templates Library", "status": "done", "priority": "high" },
-    { "id": 6, "title": "Track Statistics Summary Card", "status": "done", "priority": "medium" },
-    { "id": 7, "title": "Export Track as JSON", "status": "done", "priority": "medium" },
-    { "id": 8, "title": "Auto-Generate Track Name with AI", "status": "done", "priority": "medium" },
-    { "id": 9, "title": "Generation Progress Indicator", "status": "done", "priority": "high" },
-    { "id": 10, "title": "Quick Tags on Tracks", "status": "done", "priority": "medium" },
-    { "id": 11, "title": "Evaluation Radar Chart", "status": "done", "priority": "high" },
-    { "id": 12, "title": "Confetti + Best Version Celebration", "status": "done", "priority": "low" },
+    {
+      "id": 1,
+      "title": "Waveform Visualization",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "title": "AI Prompt Improvement Suggestions",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 3,
+      "title": "Side-by-side Version Comparison Modal",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 4,
+      "title": "Keyboard Shortcuts",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 5,
+      "title": "Prompt Templates Library",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 6,
+      "title": "Track Statistics Summary Card",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 7,
+      "title": "Export Track as JSON",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 8,
+      "title": "Auto-Generate Track Name with AI",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 9,
+      "title": "Generation Progress Indicator",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 10,
+      "title": "Quick Tags on Tracks",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 11,
+      "title": "Evaluation Radar Chart",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 12,
+      "title": "Confetti + Best Version Celebration",
+      "status": "done",
+      "priority": "low"
+    },
     {
       "id": 13,
       "title": "AI Lyrics Generator",
       "description": "Add a 'Generate Lyrics' button in the Lyrics tab. Sends the track name, prompt, genre, themes, and mood to Claude and returns a full set of lyrics (verse/chorus/bridge structure). Show the result in a preview modal with 'Apply' and 'Regenerate' buttons.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
       "id": 14,
       "title": "Dark/Light Mode Toggle",
       "description": "Add a sun/moon toggle button in the header to switch between dark and light mode. Use next-themes (already installed). Persist the preference in localStorage. Ensure all components look polished in both modes.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {
       "id": 15,
       "title": "Audio Download Button",
       "description": "Add a Download button in the WaveformPlayer and in the versions list for each version that has an audioUrl. Triggers a browser download of the audio file with filename '{track-name}-v{N}.mp3'. Use fetch + createObjectURL for cross-origin Vercel Blob URLs.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {
       "id": 16,
       "title": "Global Full-text Search",
       "description": "Add a global search command palette (Cmd+K / Ctrl+K) that searches across all tracks, version prompts, and lyrics in real time. Show results grouped by track with snippet previews. Clicking a result navigates to that track and selects the version. Use a Dialog/modal with an input at the top and scrollable results below.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
       "id": 17,
       "title": "Track Duplication",
       "description": "Add a 'Duplicate Track' option in a track context menu (three-dot menu in the sidebar). Creates a full copy of the track with all versions, prompts, styles, and scores, appending ' (copy)' to the name. Navigate to the duplicated track after creation.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {
       "id": 18,
       "title": "Prompt Evolution Timeline",
       "description": "Add a 'History' view in the Prompt tab that shows how the prompt evolved across all versions in a vertical timeline. Each step shows version number, the prompt text, rating stars, and a small diff highlight against the previous version. Makes it easy to see the creative progression.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
       "id": 19,
       "title": "Onboarding Empty State",
-      "description": "When the dashboard has no tracks, show a rich empty state instead of a blank page: a welcome message, a list of 3 key features with icons, and a prominent 'Create your first track' button. Also add a dismissible onboarding tip banner for first-time users explaining the workflow (Create track → Set style → Generate → Evaluate).",
-      "status": "pending",
+      "description": "When the dashboard has no tracks, show a rich empty state instead of a blank page: a welcome message, a list of 3 key features with icons, and a prominent 'Create your first track' button. Also add a dismissible onboarding tip banner for first-time users explaining the workflow (Create track \u2192 Set style \u2192 Generate \u2192 Evaluate).",
+      "status": "done",
       "priority": "medium"
     },
     {
       "id": 20,
       "title": "Version Archiving",
       "description": "Add an 'Archive' action on versions. Archived versions are hidden from the main list but accessible via a 'Show archived' toggle. Add archive/unarchive to the version context menu. Update the versions-tab to filter archived versions by default. This keeps the workspace clean without losing history.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
+    },
+    {
+      "id": 21,
+      "title": "AI Co-Producer Chat",
+      "description": "Add a collapsible chat panel (right side drawer) where the user converses with Claude as a 'co-producer'. The chat has full context of the selected track (prompt, style, lyrics, scores, feedback) and can propose changes via structured tool-like responses with one-click 'Apply to prompt/lyrics/style' buttons. Persist chat history per track in a new chat_messages table.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 22,
+      "title": "A/B Listening Blind Test",
+      "description": "Add a 'Blind Test' mode: pick 2+ versions with audio, the app shuffles them as 'Option A/B/C' hiding version numbers, user listens and picks a winner per pair. After voting, reveal which version won and offer to mark it as best. Great for unbiased evaluation.",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 23,
+      "title": "Public Share Pages",
+      "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety \u2014 users share their creations.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 24,
+      "title": "Auto-Evaluation with AI",
+      "description": "Add an 'AI Evaluate' button in the Evaluate tab: sends the prompt, lyrics, and style to Claude which returns suggested dimension scores (with one-line justification per dimension) and overall feedback. User can accept all scores with one click or adjust. Stores justifications in notes.",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 25,
+      "title": "Batch Generation (Variations)",
+      "description": "Add a 'Generate 3 Variations' button: creates 3 new versions cloned from the current one with AI-mutated prompts (Claude generates 3 distinct creative variations of the prompt), then starts generation for each sequentially. Progress cards stack in the versions tab.",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 26,
+      "title": "Activity Feed / Changelog",
+      "description": "Add an 'Activity' panel showing a chronological feed of everything that happened in the workspace: track created, version generated, marked best, theme assigned, etc. Derive events from existing timestamps (no new table needed initially). Filterable by track.",
+      "status": "done",
+      "priority": "low"
+    },
+    {
+      "id": 27,
+      "title": "PWA + Mobile Responsive Layout",
+      "description": "Make the dashboard fully responsive: collapsible sidebar drawer on mobile, stacked tabs, touch-friendly sliders. Add PWA manifest + icons so users can install the app on their phone home screen. Massive reach win for notoriety.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 28,
+      "title": "Style Presets Save/Load",
+      "description": "Let users save the current Style tab configuration as a named preset (stored in a style_presets DB table) and load it into any version. Presets dropdown at the top of the Style tab with save/delete management.",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 29,
+      "title": "Landing Page",
+      "description": "Create a public marketing landing page at / (move dashboard redirect to a 'Launch App' button): hero with animated gradient, feature grid showcasing AI generation/versioning/evaluation, screenshots section, and CTA. This is the front door for the project's notoriety.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 30,
+      "title": "Generation Cost & Usage Dashboard",
+      "description": "Track every generation request (provider, model, duration, success) in a generation_logs table. Add a 'Usage' page showing total generations, success rate by provider, most productive days (bar chart), and estimated API costs. Pure SVG charts, no new deps.",
+      "status": "pending",
+      "priority": "medium",
+      "done": true
     }
   ]
 }

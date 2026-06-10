@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { Music, Search, Star, Tag } from "lucide-react";
+import { useState, useMemo, useRef, useEffect, useCallback } from "react";
+import { Music, Search, Star, Tag, MoreHorizontal, Copy, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -16,6 +16,8 @@ import { cn } from "@/lib/utils";
 import type { Track, Theme } from "@/types/music";
 import { TrackStatsCard } from "@/components/track-stats-card";
 import { TrackTags } from "@/components/track-tags";
+import { duplicateTrack as duplicateTrackAction, deleteTrack as deleteTrackAction } from "@/app/actions/tracks";
+import { toast } from "sonner";
 
 const COLOR_MAP: Record<string, string> = {
   blue: "bg-blue-500",
@@ -35,13 +37,95 @@ interface SidebarProps {
   themes: Theme[];
   selectedTrackId: string | null;
   onSelectTrack: (id: string) => void;
+  onTrackDuplicated?: (newTrackId: string) => void;
+  onTrackDeleted?: (deletedTrackId: string) => void;
 }
 
-export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: SidebarProps) {
+export function Sidebar({
+  tracks,
+  themes,
+  selectedTrackId,
+  onSelectTrack,
+  onTrackDuplicated,
+  onTrackDeleted,
+}: SidebarProps) {
   const [search, setSearch] = useState("");
   const [themeFilter, setThemeFilter] = useState("all");
   // Local optimistic tag overrides keyed by trackId
   const [tagOverrides, setTagOverrides] = useState<Record<string, string[]>>({});
+  // Track context menu state
+  const [openMenuTrackId, setOpenMenuTrackId] = useState<string | null>(null);
+  const [isDuplicating, setIsDuplicating] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu on outside click or Escape
+  const closeMenu = useCallback(() => setOpenMenuTrackId(null), []);
+
+  useEffect(() => {
+    if (!openMenuTrackId) return;
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        closeMenu();
+      }
+    };
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") closeMenu();
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [openMenuTrackId, closeMenu]);
+
+  const handleDuplicate = useCallback(
+    async (trackId: string) => {
+      closeMenu();
+      setIsDuplicating(true);
+      try {
+        const newTrackId = await duplicateTrackAction(trackId);
+        toast.success("Track duplicated", {
+          description: "Navigate to the new track to start editing.",
+        });
+        if (onTrackDuplicated) {
+          onTrackDuplicated(newTrackId);
+        } else {
+          // Fallback: reload page
+          window.location.reload();
+        }
+      } catch (err) {
+        toast.error("Failed to duplicate track", {
+          description: err instanceof Error ? err.message : "Unknown error",
+        });
+      } finally {
+        setIsDuplicating(false);
+      }
+    },
+    [closeMenu, onTrackDuplicated]
+  );
+
+  const handleDelete = useCallback(
+    async (trackId: string) => {
+      closeMenu();
+      try {
+        await deleteTrackAction(trackId);
+        toast.success("Track deleted");
+        if (onTrackDeleted) {
+          onTrackDeleted(trackId);
+        } else {
+          window.location.reload();
+        }
+      } catch (err) {
+        toast.error("Failed to delete track", {
+          description: err instanceof Error ? err.message : "Unknown error",
+        });
+      }
+    },
+    [closeMenu, onTrackDeleted]
+  );
 
   const getTrackTags = (track: Track): string[] =>
     tagOverrides[track.id] ?? track.tags ?? [];
@@ -178,11 +262,13 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
 
             const trackTags = getTrackTags(track);
 
+            const isMenuOpen = openMenuTrackId === track.id;
+
             return (
               <div
                 key={track.id}
                 className={cn(
-                  "w-full text-left px-3 py-2.5 rounded-lg transition-colors group",
+                  "w-full text-left px-3 py-2.5 rounded-lg transition-colors group relative",
                   isSelected
                     ? "bg-violet-50 dark:bg-violet-950/50 border border-violet-200 dark:border-violet-800"
                     : "hover:bg-zinc-50 dark:hover:bg-zinc-900 border border-transparent"
@@ -267,6 +353,59 @@ export function Sidebar({ tracks, themes, selectedTrackId, onSelectTrack }: Side
                     tags={trackTags}
                     onTagsChange={(tags) => handleTagsChange(track.id, tags)}
                   />
+                </div>
+
+                {/* Three-dot context menu button */}
+                <div
+                  className="absolute top-2 right-2"
+                  onClick={(e) => e.stopPropagation()}
+                  ref={isMenuOpen ? menuRef : undefined}
+                >
+                  <button
+                    type="button"
+                    aria-label="Track options"
+                    disabled={isDuplicating}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setOpenMenuTrackId(isMenuOpen ? null : track.id);
+                    }}
+                    className={cn(
+                      "p-1 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors",
+                      "opacity-0 group-hover:opacity-100 focus:opacity-100",
+                      isMenuOpen && "opacity-100 bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-200"
+                    )}
+                  >
+                    <MoreHorizontal className="w-3.5 h-3.5" />
+                  </button>
+
+                  {/* Dropdown menu */}
+                  {isMenuOpen && (
+                    <div className="absolute right-0 top-6 z-50 min-w-[130px] rounded-md border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 shadow-lg py-1">
+                      <button
+                        type="button"
+                        disabled={isDuplicating}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDuplicate(track.id);
+                        }}
+                        className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-50"
+                      >
+                        <Copy className="w-3.5 h-3.5" />
+                        {isDuplicating ? "Duplicating…" : "Duplicate"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(track.id);
+                        }}
+                        className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             );
