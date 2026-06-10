@@ -139,7 +139,7 @@
       "id": 22,
       "title": "A/B Listening Blind Test",
       "description": "Add a 'Blind Test' mode: pick 2+ versions with audio, the app shuffles them as 'Option A/B/C' hiding version numbers, user listens and picks a winner per pair. After voting, reveal which version won and offer to mark it as best. Great for unbiased evaluation.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

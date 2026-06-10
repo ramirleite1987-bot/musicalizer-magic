@@ -44,6 +44,7 @@ import { SearchPalette } from "@/components/search-palette";
 import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { CreateTrackDialog } from "@/components/create-track-dialog";
+import { ActivityPanel } from "@/components/activity-panel";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -93,6 +94,7 @@ export function DashboardClient({
   const [showHelp, setShowHelp] = useState(false);
   const [showSearchPalette, setShowSearchPalette] = useState(false);
   const [showCreateTrack, setShowCreateTrack] = useState(false);
+  const [showActivity, setShowActivity] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Active generation progress cards — supports multiple concurrent cards (batch)
@@ -164,6 +166,20 @@ export function DashboardClient({
       });
     });
   }, [selectedTrackId, selectedVersionId]);
+
+  const handleMarkBestVersion = useCallback(
+    (versionId: string) => {
+      if (!selectedTrackId) return;
+      startTransition(async () => {
+        await markBestAction(selectedTrackId, versionId);
+        toast.success("Marked as Best Version", {
+          description:
+            "This version will be used as the reference for future generations.",
+        });
+      });
+    },
+    [selectedTrackId]
+  );
 
   const handleRenameTrack = useCallback(
     (newName: string) => {
@@ -553,6 +569,7 @@ export function DashboardClient({
                       onNewVersion={handleNewVersion}
                       onUploadAudio={handleUploadAudio}
                       onRemoveAudio={handleRemoveAudio}
+                      onMarkBest={handleMarkBestVersion}
                       trackName={selectedTrack.name}
                     />
                   </TabsContent>

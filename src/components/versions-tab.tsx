@@ -4,7 +4,7 @@ import { useRef, useState, useTransition } from "react";
 import {
   Plus, Upload, Star, CheckCircle2, Clock, Loader2, AlertCircle,
   Music2, Trash2, Volume2, GitCompare, Download, Archive, ArchiveRestore,
-  Eye, EyeOff
+  Eye, EyeOff, Headphones
 } from "lucide-react";
 import { downloadAudio } from "@/lib/download-audio";
 import { WaveformPlayer } from "@/components/waveform-player";
@@ -21,6 +21,7 @@ import {
 import { cn } from "@/lib/utils";
 import type { TrackVersion } from "@/types/music";
 import { VersionCompareModal } from "@/components/version-compare-modal";
+import { BlindTest } from "@/components/blind-test";
 import { archiveVersion, unarchiveVersion } from "@/app/actions/versions";
 
 interface VersionsTabProps {
@@ -30,6 +31,7 @@ interface VersionsTabProps {
   onNewVersion: () => void;
   onUploadAudio: (file: File) => void;
   onRemoveAudio: () => void;
+  onMarkBest?: (versionId: string) => void;
   trackName?: string;
 }
 
@@ -63,15 +65,21 @@ export function VersionsTab({
   onNewVersion,
   onUploadAudio,
   onRemoveAudio,
+  onMarkBest,
   trackName,
 }: VersionsTabProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [compareOpen, setCompareOpen] = useState(false);
+  const [showBlindTest, setShowBlindTest] = useState(false);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [showArchived, setShowArchived] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
+
+  const audioVersionsCount = versions.filter(
+    (v) => v.audioUrl !== null && v.status !== "archived"
+  ).length;
 
   const archivedVersions = versions.filter((v) => v.status === "archived");
   const visibleVersions = showArchived
@@ -183,6 +191,21 @@ export function VersionsTab({
                 : `Show archived (${archivedVersions.length})`}
             </Button>
           )}
+          <Button
+            onClick={() => setShowBlindTest(true)}
+            size="sm"
+            variant="outline"
+            className="gap-1.5"
+            disabled={audioVersionsCount < 2}
+            title={
+              audioVersionsCount < 2
+                ? "Need at least 2 versions with audio"
+                : "A/B blind listening test"
+            }
+          >
+            <Headphones className="w-3.5 h-3.5" />
+            Blind Test
+          </Button>
           <Button
             onClick={() => setCompareOpen(true)}
             size="sm"
@@ -415,6 +438,18 @@ export function VersionsTab({
         open={compareOpen}
         onClose={() => setCompareOpen(false)}
       />
+
+      {/* Blind test overlay */}
+      {showBlindTest && (
+        <BlindTest
+          versions={versions}
+          trackName={trackName ?? "Track"}
+          onMarkBest={(versionId) => {
+            onMarkBest?.(versionId);
+          }}
+          onClose={() => setShowBlindTest(false)}
+        />
+      )}
     </div>
   );
 }
