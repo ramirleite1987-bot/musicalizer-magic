@@ -1,17 +1,77 @@
 {
   "improvements": [
-    { "id": 1, "title": "Waveform Visualization", "status": "done", "priority": "high" },
-    { "id": 2, "title": "AI Prompt Improvement Suggestions", "status": "done", "priority": "high" },
-    { "id": 3, "title": "Side-by-side Version Comparison Modal", "status": "done", "priority": "high" },
-    { "id": 4, "title": "Keyboard Shortcuts", "status": "done", "priority": "medium" },
-    { "id": 5, "title": "Prompt Templates Library", "status": "done", "priority": "high" },
-    { "id": 6, "title": "Track Statistics Summary Card", "status": "done", "priority": "medium" },
-    { "id": 7, "title": "Export Track as JSON", "status": "done", "priority": "medium" },
-    { "id": 8, "title": "Auto-Generate Track Name with AI", "status": "done", "priority": "medium" },
-    { "id": 9, "title": "Generation Progress Indicator", "status": "done", "priority": "high" },
-    { "id": 10, "title": "Quick Tags on Tracks", "status": "done", "priority": "medium" },
-    { "id": 11, "title": "Evaluation Radar Chart", "status": "done", "priority": "high" },
-    { "id": 12, "title": "Confetti + Best Version Celebration", "status": "done", "priority": "low" },
+    {
+      "id": 1,
+      "title": "Waveform Visualization",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "title": "AI Prompt Improvement Suggestions",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 3,
+      "title": "Side-by-side Version Comparison Modal",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 4,
+      "title": "Keyboard Shortcuts",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 5,
+      "title": "Prompt Templates Library",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 6,
+      "title": "Track Statistics Summary Card",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 7,
+      "title": "Export Track as JSON",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 8,
+      "title": "Auto-Generate Track Name with AI",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 9,
+      "title": "Generation Progress Indicator",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 10,
+      "title": "Quick Tags on Tracks",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 11,
+      "title": "Evaluation Radar Chart",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 12,
+      "title": "Confetti + Best Version Celebration",
+      "status": "done",
+      "priority": "low"
+    },
     {
       "id": 13,
       "title": "AI Lyrics Generator",
@@ -57,7 +117,7 @@
     {
       "id": 19,
       "title": "Onboarding Empty State",
-      "description": "When the dashboard has no tracks, show a rich empty state instead of a blank page: a welcome message, a list of 3 key features with icons, and a prominent 'Create your first track' button. Also add a dismissible onboarding tip banner for first-time users explaining the workflow (Create track → Set style → Generate → Evaluate).",
+      "description": "When the dashboard has no tracks, show a rich empty state instead of a blank page: a welcome message, a list of 3 key features with icons, and a prominent 'Create your first track' button. Also add a dismissible onboarding tip banner for first-time users explaining the workflow (Create track \u2192 Set style \u2192 Generate \u2192 Evaluate).",
       "status": "done",
       "priority": "medium"
     },
@@ -85,7 +145,7 @@
     {
       "id": 23,
       "title": "Public Share Pages",
-      "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety — users share their creations.",
+      "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety \u2014 users share their creations.",
       "status": "pending",
       "priority": "high"
     },
@@ -136,7 +196,8 @@
       "title": "Generation Cost & Usage Dashboard",
       "description": "Track every generation request (provider, model, duration, success) in a generation_logs table. Add a 'Usage' page showing total generations, success rate by provider, most productive days (bar chart), and estimated API costs. Pure SVG charts, no new deps.",
       "status": "pending",
-      "priority": "medium"
+      "priority": "medium",
+      "done": true
     }
   ]
 }
