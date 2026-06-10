@@ -67,6 +67,76 @@
       "description": "Add an 'Archive' action on versions. Archived versions are hidden from the main list but accessible via a 'Show archived' toggle. Add archive/unarchive to the version context menu. Update the versions-tab to filter archived versions by default. This keeps the workspace clean without losing history.",
       "status": "done",
       "priority": "medium"
+    },
+    {
+      "id": 21,
+      "title": "AI Co-Producer Chat",
+      "description": "Add a collapsible chat panel (right side drawer) where the user converses with Claude as a 'co-producer'. The chat has full context of the selected track (prompt, style, lyrics, scores, feedback) and can propose changes via structured tool-like responses with one-click 'Apply to prompt/lyrics/style' buttons. Persist chat history per track in a new chat_messages table.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 22,
+      "title": "A/B Listening Blind Test",
+      "description": "Add a 'Blind Test' mode: pick 2+ versions with audio, the app shuffles them as 'Option A/B/C' hiding version numbers, user listens and picks a winner per pair. After voting, reveal which version won and offer to mark it as best. Great for unbiased evaluation.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 23,
+      "title": "Public Share Pages",
+      "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety — users share their creations.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 24,
+      "title": "Auto-Evaluation with AI",
+      "description": "Add an 'AI Evaluate' button in the Evaluate tab: sends the prompt, lyrics, and style to Claude which returns suggested dimension scores (with one-line justification per dimension) and overall feedback. User can accept all scores with one click or adjust. Stores justifications in notes.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 25,
+      "title": "Batch Generation (Variations)",
+      "description": "Add a 'Generate 3 Variations' button: creates 3 new versions cloned from the current one with AI-mutated prompts (Claude generates 3 distinct creative variations of the prompt), then starts generation for each sequentially. Progress cards stack in the versions tab.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 26,
+      "title": "Activity Feed / Changelog",
+      "description": "Add an 'Activity' panel showing a chronological feed of everything that happened in the workspace: track created, version generated, marked best, theme assigned, etc. Derive events from existing timestamps (no new table needed initially). Filterable by track.",
+      "status": "pending",
+      "priority": "low"
+    },
+    {
+      "id": 27,
+      "title": "PWA + Mobile Responsive Layout",
+      "description": "Make the dashboard fully responsive: collapsible sidebar drawer on mobile, stacked tabs, touch-friendly sliders. Add PWA manifest + icons so users can install the app on their phone home screen. Massive reach win for notoriety.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 28,
+      "title": "Style Presets Save/Load",
+      "description": "Let users save the current Style tab configuration as a named preset (stored in a style_presets DB table) and load it into any version. Presets dropdown at the top of the Style tab with save/delete management.",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 29,
+      "title": "Landing Page",
+      "description": "Create a public marketing landing page at / (move dashboard redirect to a 'Launch App' button): hero with animated gradient, feature grid showcasing AI generation/versioning/evaluation, screenshots section, and CTA. This is the front door for the project's notoriety.",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 30,
+      "title": "Generation Cost & Usage Dashboard",
+      "description": "Track every generation request (provider, model, duration, success) in a generation_logs table. Add a 'Usage' page showing total generations, success rate by provider, most productive days (bar chart), and estimated API costs. Pure SVG charts, no new deps.",
+      "status": "pending",
+      "priority": "medium"
     }
   ]
 }
