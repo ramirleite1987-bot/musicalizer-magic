@@ -167,7 +167,7 @@
       "id": 26,
       "title": "Activity Feed / Changelog",
       "description": "Add an 'Activity' panel showing a chronological feed of everything that happened in the workspace: track created, version generated, marked best, theme assigned, etc. Derive events from existing timestamps (no new table needed initially). Filterable by track.",
-      "status": "pending",
+      "status": "done",
       "priority": "low"
     },
     {

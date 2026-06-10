@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2 } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ interface HeaderProps {
   onImported?: (newTrackId: string) => void;
   onRenameTrack?: (newName: string) => void;
   onOpenSearch?: () => void;
+  onOpenActivity?: () => void;
 }
 
 const STATUS_CONFIG = {
@@ -34,7 +35,7 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -246,6 +247,18 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
               <span className="hidden sm:inline">Usage</span>
             </Button>
           </Link>
+          {onOpenActivity && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+              onClick={onOpenActivity}
+              title="Activity feed"
+            >
+              <Activity className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Activity</span>
+            </Button>
+          )}
           <ThemeToggle />
         </div>
       </div>
@@ -393,6 +406,20 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             ⌘K
           </kbd>
         </Button>
+
+        {/* Activity feed button */}
+        {onOpenActivity && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5"
+            onClick={onOpenActivity}
+            title="Activity feed"
+          >
+            <Activity className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Activity</span>
+          </Button>
+        )}
 
         {/* Status badge */}
         {version && (

@@ -30,6 +30,7 @@ export async function getTracks(): Promise<Track[]> {
       trackId: v.trackId,
       versionNumber: v.versionNumber,
       createdAt: v.createdAt.toISOString(),
+      updatedAt: v.updatedAt.toISOString(),
       status: v.status,
       prompt: v.prompt,
       negativePrompt: v.negativePrompt,

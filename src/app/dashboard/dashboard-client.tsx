@@ -474,6 +474,7 @@ export function DashboardClient({
           }}
           onRenameTrack={handleRenameTrack}
           onOpenSearch={() => setShowSearchPalette(true)}
+          onOpenActivity={() => setShowActivity((prev) => !prev)}
         />
 
         {loadWarning ? (
@@ -674,6 +675,15 @@ export function DashboardClient({
         onOpenChange={setShowCreateTrack}
         onCreated={() => window.location.reload()}
       />
+
+      {showActivity && (
+        <ActivityPanel
+          tracks={tracks}
+          themes={themes}
+          onSelectTrack={handleSelectTrack}
+          onClose={() => setShowActivity(false)}
+        />
+      )}
     </div>
   );
 }
