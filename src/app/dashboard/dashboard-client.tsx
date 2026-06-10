@@ -579,6 +579,7 @@ export function DashboardClient({
                     <EvaluateTab
                       version={selectedVersion}
                       bestVersion={bestVersion}
+                      trackName={selectedTrack?.name ?? ""}
                       onChange={handleUpdateVersion}
                       onMarkBest={handleMarkBest}
                     />

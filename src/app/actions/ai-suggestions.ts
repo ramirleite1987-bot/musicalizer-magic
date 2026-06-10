@@ -133,6 +133,101 @@ export interface PromptSuggestion {
   improvedPrompt: string;
 }
 
+const autoEvaluateSchema = z.object({
+  melody: z.number().min(1).max(10),
+  harmony: z.number().min(1).max(10),
+  rhythm: z.number().min(1).max(10),
+  production: z.number().min(1).max(10),
+  lyricsFit: z.number().min(1).max(10),
+  originality: z.number().min(1).max(10),
+  emotionalImpact: z.number().min(1).max(10),
+  justifications: z.record(z.string(), z.string()),
+  overallNotes: z.string(),
+});
+
+export async function autoEvaluate(params: {
+  prompt: string;
+  negativePrompt: string;
+  lyrics: string;
+  style: TrackStyle;
+  trackName: string;
+}): Promise<{
+  scores: DimensionScores;
+  justifications: Record<string, string>;
+  overallNotes: string;
+}> {
+  const { prompt, negativePrompt, lyrics, style, trackName } = params;
+
+  const styleDescription = [
+    style.genre ? `Genre: ${style.genre}` : null,
+    style.moods && style.moods.length > 0 ? `Moods: ${style.moods.join(", ")}` : null,
+    style.tempo ? `Tempo: ${style.tempo} BPM` : null,
+    style.key ? `Key: ${style.key} ${style.isMinor ? "minor" : "major"}` : null,
+    style.vocalStyle ? `Vocal style: ${style.vocalStyle}` : null,
+    style.instruments && style.instruments.length > 0
+      ? `Instruments: ${style.instruments.join(", ")}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const userPrompt = `You are a professional music producer and critic. Analyze this track and provide scores (1-10) for each dimension with a one-sentence justification.
+
+Track name: "${trackName}"
+
+Prompt / creative direction:
+"""
+${prompt || "(no prompt provided)"}
+"""
+
+Negative prompt:
+"""
+${negativePrompt || "(none)"}
+"""
+
+Style:
+${styleDescription || "(no style details)"}
+
+Lyrics:
+"""
+${lyrics || "(no lyrics provided)"}
+"""
+
+Evaluate each dimension honestly on a 1-10 scale:
+- melody: melodic quality, catchiness, and memorability
+- harmony: chord progressions, harmonic richness, and tonal coherence
+- rhythm: rhythmic drive, groove, and timing
+- production: sonic quality, mixing, arrangement, and sound design
+- lyricsFit: how well the lyrics match the musical style and emotional tone
+- originality: uniqueness, creativity, and distinctiveness
+- emotionalImpact: emotional resonance, feeling conveyed, and listener engagement
+
+For each dimension, provide a one-sentence justification in the "justifications" field (keyed by dimension name).
+Also provide a brief overallNotes summary (2-3 sentences) covering the track's main strengths and areas for improvement.`;
+
+  const { output } = await generateText({
+    model: "anthropic/claude-sonnet-4.6",
+    output: Output.object({ schema: autoEvaluateSchema }),
+    prompt: userPrompt,
+  });
+
+  const scores: DimensionScores = {
+    melody: output?.melody ?? 5,
+    harmony: output?.harmony ?? 5,
+    rhythm: output?.rhythm ?? 5,
+    production: output?.production ?? 5,
+    lyricsFit: output?.lyricsFit ?? 5,
+    originality: output?.originality ?? 5,
+    emotionalImpact: output?.emotionalImpact ?? 5,
+  };
+
+  return {
+    scores,
+    justifications: (output?.justifications ?? {}) as Record<string, string>,
+    overallNotes: output?.overallNotes ?? "",
+  };
+}
+
 export async function suggestPromptImprovements(params: {
   prompt: string;
   negativePrompt: string;

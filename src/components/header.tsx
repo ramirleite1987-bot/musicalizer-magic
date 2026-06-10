@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search } from "lucide-react";
+import Link from "next/link";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -237,6 +238,12 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
             )}
             Import
           </Button>
+          <Link href="/usage">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <BarChart2 className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Usage</span>
+            </Button>
+          </Link>
           <ThemeToggle />
         </div>
       </div>

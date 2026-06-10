@@ -93,7 +93,7 @@
       "id": 24,
       "title": "Auto-Evaluation with AI",
       "description": "Add an 'AI Evaluate' button in the Evaluate tab: sends the prompt, lyrics, and style to Claude which returns suggested dimension scores (with one-line justification per dimension) and overall feedback. User can accept all scores with one click or adjust. Stores justifications in notes.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
