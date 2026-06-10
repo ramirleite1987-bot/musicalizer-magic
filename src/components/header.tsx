@@ -453,6 +453,14 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
           Import
         </Button>
 
+        {/* Usage link */}
+        <Link href="/usage">
+          <Button variant="outline" size="sm" className="gap-1.5" title="Usage dashboard">
+            <BarChart2 className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Usage</span>
+          </Button>
+        </Link>
+
         <ThemeToggle />
 
         <Button
