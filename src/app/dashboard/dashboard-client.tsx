@@ -25,6 +25,7 @@ import {
   updateVersion as updateVersionAction,
   cloneVersion as cloneVersionAction,
   markBest as markBestAction,
+  startBatchGeneration,
 } from "@/app/actions/versions";
 import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
@@ -94,13 +95,18 @@ export function DashboardClient({
   const [showCreateTrack, setShowCreateTrack] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  // Active generation progress card state
-  const [activeGeneration, setActiveGeneration] = useState<{
-    versionId: string;
-    provider: string;
-    model: string;
-    versionLabel: string;
-  } | null>(null);
+  // Active generation progress cards — supports multiple concurrent cards (batch)
+  const [activeGenerations, setActiveGenerations] = useState<
+    Array<{
+      versionId: string;
+      provider: string;
+      model: string;
+      versionLabel: string;
+    }>
+  >([]);
+
+  // isBatchGenerating tracks whether batch generation is being set up
+  const [isBatchGenerating, setIsBatchGenerating] = useState(false);
 
   const selectedTrack = tracks.find((t) => t.id === selectedTrackId) ?? null;
   const selectedVersion =
@@ -185,12 +191,15 @@ export function DashboardClient({
       .then(() => {
         // Switch to versions tab so the progress card is visible
         setActiveTab("versions");
-        setActiveGeneration({
-          versionId,
-          provider,
-          model: modelLabel,
-          versionLabel,
-        });
+        setActiveGenerations((prev) => [
+          ...prev,
+          {
+            versionId,
+            provider,
+            model: modelLabel,
+            versionLabel,
+          },
+        ]);
       })
       .catch((err: Error) => {
         toast.error("Could not start generation", {
@@ -242,9 +251,38 @@ export function DashboardClient({
     window.location.reload();
   }, []);
 
-  const handleGenerationDismiss = useCallback(() => {
-    setActiveGeneration(null);
+  const handleGenerationDismiss = useCallback((versionId: string) => {
+    setActiveGenerations((prev) => prev.filter((g) => g.versionId !== versionId));
   }, []);
+
+  const handleBatchGenerate = useCallback(() => {
+    if (!selectedTrack || !selectedVersion || isBatchGenerating) return;
+    setIsBatchGenerating(true);
+    startBatchGeneration(selectedTrack.id, selectedVersion.id)
+      .then((results) => {
+        setActiveTab("versions");
+        setActiveGenerations((prev) => [
+          ...prev,
+          ...results.map((r) => ({
+            versionId: r.versionId,
+            provider: r.provider,
+            model: r.model,
+            versionLabel: `${selectedTrack.name} v${r.versionNumber}`,
+          })),
+        ]);
+        toast.success("Batch generation started", {
+          description: `3 variations are now generating.`,
+        });
+      })
+      .catch((err: Error) => {
+        toast.error("Batch generation failed", {
+          description: err.message,
+        });
+      })
+      .finally(() => {
+        setIsBatchGenerating(false);
+      });
+  }, [selectedTrack, selectedVersion, isBatchGenerating]);
 
   const handleAssignTheme = useCallback(
     (themeId: string) => {
@@ -411,6 +449,8 @@ export function DashboardClient({
           track={selectedTrack}
           version={selectedVersion}
           onGenerate={handleGenerate}
+          onBatchGenerate={handleBatchGenerate}
+          isBatchGenerating={isBatchGenerating}
           themes={themes}
           onImported={(newTrackId) => {
             // Reload the page so the server component re-fetches the new track
@@ -491,16 +531,19 @@ export function DashboardClient({
                     value="versions"
                     className="m-0 h-full data-[state=active]:animate-in data-[state=active]:fade-in-50 data-[state=active]:slide-in-from-bottom-2 duration-300"
                   >
-                    {activeGeneration && (
-                      <div className="px-4 pt-4">
-                        <GenerationProgressCard
-                          versionId={activeGeneration.versionId}
-                          provider={activeGeneration.provider}
-                          model={activeGeneration.model}
-                          versionLabel={activeGeneration.versionLabel}
-                          onComplete={handleGenerationComplete}
-                          onDismiss={handleGenerationDismiss}
-                        />
+                    {activeGenerations.length > 0 && (
+                      <div className="px-4 pt-4 flex flex-col gap-3">
+                        {activeGenerations.map((gen) => (
+                          <GenerationProgressCard
+                            key={gen.versionId}
+                            versionId={gen.versionId}
+                            provider={gen.provider}
+                            model={gen.model}
+                            versionLabel={gen.versionLabel}
+                            onComplete={handleGenerationComplete}
+                            onDismiss={() => handleGenerationDismiss(gen.versionId)}
+                          />
+                        ))}
                       </div>
                     )}
                     <VersionsTab

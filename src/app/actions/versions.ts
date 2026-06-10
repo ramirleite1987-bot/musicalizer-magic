@@ -5,6 +5,8 @@ import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import type { TrackVersion, TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
+import { generatePromptVariations } from "@/app/actions/ai-suggestions";
+import { startGeneration } from "@/app/actions/generation";
 
 const DEFAULT_STYLE: TrackStyle = {
   genre: "Electronic",
@@ -198,6 +200,83 @@ export async function unarchiveVersion(versionId: string): Promise<void> {
     .where(eq(trackVersions.id, versionId));
 
   revalidatePath("/dashboard");
+}
+
+export async function startBatchGeneration(
+  trackId: string,
+  sourceVersionId: string
+): Promise<Array<{ versionId: string; provider: string; model: string; versionNumber: number }>> {
+  const db = getDb();
+
+  // Fetch source version
+  const source = await db.query.trackVersions.findFirst({
+    where: eq(trackVersions.id, sourceVersionId),
+  });
+
+  if (!source) {
+    throw new Error(`Version ${sourceVersionId} not found`);
+  }
+
+  // Generate 3 prompt variations via AI
+  const variations = await generatePromptVariations({
+    prompt: source.prompt,
+    style: source.style,
+    count: 3,
+  });
+
+  const results: Array<{ versionId: string; provider: string; model: string; versionNumber: number }> = [];
+
+  for (let i = 0; i < 3; i++) {
+    // Find current max version number
+    const siblings = await db.query.trackVersions.findMany({
+      where: eq(trackVersions.trackId, trackId),
+    });
+    const maxVersionNumber = siblings.reduce((max, v) => Math.max(max, v.versionNumber), 0);
+
+    // Clone the source version with the varied prompt
+    const [newVersion] = await db
+      .insert(trackVersions)
+      .values({
+        trackId,
+        versionNumber: maxVersionNumber + 1,
+        status: "draft",
+        prompt: variations[i] ?? source.prompt,
+        negativePrompt: source.negativePrompt,
+        lyrics: source.lyrics,
+        style: source.style,
+        rating: 0,
+        dimensionScores: DEFAULT_DIMENSION_SCORES,
+        notes: "",
+        feedback: DEFAULT_FEEDBACK,
+        isBest: false,
+        audioFileName: null,
+        audioUrl: null,
+        sunoTaskId: null,
+        provider: source.provider ?? source.style?.provider ?? "suno",
+        providerTaskId: null,
+      })
+      .returning();
+
+    // Start generation for this version
+    const genResult = await startGeneration(newVersion.id);
+
+    const provider = genResult.provider;
+    const model =
+      provider === "minimax"
+        ? (source.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
+        : (source.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
+
+    results.push({
+      versionId: newVersion.id,
+      provider,
+      model,
+      versionNumber: newVersion.versionNumber,
+    });
+  }
+
+  revalidatePath("/dashboard");
+
+  return results;
 }
 
 export async function markBest(trackId: string, versionId: string) {

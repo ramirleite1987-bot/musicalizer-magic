@@ -160,7 +160,7 @@
       "id": 25,
       "title": "Batch Generation (Variations)",
       "description": "Add a 'Generate 3 Variations' button: creates 3 new versions cloned from the current one with AI-mutated prompts (Claude generates 3 distinct creative variations of the prompt), then starts generation for each sequentially. Progress cards stack in the versions tab.",
-      "status": "pending",
+      "status": "done",
       "priority": "medium"
     },
     {

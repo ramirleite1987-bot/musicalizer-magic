@@ -19,6 +19,8 @@ interface HeaderProps {
   track: Track | null;
   version: TrackVersion | null;
   onGenerate: () => void;
+  onBatchGenerate?: () => void;
+  isBatchGenerating?: boolean;
   themes?: Theme[];
   onImported?: (newTrackId: string) => void;
   onRenameTrack?: (newName: string) => void;
@@ -32,7 +34,7 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, themes = [], onImported, onRenameTrack, onOpenSearch }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -462,6 +464,25 @@ export function Header({ track, version, onGenerate, themes = [], onImported, on
         </Link>
 
         <ThemeToggle />
+
+        {/* Batch Generate — 3 Variations */}
+        {onBatchGenerate && (
+          <Button
+            onClick={onBatchGenerate}
+            disabled={isGenerating || isBatchGenerating || !version}
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            title="Generate 3 AI-varied prompt versions at once"
+          >
+            {isBatchGenerating ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <span className="text-sm leading-none">⚡</span>
+            )}
+            <span className="hidden sm:inline">3 Variations</span>
+          </Button>
+        )}
 
         <Button
           onClick={onGenerate}

@@ -228,6 +228,48 @@ Also provide a brief overallNotes summary (2-3 sentences) covering the track's m
   };
 }
 
+const promptVariationsSchema = z.object({
+  variations: z.array(z.string()).length(3),
+});
+
+export async function generatePromptVariations(params: {
+  prompt: string;
+  style: TrackStyle;
+  count: number;
+}): Promise<string[]> {
+  const { prompt, style, count } = params;
+
+  const styleDescription = [
+    style.genre ? `Genre: ${style.genre}` : null,
+    style.moods && style.moods.length > 0 ? `Moods: ${style.moods.join(", ")}` : null,
+    style.tempo ? `Tempo: ${style.tempo} BPM` : null,
+    style.key ? `Key: ${style.key} ${style.isMinor ? "minor" : "major"}` : null,
+    style.vocalStyle ? `Vocal style: ${style.vocalStyle}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const userPrompt = `Generate ${count} distinct creative variations of this music production prompt. Each variation should explore a different creative angle while keeping the core genre/mood. Return only the prompt texts.
+
+Original prompt:
+"""
+${prompt || "(no prompt provided)"}
+"""
+
+Style:
+${styleDescription || "(no style details)"}
+
+Return exactly ${count} variations. Each should be a complete, standalone music production prompt that could be used independently. Make them meaningfully different from each other — vary the instrumentation, energy, texture, or emotional angle.`;
+
+  const { output } = await generateText({
+    model: "anthropic/claude-sonnet-4-6",
+    output: Output.object({ schema: promptVariationsSchema }),
+    prompt: userPrompt,
+  });
+
+  return output?.variations ?? [];
+}
+
 export async function suggestPromptImprovements(params: {
   prompt: string;
   negativePrompt: string;
