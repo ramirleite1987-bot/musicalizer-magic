@@ -94,28 +94,6 @@ function DiffText({ textA, textB, side }: { textA: string; textB: string; side: 
   );
 }
 
-function StyleRow({
-  label,
-  valueA,
-  valueB,
-}: {
-  label: string;
-  valueA: string;
-  valueB: string;
-}) {
-  const differ = valueA !== valueB;
-  return (
-    <div className="grid grid-cols-[1fr_1fr] gap-2 py-1.5 border-b border-zinc-800 last:border-0">
-      <div className={cn("text-sm", differ ? "bg-amber-500/20 text-amber-300 rounded px-1" : "text-zinc-300")}>
-        {valueA || <span className="text-zinc-600 italic">—</span>}
-      </div>
-      <div className={cn("text-sm", differ ? "bg-amber-500/20 text-amber-300 rounded px-1" : "text-zinc-300")}>
-        {valueB || <span className="text-zinc-600 italic">—</span>}
-      </div>
-    </div>
-  );
-}
-
 function StarDisplay({ value, highlight }: { value: number; highlight: "gold" | "none" }) {
   return (
     <div className={cn("flex items-center gap-0.5 rounded px-1 py-0.5 w-fit", highlight === "gold" && "bg-yellow-500/20")}>

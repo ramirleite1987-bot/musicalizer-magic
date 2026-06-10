@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition, useRef, useEffect } from "react";
+import { useState, useTransition, useRef } from "react";
 import { Loader2, Music } from "lucide-react";
 import {
   Dialog,
@@ -44,15 +44,15 @@ export function CreateTrackDialog({
   const [isPending, startTransition] = useTransition();
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  // Focus the name input when the dialog opens
-  useEffect(() => {
-    if (open) {
+  const handleOpenChange = (nextOpen: boolean) => {
+    if (nextOpen) {
       setTimeout(() => nameInputRef.current?.focus(), 50);
     } else {
       setName("");
       setGenre("");
     }
-  }, [open]);
+    onOpenChange(nextOpen);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ export function CreateTrackDialog({
       try {
         await createTrack({ name: trimmedName, genre: trimmedGenre });
         toast.success("Track created", { description: trimmedName });
-        onOpenChange(false);
+        handleOpenChange(false);
         onCreated?.();
       } catch (err) {
         toast.error("Failed to create track", {
@@ -75,7 +75,7 @@ export function CreateTrackDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3 mb-1">

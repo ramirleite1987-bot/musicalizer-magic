@@ -389,7 +389,8 @@ export function BlindTest({ versions, trackName, onMarkBest, onClose }: BlindTes
                     </p>
                     {winner.version.prompt && (
                       <p className="text-xs text-zinc-400 italic line-clamp-2">
-                        "{winner.version.prompt.slice(0, 120)}{winner.version.prompt.length > 120 ? "…" : ""}"
+                        &ldquo;{winner.version.prompt.slice(0, 120)}
+                        {winner.version.prompt.length > 120 ? "…" : ""}&rdquo;
                       </p>
                     )}
                   </div>

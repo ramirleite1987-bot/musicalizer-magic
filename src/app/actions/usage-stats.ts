@@ -2,7 +2,7 @@
 
 import { getDb } from "@/lib/db";
 import { generationLogs } from "@/lib/db/schema";
-import { sql, gte, and } from "drizzle-orm";
+import { sql, gte } from "drizzle-orm";
 
 const COST_PER_GENERATION: Record<string, number> = {
   suno: 0.05,

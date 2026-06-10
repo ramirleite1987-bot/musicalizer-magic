@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { X, ArrowRight } from "lucide-react";
 
 const STORAGE_KEY = "onboarding_dismissed";
@@ -13,18 +13,14 @@ const STEPS = [
 ] as const;
 
 export function OnboardingBanner() {
-  // Use null as "unknown" to avoid SSR mismatch
-  const [dismissed, setDismissed] = useState<boolean | null>(null);
-
-  useEffect(() => {
+  const [dismissed, setDismissed] = useState<boolean | null>(() => {
+    if (typeof window === "undefined") return null;
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      setDismissed(stored === "true");
+      return localStorage.getItem(STORAGE_KEY) === "true";
     } catch {
-      // localStorage not available (e.g. private browsing with strict settings)
-      setDismissed(true);
+      return true;
     }
-  }, []);
+  });
 
   const handleDismiss = () => {
     try {
