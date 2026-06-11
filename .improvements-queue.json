@@ -188,7 +188,7 @@
       "id": 29,
       "title": "Landing Page",
       "description": "Create a public marketing landing page at / (move dashboard redirect to a 'Launch App' button): hero with animated gradient, feature grid showcasing AI generation/versioning/evaluation, screenshots section, and CTA. This is the front door for the project's notoriety.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
