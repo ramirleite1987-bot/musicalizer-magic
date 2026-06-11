@@ -77,14 +77,13 @@ export async function sendChatMessage(
   const db = getDb();
 
   // Persist user message
-  const [savedUser] = await db
+  await db
     .insert(chatMessages)
     .values({
       trackId,
       role: "user",
       content: userMessage,
-    })
-    .returning();
+    });
 
   // Build the system prompt with full track context
   const { track, version } = context;

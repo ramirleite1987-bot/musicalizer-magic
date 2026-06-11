@@ -120,20 +120,24 @@ export function CoProducerChat({
   onApplyPrompt,
   onApplyLyrics,
 }: CoProducerChatProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[] | null>(null);
   const [input, setInput] = useState("");
   const [isPending, startTransition] = useTransition();
-  const [isLoading, setIsLoading] = useState(true);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  const isLoading = messages === null;
+
   // Load chat history when track changes
   useEffect(() => {
-    setIsLoading(true);
+    let cancelled = false;
     getChatMessages(track.id)
-      .then(setMessages)
-      .catch(() => setMessages([]))
-      .finally(() => setIsLoading(false));
+      .then((msgs) => { if (!cancelled) setMessages(msgs); })
+      .catch(() => { if (!cancelled) setMessages([]); });
+    return () => {
+      cancelled = true;
+      setMessages(null);
+    };
   }, [track.id]);
 
   // Auto-scroll to bottom on new messages
@@ -171,7 +175,7 @@ export function CoProducerChat({
             notes: version.notes,
             feedback: version.feedback,
           },
-          history: messages,
+          history: messages ?? [],
         });
 
         // Replace optimistic message + add reply
@@ -269,7 +273,7 @@ export function CoProducerChat({
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
               <span className="text-sm">Loading history…</span>
             </div>
-          ) : messages.length === 0 ? (
+          ) : (messages ?? []).length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center gap-3">
               <div className="w-12 h-12 rounded-full bg-violet-600/10 border border-violet-500/20 flex items-center justify-center">
                 <Bot className="w-6 h-6 text-violet-400" />
@@ -302,7 +306,7 @@ export function CoProducerChat({
               </div>
             </div>
           ) : (
-            messages.map((msg) => (
+            (messages ?? []).map((msg) => (
               <MessageBubble key={msg.id} msg={msg} onApply={handleApply} />
             ))
           )}
