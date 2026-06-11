@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,8 @@ interface HeaderProps {
   onOpenActivity?: () => void;
   /** Mobile: callback to open the sidebar drawer */
   onOpenMobileSidebar?: () => void;
+  /** Share the selected version — returns the share URL */
+  onShare?: () => Promise<void>;
 }
 
 const STATUS_CONFIG = {
@@ -37,9 +39,10 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar, onShare }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   // Inline rename state
   const [isEditing, setIsEditing] = useState(false);
@@ -153,6 +156,16 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
       onRenameTrack(name);
     }
     setIsEditing(false);
+  };
+
+  const handleShare = async () => {
+    if (!onShare || isSharing) return;
+    setIsSharing(true);
+    try {
+      await onShare();
+    } finally {
+      setIsSharing(false);
+    }
   };
 
   const handleExport = () => {

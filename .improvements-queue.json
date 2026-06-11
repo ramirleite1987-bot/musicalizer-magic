@@ -174,7 +174,7 @@
       "id": 27,
       "title": "PWA + Mobile Responsive Layout",
       "description": "Make the dashboard fully responsive: collapsible sidebar drawer on mobile, stacked tabs, touch-friendly sliders. Add PWA manifest + icons so users can install the app on their phone home screen. Massive reach win for notoriety.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
