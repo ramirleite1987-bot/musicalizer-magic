@@ -4,6 +4,7 @@ import { trackVersions, generationLogs } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { getGenerationStatus, inferAudioFile, resolveProvider } from "@/lib/music";
 import { put } from "@vercel/blob";
+import { safeFetch } from "@/lib/security/url";
 
 type RouteContext = {
   params: Promise<{ versionId: string }>;
@@ -41,8 +42,11 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
     const status = await getGenerationStatus(provider, taskId);
 
     if (status.status === "complete" && status.audioUrl) {
-      const audioRes = await fetch(status.audioUrl);
-      const audioBuffer = await audioRes.arrayBuffer();
+      // Provider-supplied URL: validate host and cap size before downloading
+      const { body: audioBuffer } = await safeFetch(status.audioUrl, {
+        timeoutMs: 60_000,
+        maxBytes: 100 * 1024 * 1024,
+      });
       const { extension, contentType } = inferAudioFile(provider, version.style);
       const fileName = `${provider}-${taskId}.${extension}`;
 

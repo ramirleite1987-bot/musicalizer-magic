@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server";
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { safeFetch, UnsafeUrlError } from "@/lib/security/url";
+
+const requestSchema = z.object({
+  source: z.enum(["url", "document"]),
+  content: z.string().min(1).max(200_000),
+});
 
 const themeSchema = z.object({
   themes: z.array(
@@ -22,9 +28,18 @@ const themeSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { source, content } = await request.json();
+  const parsed = requestSchema.safeParse(await request.json().catch(() => null));
 
-  if (!content?.trim()) {
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Content is required" },
+      { status: 400 }
+    );
+  }
+
+  const { source, content } = parsed.data;
+
+  if (!content.trim()) {
     return NextResponse.json(
       { error: "Content is required" },
       { status: 400 }
@@ -35,8 +50,9 @@ export async function POST(request: Request) {
 
   if (source === "url") {
     try {
-      const res = await fetch(content);
-      const html = await res.text();
+      // safeFetch blocks private/internal hosts (SSRF) and caps response size
+      const { body } = await safeFetch(content, { maxBytes: 2 * 1024 * 1024 });
+      const html = new TextDecoder().decode(body);
       // Strip HTML tags for a rough text extraction
       textToAnalyze = html
         .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
@@ -45,9 +61,14 @@ export async function POST(request: Request) {
         .replace(/\s+/g, " ")
         .trim()
         .slice(0, 5000);
-    } catch {
+    } catch (err) {
       return NextResponse.json(
-        { error: "Failed to fetch URL content" },
+        {
+          error:
+            err instanceof UnsafeUrlError
+              ? err.message
+              : "Failed to fetch URL content",
+        },
         { status: 400 }
       );
     }
