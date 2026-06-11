@@ -5,30 +5,33 @@ import { trackVersions, generationLogs } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { createGeneration, resolveProvider } from "@/lib/music";
 import { validateForGeneration } from "@/lib/music/validation";
+import { requireUserId } from "@/lib/auth";
+import { requireOwnedVersion } from "@/lib/db/ownership";
+import { getUserMusicKeys } from "@/lib/user-config";
 import { revalidatePath } from "next/cache";
 
 export async function startGeneration(versionId: string) {
+  const userId = await requireUserId();
   const db = getDb();
 
-  const [version] = await db
-    .select()
-    .from(trackVersions)
-    .where(eq(trackVersions.id, versionId))
-    .limit(1);
+  const version = await requireOwnedVersion(versionId, userId);
 
-  if (!version) throw new Error("Version not found");
   if (version.status === "generating") throw new Error("Already generating");
 
   validateForGeneration(version.style);
 
   const provider = resolveProvider(version.style);
+  const keys = await getUserMusicKeys(userId);
 
-  const result = await createGeneration({
-    prompt: version.prompt,
-    negativePrompt: version.negativePrompt,
-    lyrics: version.lyrics,
-    style: version.style,
-  });
+  const result = await createGeneration(
+    {
+      prompt: version.prompt,
+      negativePrompt: version.negativePrompt,
+      lyrics: version.lyrics,
+      style: version.style,
+    },
+    keys
+  );
 
   await db
     .update(trackVersions)
@@ -48,6 +51,7 @@ export async function startGeneration(versionId: string) {
         ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
         : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
     await db.insert(generationLogs).values({
+      userId,
       trackId: version.trackId,
       versionId,
       provider,

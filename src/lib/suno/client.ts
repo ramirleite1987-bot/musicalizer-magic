@@ -21,9 +21,9 @@ interface SunoStatusResponse {
   error?: string;
 }
 
-function getHeaders() {
+function getHeaders(apiKey?: string) {
   return {
-    Authorization: `Bearer ${process.env.SUNO_API_KEY}`,
+    Authorization: `Bearer ${apiKey ?? process.env.SUNO_API_KEY}`,
     "Content-Type": "application/json",
   };
 }
@@ -55,7 +55,8 @@ export function toSunoModelVersion(version: string): string {
 }
 
 export async function createGeneration(
-  params: SunoGenerationParams
+  params: SunoGenerationParams,
+  apiKey?: string
 ): Promise<SunoGenerationResponse> {
   const sunoPrompt = buildSunoPrompt(params);
 
@@ -76,7 +77,7 @@ export async function createGeneration(
 
   const res = await fetch(`${SUNO_API_BASE}/generate`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: getHeaders(apiKey),
     body: JSON.stringify(body),
   });
 
@@ -89,10 +90,11 @@ export async function createGeneration(
 }
 
 export async function getGenerationStatus(
-  taskId: string
+  taskId: string,
+  apiKey?: string
 ): Promise<SunoStatusResponse> {
   const res = await fetch(`${SUNO_API_BASE}/status/${taskId}`, {
-    headers: getHeaders(),
+    headers: getHeaders(apiKey),
   });
 
   if (!res.ok) {

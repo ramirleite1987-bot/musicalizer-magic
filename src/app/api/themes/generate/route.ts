@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { getUserModel } from "@/lib/user-config";
 
 const themeSchema = z.object({
   themes: z.array(
@@ -22,6 +24,11 @@ const themeSchema = z.object({
 });
 
 export async function POST(request: Request) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const { source, content } = await request.json();
 
   if (!content?.trim()) {
@@ -55,7 +62,7 @@ export async function POST(request: Request) {
 
   try {
     const { output } = await generateText({
-      model: "anthropic/claude-sonnet-4.6",
+      model: await getUserModel(),
       output: Output.object({ schema: themeSchema }),
       prompt: `You are a creative music producer's assistant. Analyze the following text and extract 3 distinct thematic inspirations that could guide music composition. Each theme should capture a different emotional or conceptual angle from the source material.
 

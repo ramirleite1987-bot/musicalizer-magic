@@ -13,6 +13,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { generateLyrics } from "@/app/actions/ai-suggestions";
+import { getAllSkills } from "@/app/actions/skills";
+import type { SkillDefinition } from "@/data/default-skills";
 import type { TrackStyle } from "@/types/music";
 
 interface LyricsGeneratorModalProps {
@@ -39,6 +41,24 @@ export function LyricsGeneratorModal({
   const [isLoading, setIsLoading] = useState(false);
   const [generatedLyrics, setGeneratedLyrics] = useState<string | null>(null);
   const [structure, setStructure] = useState<string | null>(null);
+  const [skills, setSkills] = useState<SkillDefinition[]>([]);
+  const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
+
+  // Load the skills library when the modal opens (lyrics + general skills only)
+  useEffect(() => {
+    if (!open) return;
+    getAllSkills()
+      .then((all) =>
+        setSkills(all.filter((s) => s.category === "lyrics" || s.category === "general"))
+      )
+      .catch(() => setSkills([]));
+  }, [open]);
+
+  const toggleSkill = (id: string) => {
+    setSelectedSkillIds((prev) =>
+      prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]
+    );
+  };
 
   const runGeneration = useCallback(async () => {
     setIsLoading(true);
@@ -52,6 +72,9 @@ export function LyricsGeneratorModal({
         moods: style.moods ?? [],
         style,
         existingLyrics,
+        skillInstructions: skills
+          .filter((s) => selectedSkillIds.includes(s.id))
+          .map((s) => s.instructions),
       });
       setGeneratedLyrics(result.lyrics);
       setStructure(result.structure);
@@ -67,7 +90,7 @@ export function LyricsGeneratorModal({
     } finally {
       setIsLoading(false);
     }
-  }, [trackName, prompt, genre, style, existingLyrics]);
+  }, [trackName, prompt, genre, style, existingLyrics, skills, selectedSkillIds]);
 
   // Auto-generate when modal opens
   useEffect(() => {
@@ -99,6 +122,33 @@ export function LyricsGeneratorModal({
         </DialogHeader>
 
         <div className="px-6 pb-2">
+          {skills.length > 0 && (
+            <div className="mb-3">
+              <p className="text-[11px] text-zinc-400 mb-1.5">
+                Skills to apply (toggle, then Regenerate):
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {skills.map((skill) => {
+                  const selected = selectedSkillIds.includes(skill.id);
+                  return (
+                    <button
+                      key={skill.id}
+                      onClick={() => toggleSkill(skill.id)}
+                      title={skill.description || skill.instructions}
+                      className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+                        selected
+                          ? "bg-violet-100 dark:bg-violet-950/60 border-violet-400 dark:border-violet-700 text-violet-700 dark:text-violet-300"
+                          : "border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:border-zinc-400 dark:hover:border-zinc-500"
+                      }`}
+                    >
+                      {skill.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {isLoading && (
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-zinc-500">
               <Loader2 className="w-8 h-8 animate-spin text-violet-500" />

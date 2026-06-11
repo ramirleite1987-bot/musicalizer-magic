@@ -3,13 +3,17 @@
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { tracks, trackVersions } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { requireUserId } from "@/lib/auth";
+import { requireOwnedTrack } from "@/lib/db/ownership";
 import type { MusicProvider, Track, TrackVersion } from "@/types/music";
 
 export async function getTracks(): Promise<Track[]> {
+  const userId = await requireUserId();
   const db = getDb();
 
   const rows = await db.query.tracks.findMany({
+    where: eq(tracks.userId, userId),
     with: {
       versions: true,
       trackThemes: true,
@@ -51,8 +55,10 @@ export async function getTracks(): Promise<Track[]> {
 }
 
 export async function createTrack(data: { name: string; genre: string }) {
+  const userId = await requireUserId();
   const db = getDb();
   await db.insert(tracks).values({
+    userId,
     name: data.name,
     genre: data.genre,
   });
@@ -63,6 +69,7 @@ export async function updateTrack(
   id: string,
   data: { name?: string; genre?: string }
 ) {
+  const userId = await requireUserId();
   const db = getDb();
   await db
     .update(tracks)
@@ -70,18 +77,24 @@ export async function updateTrack(
       ...data,
       updatedAt: new Date(),
     })
-    .where(eq(tracks.id, id));
+    .where(and(eq(tracks.id, id), eq(tracks.userId, userId)));
   revalidatePath("/dashboard");
 }
 
 export async function deleteTrack(id: string) {
+  const userId = await requireUserId();
   const db = getDb();
-  await db.delete(tracks).where(eq(tracks.id, id));
+  await db
+    .delete(tracks)
+    .where(and(eq(tracks.id, id), eq(tracks.userId, userId)));
   revalidatePath("/dashboard");
 }
 
 export async function duplicateTrack(trackId: string): Promise<string> {
+  const userId = await requireUserId();
   const db = getDb();
+
+  await requireOwnedTrack(trackId, userId);
 
   // Fetch source track with all versions
   const sourceTrack = await db.query.tracks.findFirst({
@@ -100,6 +113,7 @@ export async function duplicateTrack(trackId: string): Promise<string> {
   const [newTrack] = await db
     .insert(tracks)
     .values({
+      userId,
       name: `${sourceTrack.name} (copy)`,
       genre: sourceTrack.genre,
       tags: (sourceTrack.tags as string[]) ?? [],
@@ -113,18 +127,10 @@ export async function duplicateTrack(trackId: string): Promise<string> {
 
   // Insert all versions with status reset to "draft" and audio cleared
   for (const v of sortedVersions) {
-    const originalStatus = v.status;
-    const status =
-      originalStatus === "generating" || originalStatus === "complete"
-        ? "draft"
-        : originalStatus === "archived"
-        ? "draft"
-        : "draft";
-
     await db.insert(trackVersions).values({
       trackId: newTrack.id,
       versionNumber: v.versionNumber,
-      status,
+      status: "draft",
       prompt: v.prompt,
       negativePrompt: v.negativePrompt,
       lyrics: v.lyrics,
@@ -151,10 +157,11 @@ export async function updateTrackTags(
   trackId: string,
   tags: string[]
 ): Promise<void> {
+  const userId = await requireUserId();
   const db = getDb();
   await db
     .update(tracks)
     .set({ tags, updatedAt: new Date() })
-    .where(eq(tracks.id, trackId));
+    .where(and(eq(tracks.id, trackId), eq(tracks.userId, userId)));
   revalidatePath("/dashboard");
 }

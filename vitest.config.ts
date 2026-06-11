@@ -12,6 +12,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
+      // Server-only modules can't load in the jsdom environment
+      "server-only": path.resolve(__dirname, "./src/test/stubs/empty.ts"),
+      "@clerk/nextjs/server": path.resolve(
+        __dirname,
+        "./src/test/stubs/clerk-server.ts"
+      ),
       "@": path.resolve(__dirname, "./src"),
     },
   },

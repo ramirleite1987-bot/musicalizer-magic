@@ -22,9 +22,9 @@ interface MinimaxStatusResponse {
   error?: string;
 }
 
-function getHeaders() {
+function getHeaders(apiKey?: string) {
   return {
-    Authorization: `Bearer ${process.env.MINIMAX_API_KEY}`,
+    Authorization: `Bearer ${apiKey ?? process.env.MINIMAX_API_KEY}`,
     "Content-Type": "application/json",
   };
 }
@@ -104,7 +104,8 @@ export function normalizeMinimaxStatus(
 }
 
 export async function createGeneration(
-  params: MinimaxGenerationParams
+  params: MinimaxGenerationParams,
+  apiKey?: string
 ): Promise<MinimaxGenerationResponse> {
   const description = buildMinimaxPrompt(params);
   const isInstrumental = params.style.vocalStyle === "None";
@@ -128,7 +129,7 @@ export async function createGeneration(
 
   const res = await fetch(`${MINIMAX_API_BASE}/music_generation`, {
     method: "POST",
-    headers: getHeaders(),
+    headers: getHeaders(apiKey),
     body: JSON.stringify(body),
   });
 
@@ -157,13 +158,14 @@ export async function createGeneration(
 }
 
 export async function getGenerationStatus(
-  taskId: string
+  taskId: string,
+  apiKey?: string
 ): Promise<MinimaxStatusResponse> {
   const url = new URL(`${MINIMAX_API_BASE}/query/music_generation`);
   url.searchParams.set("task_id", taskId);
 
   const res = await fetch(url.toString(), {
-    headers: getHeaders(),
+    headers: getHeaders(apiKey),
   });
 
   if (!res.ok) {

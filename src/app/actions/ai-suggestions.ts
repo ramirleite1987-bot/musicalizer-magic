@@ -2,6 +2,7 @@
 
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { getUserModel } from "@/lib/user-config";
 import type { TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
 
 const lyricsSchema = z.object({
@@ -16,8 +17,10 @@ export async function generateLyrics(params: {
   moods: string[];
   style: Partial<TrackStyle>;
   existingLyrics?: string;
+  /** Instructions from selected skills in the user's skill library */
+  skillInstructions?: string[];
 }): Promise<{ lyrics: string; structure: string }> {
-  const { trackName, prompt, genre, moods, style, existingLyrics } = params;
+  const { trackName, prompt, genre, moods, style, existingLyrics, skillInstructions } = params;
 
   const styleDescription = [
     genre ? `Genre: ${genre}` : null,
@@ -36,6 +39,13 @@ export async function generateLyrics(params: {
     ? `\nExisting lyrics to improve/expand upon:\n"""\n${existingLyrics}\n"""\n`
     : "";
 
+  const skillsSection =
+    skillInstructions && skillInstructions.length > 0
+      ? `\nApply these writing techniques:\n${skillInstructions
+          .map((s, i) => `${i + 1}. ${s}`)
+          .join("\n")}\n`
+      : "";
+
   const userPrompt = `You are an expert lyricist. Generate complete, original lyrics for a ${genre || "music"} track called "${trackName}".
 
 Musical direction:
@@ -45,7 +55,7 @@ ${prompt || "(no specific direction provided)"}
 
 Style details:
 ${styleDescription || "(no additional style details)"}
-${existingLyricsSection}
+${existingLyricsSection}${skillsSection}
 Requirements:
 - Use clear section labels: [Verse 1], [Pre-Chorus] (optional), [Chorus], [Verse 2], [Bridge], [Outro] as appropriate
 - Make the lyrics thematically consistent and emotionally resonant
@@ -58,7 +68,7 @@ ${existingLyrics ? "- Improve and expand on the existing lyrics while keeping th
 Return the full lyrics with all section labels included.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4.6",
+    model: await getUserModel(),
     output: Output.object({ schema: lyricsSchema }),
     prompt: userPrompt,
   });
@@ -103,7 +113,7 @@ ${styleDescription ? `Style:\n${styleDescription}` : ""}
 Return exactly 3 track names. Each name should be concise (max 50 characters), creative, and capture the essence of the music. Do not include numbers, quotes, or extra explanation — just the names.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4.6",
+    model: await getUserModel(),
     output: Output.object({ schema: trackNamesSchema }),
     prompt: userPrompt,
   });
@@ -206,7 +216,7 @@ For each dimension, provide a one-sentence justification in the "justifications"
 Also provide a brief overallNotes summary (2-3 sentences) covering the track's main strengths and areas for improvement.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4.6",
+    model: await getUserModel(),
     output: Output.object({ schema: autoEvaluateSchema }),
     prompt: userPrompt,
   });
@@ -262,7 +272,7 @@ ${styleDescription || "(no style details)"}
 Return exactly ${count} variations. Each should be a complete, standalone music production prompt that could be used independently. Make them meaningfully different from each other — vary the instrumentation, energy, texture, or emotional angle.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4-6",
+    model: await getUserModel(),
     output: Output.object({ schema: promptVariationsSchema }),
     prompt: userPrompt,
   });
@@ -345,7 +355,7 @@ ${feedbackSummary || "(none provided)"}
 Based on the above information, provide exactly 3 concrete, actionable suggestions to improve the prompt. Each suggestion should address a specific weakness (low score, negative feedback, or missing detail) and include a fully rewritten improved prompt incorporating that change.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4.6",
+    model: await getUserModel(),
     output: Output.object({ schema: suggestionSchema }),
     prompt: userPrompt,
   });

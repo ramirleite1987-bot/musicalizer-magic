@@ -2,7 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, BookOpen, Settings } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -259,7 +260,19 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
               <span className="hidden sm:inline">Activity</span>
             </Button>
           )}
+          <Link href="/skills">
+            <Button variant="outline" size="sm" className="gap-1.5" title="Skills library">
+              <BookOpen className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Skills</span>
+            </Button>
+          </Link>
+          <Link href="/settings">
+            <Button variant="outline" size="icon" className="h-8 w-8" title="Settings">
+              <Settings className="w-3.5 h-3.5" />
+            </Button>
+          </Link>
           <ThemeToggle />
+          <UserButton />
         </div>
       </div>
     );
@@ -490,7 +503,24 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           </Button>
         </Link>
 
+        {/* Skills library link */}
+        <Link href="/skills">
+          <Button variant="outline" size="sm" className="gap-1.5" title="Skills library">
+            <BookOpen className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">Skills</span>
+          </Button>
+        </Link>
+
+        {/* Settings link */}
+        <Link href="/settings">
+          <Button variant="outline" size="icon" className="h-8 w-8" title="Settings">
+            <Settings className="w-3.5 h-3.5" />
+          </Button>
+        </Link>
+
         <ThemeToggle />
+
+        <UserButton />
 
         {/* Batch Generate — 3 Variations */}
         {onBatchGenerate && (

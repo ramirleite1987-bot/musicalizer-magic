@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
+import { requireUserId } from "@/lib/auth";
+import { requireOwnedTrack, requireOwnedVersion } from "@/lib/db/ownership";
 import type { TrackVersion, TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
 import { generatePromptVariations } from "@/app/actions/ai-suggestions";
 import { startGeneration } from "@/app/actions/generation";
@@ -49,6 +51,8 @@ export async function createVersion(
   trackId: string,
   data: Partial<TrackVersion>
 ) {
+  const userId = await requireUserId();
+  await requireOwnedTrack(trackId, userId);
   const db = getDb();
 
   await db.insert(trackVersions).values({
@@ -78,16 +82,11 @@ export async function updateVersion(
   id: string,
   updates: Partial<TrackVersion>
 ) {
+  const userId = await requireUserId();
   const db = getDb();
 
-  // Fetch existing version to merge jsonb fields
-  const existing = await db.query.trackVersions.findFirst({
-    where: eq(trackVersions.id, id),
-  });
-
-  if (!existing) {
-    throw new Error(`Version ${id} not found`);
-  }
+  // Fetch existing version (with ownership check) to merge jsonb fields
+  const existing = await requireOwnedVersion(id, userId);
 
   const mergedStyle =
     updates.style !== undefined
@@ -132,15 +131,10 @@ export async function updateVersion(
 }
 
 export async function cloneVersion(versionId: string) {
+  const userId = await requireUserId();
   const db = getDb();
 
-  const source = await db.query.trackVersions.findFirst({
-    where: eq(trackVersions.id, versionId),
-  });
-
-  if (!source) {
-    throw new Error(`Version ${versionId} not found`);
-  }
+  const source = await requireOwnedVersion(versionId, userId);
 
   // Find the highest version number for this track
   const siblings = await db.query.trackVersions.findMany({
@@ -181,6 +175,8 @@ export async function cloneVersion(versionId: string) {
 }
 
 export async function archiveVersion(versionId: string): Promise<void> {
+  const userId = await requireUserId();
+  await requireOwnedVersion(versionId, userId);
   const db = getDb();
 
   await db
@@ -192,6 +188,8 @@ export async function archiveVersion(versionId: string): Promise<void> {
 }
 
 export async function unarchiveVersion(versionId: string): Promise<void> {
+  const userId = await requireUserId();
+  await requireOwnedVersion(versionId, userId);
   const db = getDb();
 
   await db
@@ -206,16 +204,13 @@ export async function startBatchGeneration(
   trackId: string,
   sourceVersionId: string
 ): Promise<Array<{ versionId: string; provider: string; model: string; versionNumber: number }>> {
+  const userId = await requireUserId();
   const db = getDb();
 
-  // Fetch source version
-  const source = await db.query.trackVersions.findFirst({
-    where: eq(trackVersions.id, sourceVersionId),
-  });
+  await requireOwnedTrack(trackId, userId);
 
-  if (!source) {
-    throw new Error(`Version ${sourceVersionId} not found`);
-  }
+  // Fetch source version (with ownership check)
+  const source = await requireOwnedVersion(sourceVersionId, userId);
 
   // Generate 3 prompt variations via AI
   const variations = await generatePromptVariations({
@@ -280,6 +275,8 @@ export async function startBatchGeneration(
 }
 
 export async function markBest(trackId: string, versionId: string) {
+  const userId = await requireUserId();
+  await requireOwnedTrack(trackId, userId);
   const db = getDb();
 
   // Set all versions of the track to isBest=false
