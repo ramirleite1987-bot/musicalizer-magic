@@ -20,11 +20,26 @@ jobs:
       id-token: write
       actions: read
     steps:
+      # FACTORY_API_KEY has never been configured in this repo, which made this
+      # job fail on every PR. Skip gracefully until the secret exists.
+      - name: Check FACTORY_API_KEY
+        id: key
+        env:
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+        run: |
+          if [ -n "$FACTORY_API_KEY" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::FACTORY_API_KEY secret not configured - skipping Droid review."
+          fi
       - name: Checkout repository
+        if: steps.key.outputs.present == 'true'
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - name: Run Droid Auto Review
+        if: steps.key.outputs.present == 'true'
         uses: Factory-AI/droid-action@v3
         with:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
