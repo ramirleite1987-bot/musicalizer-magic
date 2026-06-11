@@ -29,6 +29,7 @@ import {
 } from "@/app/actions/versions";
 import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
+import { createShareLink } from "@/app/actions/share";
 import {
   createTheme as createThemeAction,
   deleteTheme as deleteThemeAction,
@@ -45,6 +46,7 @@ import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { CreateTrackDialog } from "@/components/create-track-dialog";
 import { ActivityPanel } from "@/components/activity-panel";
+import { CoProducerChat } from "@/components/co-producer-chat";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -95,6 +97,8 @@ export function DashboardClient({
   const [showSearchPalette, setShowSearchPalette] = useState(false);
   const [showCreateTrack, setShowCreateTrack] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [showCoProducer, setShowCoProducer] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Active generation progress cards — supports multiple concurrent cards (batch)
@@ -339,6 +343,26 @@ export function DashboardClient({
     []
   );
 
+  const handleShare = useCallback(async () => {
+    if (!selectedTrack || !selectedVersion) return;
+    try {
+      const url = await createShareLink(
+        selectedTrack.id,
+        selectedVersion.id,
+        selectedTrack.name,
+        selectedVersion
+      );
+      await navigator.clipboard.writeText(url);
+      toast.success("Share link copied!", {
+        description: url,
+      });
+    } catch (err) {
+      toast.error("Failed to create share link", {
+        description: err instanceof Error ? err.message : "Unknown error.",
+      });
+    }
+  }, [selectedTrack, selectedVersion]);
+
   // -----------------------------------------------------------------------
   // Keyboard shortcut handlers
   // -----------------------------------------------------------------------
@@ -445,7 +469,10 @@ export function DashboardClient({
         tracks={tracks}
         themes={themes}
         selectedTrackId={selectedTrackId}
-        onSelectTrack={handleSelectTrack}
+        onSelectTrack={(id) => {
+          handleSelectTrack(id);
+          setMobileSidebarOpen(false);
+        }}
         onTrackDuplicated={(newTrackId) => {
           // Reload page and navigate to the duplicated track
           window.location.href = `/dashboard?track=${newTrackId}`;
@@ -458,6 +485,8 @@ export function DashboardClient({
             window.location.reload();
           }
         }}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background/95">
@@ -475,6 +504,9 @@ export function DashboardClient({
           onRenameTrack={handleRenameTrack}
           onOpenSearch={() => setShowSearchPalette(true)}
           onOpenActivity={() => setShowActivity((prev) => !prev)}
+          onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          onShare={handleShare}
+          onOpenCoProducer={selectedTrack && selectedVersion ? () => setShowCoProducer((prev) => !prev) : undefined}
         />
 
         {loadWarning ? (
@@ -495,49 +527,55 @@ export function DashboardClient({
               onValueChange={setActiveTab}
               className="flex-1 flex flex-col"
             >
-              <div className="px-6 pt-4 border-b border-border/50 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-                <TabsList className="bg-muted/50 border border-border/50 p-1">
+              <div className="px-3 sm:px-6 pt-4 border-b border-border/50 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
+                <TabsList className="bg-muted/50 border border-border/50 p-1 overflow-x-auto flex w-full sm:w-auto">
                   <TabsTrigger
                     value="versions"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Versions"
                   >
                     <GitBranch className="w-4 h-4" />
-                    Versions
+                    <span className="hidden sm:inline">Versions</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="prompt"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Prompt"
                   >
                     <Sparkles className="w-4 h-4" />
-                    Prompt
+                    <span className="hidden sm:inline">Prompt</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="lyrics"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Lyrics"
                   >
                     <Mic2 className="w-4 h-4" />
-                    Lyrics
+                    <span className="hidden sm:inline">Lyrics</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="style"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Style"
                   >
                     <Settings2 className="w-4 h-4" />
-                    Style
+                    <span className="hidden sm:inline">Style</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="themes"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Themes"
                   >
                     <Palette className="w-4 h-4" />
-                    Themes
+                    <span className="hidden sm:inline">Themes</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="evaluate"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Evaluate"
                   >
                     <Activity className="w-4 h-4" />
-                    Evaluate
+                    <span className="hidden sm:inline">Evaluate</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -682,6 +720,20 @@ export function DashboardClient({
           themes={themes}
           onSelectTrack={handleSelectTrack}
           onClose={() => setShowActivity(false)}
+        />
+      )}
+
+      {showCoProducer && selectedTrack && selectedVersion && (
+        <CoProducerChat
+          track={selectedTrack}
+          version={selectedVersion}
+          onClose={() => setShowCoProducer(false)}
+          onApplyPrompt={(content) =>
+            handleUpdateVersion({ prompt: content })
+          }
+          onApplyLyrics={(content) =>
+            handleUpdateVersion({ lyrics: content })
+          }
         />
       )}
     </div>
