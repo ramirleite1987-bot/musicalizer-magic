@@ -146,7 +146,7 @@
       "id": 23,
       "title": "Public Share Pages",
       "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety \u2014 users share their creations.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

@@ -29,6 +29,7 @@ import {
 } from "@/app/actions/versions";
 import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
+import { createShareLink } from "@/app/actions/share";
 import {
   createTheme as createThemeAction,
   deleteTheme as deleteThemeAction,
@@ -340,6 +341,26 @@ export function DashboardClient({
     []
   );
 
+  const handleShare = useCallback(async () => {
+    if (!selectedTrack || !selectedVersion) return;
+    try {
+      const url = await createShareLink(
+        selectedTrack.id,
+        selectedVersion.id,
+        selectedTrack.name,
+        selectedVersion
+      );
+      await navigator.clipboard.writeText(url);
+      toast.success("Share link copied!", {
+        description: url,
+      });
+    } catch (err) {
+      toast.error("Failed to create share link", {
+        description: err instanceof Error ? err.message : "Unknown error.",
+      });
+    }
+  }, [selectedTrack, selectedVersion]);
+
   // -----------------------------------------------------------------------
   // Keyboard shortcut handlers
   // -----------------------------------------------------------------------
@@ -482,6 +503,7 @@ export function DashboardClient({
           onOpenSearch={() => setShowSearchPalette(true)}
           onOpenActivity={() => setShowActivity((prev) => !prev)}
           onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          onShare={handleShare}
         />
 
         {loadWarning ? (

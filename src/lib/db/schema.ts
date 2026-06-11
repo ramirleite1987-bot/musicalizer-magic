@@ -15,6 +15,7 @@ import type {
   TrackStyle,
   DimensionScores,
   TrackFeedback,
+  TrackVersion,
 } from "@/types/music";
 
 export const trackStatusEnum = pgEnum("track_status", [
@@ -137,4 +138,15 @@ export const generationLogs = pgTable("generation_logs", {
   status: varchar("status", { length: 32 }).notNull(),
   durationMs: integer("duration_ms"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const shareLinks = pgTable("share_links", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  token: varchar("token", { length: 64 }).notNull().unique(),
+  trackId: uuid("track_id").notNull(),
+  versionId: uuid("version_id").notNull(),
+  trackName: varchar("track_name", { length: 255 }).notNull(),
+  versionData: jsonb("version_data").$type<TrackVersion>().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  revokedAt: timestamp("revoked_at"),
 });

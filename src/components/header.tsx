@@ -493,6 +493,25 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           </Badge>
         )}
 
+        {/* Share button — only when version is complete or has audio */}
+        {onShare && version && (version.status === "complete" || version.audioUrl) && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            onClick={handleShare}
+            disabled={isSharing}
+            title="Share this version"
+          >
+            {isSharing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Share2 className="w-3.5 h-3.5" />
+            )}
+            <span className="hidden sm:inline">Share</span>
+          </Button>
+        )}
+
         {/* Export button */}
         <Button
           variant="outline"
