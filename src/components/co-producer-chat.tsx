@@ -158,7 +158,7 @@ export function CoProducerChat({
       content: text,
       createdAt: new Date().toISOString(),
     };
-    setMessages((prev) => [...prev, optimisticUser]);
+    setMessages((prev) => [...(prev ?? []), optimisticUser]);
 
     startTransition(async () => {
       try {
@@ -180,12 +180,12 @@ export function CoProducerChat({
 
         // Replace optimistic message + add reply
         setMessages((prev) => [
-          ...prev.filter((m) => m.id !== optimisticUser.id),
-          optimisticUser, // keep it (now "committed")
+          ...(prev ?? []).filter((m) => m.id !== optimisticUser.id),
+          optimisticUser,
           reply,
         ]);
       } catch {
-        setMessages((prev) => prev.filter((m) => m.id !== optimisticUser.id));
+        setMessages((prev) => (prev ?? []).filter((m) => m.id !== optimisticUser.id));
         toast.error("Failed to send message");
       }
     });
