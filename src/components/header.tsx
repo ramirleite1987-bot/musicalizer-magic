@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,8 @@ interface HeaderProps {
   onRenameTrack?: (newName: string) => void;
   onOpenSearch?: () => void;
   onOpenActivity?: () => void;
+  /** Mobile: callback to open the sidebar drawer */
+  onOpenMobileSidebar?: () => void;
 }
 
 const STATUS_CONFIG = {
@@ -35,7 +37,7 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
 
@@ -204,7 +206,20 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
   if (!track) {
     return (
       <div className="h-14 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-4 bg-white dark:bg-zinc-950">
-        <p className="text-sm text-zinc-400">Select a track to get started</p>
+        <div className="flex items-center gap-2">
+          {/* Hamburger — mobile only */}
+          {onOpenMobileSidebar && (
+            <button
+              type="button"
+              aria-label="Open sidebar"
+              onClick={onOpenMobileSidebar}
+              className="md:hidden p-2 rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          <p className="text-sm text-zinc-400">Select a track to get started</p>
+        </div>
         {/* Import button available even without a selected track */}
         <div className="flex items-center gap-2">
           <input
@@ -280,6 +295,18 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
         className="hidden"
         onChange={handleFileChange}
       />
+
+      {/* Hamburger — mobile only */}
+      {onOpenMobileSidebar && (
+        <button
+          type="button"
+          aria-label="Open sidebar"
+          onClick={onOpenMobileSidebar}
+          className="md:hidden mr-2 p-2 rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Breadcrumb / editable track name */}
       <div className="flex items-center gap-1.5 min-w-0">
