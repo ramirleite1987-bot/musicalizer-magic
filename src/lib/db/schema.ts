@@ -150,3 +150,18 @@ export const shareLinks = pgTable("share_links", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
   revokedAt: timestamp("revoked_at"),
 });
+
+export interface ChatSuggestion {
+  type: "prompt" | "lyrics" | "style_notes";
+  content: string;
+  description: string;
+}
+
+export const chatMessages = pgTable("chat_messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  trackId: uuid("track_id").notNull(),
+  role: varchar("role", { length: 16 }).notNull(),
+  content: text("content").notNull(),
+  suggestions: jsonb("suggestions").$type<ChatSuggestion[]>(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});

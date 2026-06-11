@@ -46,6 +46,7 @@ import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { CreateTrackDialog } from "@/components/create-track-dialog";
 import { ActivityPanel } from "@/components/activity-panel";
+import { CoProducerChat } from "@/components/co-producer-chat";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -96,6 +97,7 @@ export function DashboardClient({
   const [showSearchPalette, setShowSearchPalette] = useState(false);
   const [showCreateTrack, setShowCreateTrack] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [showCoProducer, setShowCoProducer] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -504,6 +506,7 @@ export function DashboardClient({
           onOpenActivity={() => setShowActivity((prev) => !prev)}
           onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
           onShare={handleShare}
+          onOpenCoProducer={selectedTrack && selectedVersion ? () => setShowCoProducer((prev) => !prev) : undefined}
         />
 
         {loadWarning ? (
@@ -717,6 +720,20 @@ export function DashboardClient({
           themes={themes}
           onSelectTrack={handleSelectTrack}
           onClose={() => setShowActivity(false)}
+        />
+      )}
+
+      {showCoProducer && selectedTrack && selectedVersion && (
+        <CoProducerChat
+          track={selectedTrack}
+          version={selectedVersion}
+          onClose={() => setShowCoProducer(false)}
+          onApplyPrompt={(content) =>
+            handleUpdateVersion({ prompt: content })
+          }
+          onApplyLyrics={(content) =>
+            handleUpdateVersion({ lyrics: content })
+          }
         />
       )}
     </div>

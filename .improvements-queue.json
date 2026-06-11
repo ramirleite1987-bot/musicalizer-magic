@@ -132,7 +132,7 @@
       "id": 21,
       "title": "AI Co-Producer Chat",
       "description": "Add a collapsible chat panel (right side drawer) where the user converses with Claude as a 'co-producer'. The chat has full context of the selected track (prompt, style, lyrics, scores, feedback) and can propose changes via structured tool-like responses with one-click 'Apply to prompt/lyrics/style' buttons. Persist chat history per track in a new chat_messages table.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

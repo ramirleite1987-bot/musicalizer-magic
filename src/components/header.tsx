@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu, Share2 } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu, Share2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,8 @@ interface HeaderProps {
   onOpenMobileSidebar?: () => void;
   /** Share the selected version — returns the share URL */
   onShare?: () => Promise<void>;
+  /** Open AI Co-Producer chat drawer */
+  onOpenCoProducer?: () => void;
 }
 
 const STATUS_CONFIG = {
@@ -39,7 +41,7 @@ const STATUS_CONFIG = {
   archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar, onShare }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar, onShare, onOpenCoProducer }: HeaderProps) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
@@ -550,6 +552,20 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
         </Link>
 
         <ThemeToggle />
+
+        {/* AI Co-Producer Chat */}
+        {onOpenCoProducer && track && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            onClick={onOpenCoProducer}
+            title="Open AI Co-Producer chat"
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Co-Producer</span>
+          </Button>
+        )}
 
         {/* Batch Generate — 3 Variations */}
         {onBatchGenerate && (
