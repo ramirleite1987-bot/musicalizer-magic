@@ -1,12 +1,7 @@
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { getShareLink } from "@/app/actions/share";
+import { ShareAudioPlayer } from "./audio-player";
 import type { DimensionScores, TrackVersion } from "@/types/music";
-
-const WaveformPlayer = dynamic(
-  () => import("@/components/waveform-player").then((m) => m.WaveformPlayer),
-  { ssr: false }
-);
 
 interface SharePageProps {
   params: Promise<{ token: string }>;
@@ -184,7 +179,7 @@ export default async function SharePage({ params }: SharePageProps) {
             <h2 className="text-xs text-zinc-500 uppercase tracking-wider mb-3">
               Audio
             </h2>
-            <WaveformPlayer
+            <ShareAudioPlayer
               audioUrl={versionData.audioUrl}
               fileName={versionData.audioFileName ?? `${trackName}-v${versionData.versionNumber}.mp3`}
             />
