@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createTrack } from "@/app/actions/tracks";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/provider";
 
 interface CreateTrackDialogProps {
   open: boolean;
@@ -39,6 +40,7 @@ export function CreateTrackDialog({
   onOpenChange,
   onCreated,
 }: CreateTrackDialogProps) {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [genre, setGenre] = useState("");
   const [isPending, startTransition] = useTransition();
@@ -63,12 +65,12 @@ export function CreateTrackDialog({
     startTransition(async () => {
       try {
         await createTrack({ name: trimmedName, genre: trimmedGenre });
-        toast.success("Track created", { description: trimmedName });
+        toast.success(t("createTrack.created"), { description: trimmedName });
         handleOpenChange(false);
         onCreated?.();
       } catch (err) {
-        toast.error("Failed to create track", {
-          description: err instanceof Error ? err.message : "Unknown error",
+        toast.error(t("createTrack.createFailed"), {
+          description: err instanceof Error ? err.message : undefined,
         });
       }
     });
@@ -82,22 +84,22 @@ export function CreateTrackDialog({
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
               <Music className="w-5 h-5 text-white" />
             </div>
-            <DialogTitle>Create a new track</DialogTitle>
+            <DialogTitle>{t("createTrack.title")}</DialogTitle>
           </div>
           <DialogDescription>
-            Give your track a name and an optional genre to get started.
+            {t("createTrack.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="px-6 space-y-4">
           <div className="space-y-1.5">
-            <Label htmlFor="track-name">Track name</Label>
+            <Label htmlFor="track-name">{t("createTrack.nameLabel")}</Label>
             <Input
               id="track-name"
               ref={nameInputRef}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Summer Vibes"
+              placeholder={t("createTrack.namePlaceholder")}
               disabled={isPending}
               required
             />
@@ -105,14 +107,14 @@ export function CreateTrackDialog({
 
           <div className="space-y-1.5">
             <Label htmlFor="track-genre">
-              Genre{" "}
-              <span className="text-zinc-400 font-normal text-xs">(optional)</span>
+              {t("createTrack.genreLabel")}{" "}
+              <span className="text-zinc-400 font-normal text-xs">({t("common.optional")})</span>
             </Label>
             <Input
               id="track-genre"
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
-              placeholder="e.g. Electronic"
+              placeholder={t("createTrack.genrePlaceholder")}
               disabled={isPending}
             />
             {/* Genre suggestions */}
@@ -136,7 +138,7 @@ export function CreateTrackDialog({
           <DialogClose
             render={
               <Button variant="outline" size="sm" disabled={isPending} type="button">
-                Cancel
+                {t("common.cancel")}
               </Button>
             }
           />
@@ -149,7 +151,7 @@ export function CreateTrackDialog({
             {isPending ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : null}
-            Create Track
+            {t("createTrack.createButton")}
           </Button>
         </DialogFooter>
       </DialogContent>

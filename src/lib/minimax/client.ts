@@ -1,4 +1,5 @@
 import type { AudioQuality, TrackStyle } from "@/types/music";
+import { languageDirective } from "@/lib/music/language";
 
 const MINIMAX_API_BASE =
   process.env.MINIMAX_API_BASE_URL ?? "https://api.minimaxi.chat/v1";
@@ -38,6 +39,8 @@ function buildMinimaxPrompt(params: MinimaxGenerationParams): string {
     parts.push(`featuring ${params.style.instruments.join(", ")}`);
   if (params.style.vocalStyle && params.style.vocalStyle !== "None")
     parts.push(`${params.style.vocalStyle} vocals`);
+  const langClause = languageDirective(params.style);
+  if (langClause) parts.push(langClause);
   parts.push(`${params.style.tempo} BPM`);
   parts.push(`Key of ${params.style.key}${params.style.isMinor ? " minor" : " major"}`);
 
