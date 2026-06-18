@@ -9,9 +9,326 @@ export interface PromptTemplate {
   prompt: string;
   negativePrompt: string;
   style: Partial<TrackStyle>;
+  /**
+   * Optional starter lyrics (with Suno-style section tags). Used when a track is
+   * created directly from a template so the first version already has a
+   * structured lyric scaffold to edit.
+   */
+  lyrics?: string;
 }
 
 export const PROMPT_TEMPLATES: PromptTemplate[] = [
+  // --- Católico (música católica brasileira / litúrgica) ---
+  {
+    id: "catholic-louvor",
+    category: "Católico",
+    genre: "Louvor",
+    label: "Louvor & Adoração",
+    description:
+      "Louvor católico contemporâneo de banda, com refrão congregacional caloroso e cheio de esperança.",
+    prompt:
+      "Contemporary Brazilian Catholic praise and worship song (louvor e adoração), full live band with warm acoustic and chiming electric guitars, grand piano, melodic bass, energetic but tasteful drums, layered congregational backing vocals, anthemic uplifting chorus, bright and hopeful production, sung in Brazilian Portuguese, reverent and joyful.",
+    negativePrompt:
+      "heavy metal, harsh distortion, aggressive screaming, EDM club drop, rap, profane or secular lyrics, dark, sensual",
+    style: {
+      genre: "Pop",
+      moods: ["Uplifting", "Happy", "Powerful"],
+      tempo: 120,
+      key: "G",
+      isMinor: false,
+      instruments: ["Guitar", "Piano", "Bass", "Drums"],
+      vocalStyle: "Mixed Vocals",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Em Tua presença eu quero estar
+Teu amor me faz recomeçar
+Abro o coração diante de Ti
+Tudo o que sou entrego a Ti
+
+[Chorus]
+Santo és, Senhor, digno de louvor
+Toda a terra canta o Teu amor
+Levanto as mãos, rendido a Ti
+Em Tua graça eu vou seguir
+
+[Verse]
+Tua bondade me sustentará
+Tua fidelidade não falhará
+Em meio à tempestade eu vou cantar
+Que o Teu nome é o meu lugar
+
+[Bridge]
+Aleluia, aleluia
+Cristo vive, ressuscitou
+Aleluia, aleluia
+O meu Redentor me alcançou`,
+  },
+  {
+    id: "catholic-adoracao-taize",
+    category: "Católico",
+    genre: "Taizé",
+    label: "Adoração Contemplativa (Taizé)",
+    description:
+      "Canto meditativo no estilo de Taizé: refrão repetido em ostinato, coro suave à luz de velas.",
+    prompt:
+      "Meditative Taizé-style ecumenical chant, a short prayerful refrain repeated as a gentle ostinato, soft choir singing in canon, warm sustained pipe organ, delicate strings and flute, candlelit contemplative atmosphere, spacious reverb of a quiet chapel, Latin and Portuguese sacred text, calm and timeless.",
+    negativePrompt:
+      "drums, percussion, electronic, synth bass, loud, energetic, fast, distortion, rap, beat drop",
+    style: {
+      genre: "Classical",
+      moods: ["Peaceful", "Dreamy", "Uplifting"],
+      tempo: 64,
+      key: "D",
+      isMinor: true,
+      instruments: ["Organ", "Violin", "Flute"],
+      vocalStyle: "Choir",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Nada te perturbe, nada te espante
+Quem a Deus tem, nada lhe falta
+Nada te perturbe, nada te espante
+Só Deus basta
+
+[Chorus]
+Laudate omnes gentes, laudate Dominum
+Laudate omnes gentes, laudate Dominum
+
+[Verse]
+No silêncio Tua voz me chama
+Na espera meu coração descansa
+No silêncio Tua paz me abraça
+Só Deus basta`,
+  },
+  {
+    id: "catholic-mariano",
+    category: "Católico",
+    genre: "Mariano",
+    label: "Mariano",
+    description:
+      "Hino mariano terno em homenagem a Nossa Senhora, com violão dedilhado e voz suave.",
+    prompt:
+      "Tender Brazilian Marian hymn honoring Our Lady (Nossa Senhora), gentle fingerpicked nylon-string guitar, soft piano, delicate harp arpeggios, warm flute countermelody, intimate and devotional female lead vocal, contemplative and consoling, sung in Brazilian Portuguese, sincere and reverent.",
+    negativePrompt:
+      "aggressive, distortion, heavy drums, electronic, rap, secular club, dark, dissonant",
+    style: {
+      genre: "Folk",
+      moods: ["Peaceful", "Melancholic", "Dreamy"],
+      tempo: 72,
+      key: "C",
+      isMinor: false,
+      instruments: ["Guitar", "Piano", "Harp", "Flute"],
+      vocalStyle: "Female Vocals",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Maria, mãe do Salvador
+Estrela que conduz ao bem
+Em teu olhar encontro amor
+Em teu colo a paz me vem
+
+[Chorus]
+Ave Maria, cheia de graça
+Roga por nós, mãe de Jesus
+Ave Maria, nossa esperança
+Guia meus passos para a luz
+
+[Verse]
+No sim que um dia tu disseste
+O céu à terra se encontrou
+Ensina-me a dizer também
+Senhor, faça-se em mim Teu amor`,
+  },
+  {
+    id: "catholic-missa-liturgica",
+    category: "Católico",
+    genre: "Litúrgico",
+    label: "Missa / Litúrgico",
+    description:
+      "Hino litúrgico solene para a Missa, com órgão de tubos e coro em clima de catedral.",
+    prompt:
+      "Solemn Catholic liturgical hymn for the Mass, majestic pipe organ, full SATB choir in four-part harmony, supporting strings, reverent sacred cathedral atmosphere with long natural reverb, suitable for entrance or communion procession, dignified and prayerful, sung in Portuguese with occasional Latin, noble and timeless.",
+    negativePrompt:
+      "electronic, drum kit, pop beat, distortion, rap, secular, aggressive, synthesizer",
+    style: {
+      genre: "Classical",
+      moods: ["Peaceful", "Epic", "Uplifting"],
+      tempo: 76,
+      key: "D",
+      isMinor: false,
+      instruments: ["Organ", "Violin", "Cello"],
+      vocalStyle: "Choir",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Eis-nos aqui, Senhor, em Tua casa
+Reunidos pelo Teu amor
+Como um só povo a Ti cantamos
+Glória e louvor ao Criador
+
+[Chorus]
+Santo, Santo, Santo é o Senhor
+Deus do universo e do altar
+O céu e a terra proclamam
+A grandeza do Seu amar
+
+[Verse]
+Na fração do pão nos encontramos
+Cristo se faz comunhão
+Um só corpo, um só Espírito
+Caminhamos rumo à salvação`,
+  },
+  {
+    id: "catholic-sertanejo-gospel",
+    category: "Católico",
+    genre: "Sertanejo",
+    label: "Sertanejo Gospel",
+    description:
+      "Balada sertaneja de fé, com viola caipira, sanfona e voz emocionada de testemunho.",
+    prompt:
+      "Heartfelt Brazilian sertanejo gospel ballad, twangy viola caipira and acoustic guitar, expressive accordion (sanfona), gentle bass and brushed drums, warm emotive male lead with second-voice harmony, sincere testimony of faith and gratitude to God, countryside warmth, sung in Brazilian Portuguese, devotional and tender.",
+    negativePrompt:
+      "heavy metal, EDM, trap, rap, harsh distortion, profane, electronic synth lead",
+    style: {
+      genre: "Country",
+      moods: ["Uplifting", "Nostalgic", "Happy"],
+      tempo: 92,
+      key: "G",
+      isMinor: false,
+      instruments: ["Guitar", "Bass", "Drums", "Violin"],
+      vocalStyle: "Male Vocals",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+No meio da estrada eu me perdi
+Carreguei sozinho a minha cruz
+Mas no fundo escuro eu Te ouvi
+Me chamando de volta à luz
+
+[Chorus]
+Foi Tua mão que me levantou
+Foi Teu amor que me sustentou
+Hoje eu canto pra Te agradecer
+Sem Ti, Senhor, eu não sei viver
+
+[Verse]
+Como filho que volta pra casa
+Tu me abraças e fazes a festa
+Matas a saudade, secas meu pranto
+Tua graça é tudo o que me resta`,
+  },
+  {
+    id: "catholic-mpb-sacra",
+    category: "Católico",
+    genre: "MPB Sacra",
+    label: "MPB Sacra",
+    description:
+      "Hino católico brasileiro tradicional com influência de MPB, violão e coro congregacional.",
+    prompt:
+      "Traditional Brazilian Catholic hymn with MPB influence, warm acoustic nylon guitar, gentle piano, soft congregational choir, subtle flute, devotional and uplifting, intimate and sincere production, sung in Brazilian Portuguese, reverent and welcoming.",
+    negativePrompt:
+      "electronic, harsh distortion, aggressive, rap, secular club, dark, heavy drums",
+    style: {
+      genre: "Folk",
+      moods: ["Peaceful", "Uplifting", "Dreamy"],
+      tempo: 84,
+      key: "C",
+      isMinor: false,
+      instruments: ["Guitar", "Piano", "Flute"],
+      vocalStyle: "Mixed Vocals",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Senhor, eu venho a Ti
+Com o coração aberto
+Tua graça me sustém
+No caminho que é certo
+
+[Chorus]
+Glória a Deus nas alturas
+Paz na terra aos seus amados
+Com amor nos envolveu
+Somos seus abençoados
+
+[Bridge]
+Na Tua presença encontro paz
+A Tua palavra é verdade
+Caminho seguro me dás
+Em Tua infinita bondade`,
+  },
+  {
+    id: "catholic-natal",
+    category: "Católico",
+    genre: "Natal",
+    label: "Natal / Advento",
+    description:
+      "Canção de Natal católica, alegre e cheia de ternura, com sinos, cordas e coro.",
+    prompt:
+      "Joyful Brazilian Catholic Christmas hymn (canção de Natal), warm hand bells and glockenspiel, lush strings, harp, gentle acoustic guitar, children and adult choir together, wonder of the Nativity, festive yet reverent and tender, sung in Brazilian Portuguese, warm and luminous.",
+    negativePrompt:
+      "dark, aggressive, distortion, electronic club, rap, secular party, dissonant",
+    style: {
+      genre: "Cinematic",
+      moods: ["Happy", "Peaceful", "Uplifting"],
+      tempo: 96,
+      key: "D",
+      isMinor: false,
+      instruments: ["Piano", "Harp", "Violin", "Flute"],
+      vocalStyle: "Choir",
+      duration: "3m",
+    },
+    lyrics: `[Verse]
+Numa noite de silêncio e paz
+Uma estrela veio a brilhar
+Em Belém, num simples presépio
+O Senhor quis se humanar
+
+[Chorus]
+Glória a Deus, nasceu o Salvador
+Cantai, ó povos, com alegria
+Veio ao mundo o Rei de amor
+Filho de Deus e de Maria
+
+[Verse]
+Os pastores correm a adorar
+Os anjos cantam no céu sem fim
+O Emanuel veio habitar
+Deus conosco, enfim`,
+  },
+  {
+    id: "catholic-gregoriano",
+    category: "Católico",
+    genre: "Gregoriano",
+    label: "Canto Gregoriano",
+    description:
+      "Canto gregoriano monofônico em latim, schola masculina a cappella sob abóbadas de pedra.",
+    prompt:
+      "Authentic Gregorian chant, monophonic male schola singing in unison, free-flowing modal melody with no fixed beat, sacred Latin liturgical text, a cappella with no instruments, resonant stone abbey acoustics with long reverb, meditative, austere and timeless.",
+    negativePrompt:
+      "instruments, drums, percussion, harmony, chords, electronic, modern production, pop, beat, bass",
+    style: {
+      genre: "Classical",
+      moods: ["Peaceful", "Mysterious", "Dreamy"],
+      tempo: 60,
+      key: "D",
+      isMinor: false,
+      instruments: [],
+      vocalStyle: "Choir",
+      duration: "2m",
+    },
+    lyrics: `[Verse]
+Kyrie eleison
+Christe eleison
+Kyrie eleison
+
+[Verse]
+Sanctus, Sanctus, Sanctus
+Dominus Deus Sabaoth
+Pleni sunt caeli et terra gloria tua
+Hosanna in excelsis`,
+  },
+
   // --- Electronic ---
   {
     id: "electronic-techno",
@@ -326,6 +643,7 @@ export const PROMPT_TEMPLATES: PromptTemplate[] = [
 ];
 
 export const TEMPLATE_CATEGORIES = [
+  "Católico",
   "Electronic",
   "Hip-Hop",
   "Cinematic",
