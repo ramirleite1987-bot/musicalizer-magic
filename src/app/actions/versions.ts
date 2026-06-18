@@ -4,46 +4,14 @@ import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import type { TrackVersion, TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
+import type { TrackVersion } from "@/types/music";
+import {
+  DEFAULT_STYLE,
+  DEFAULT_DIMENSION_SCORES,
+  DEFAULT_FEEDBACK,
+} from "@/lib/track-defaults";
 import { generatePromptVariations } from "@/app/actions/ai-suggestions";
 import { startGeneration } from "@/app/actions/generation";
-
-const DEFAULT_STYLE: TrackStyle = {
-  genre: "Electronic",
-  moods: [],
-  tempo: 120,
-  key: "C",
-  isMinor: false,
-  instruments: [],
-  vocalStyle: "None",
-  duration: "2min",
-  provider: "suno",
-  sunoApiVersion: "v5.5",
-  minimaxModel: "music-1.5",
-  audioQuality: {
-    sampleRate: 44100,
-    bitrate: 256000,
-    format: "mp3",
-  },
-};
-
-const DEFAULT_DIMENSION_SCORES: DimensionScores = {
-  melody: 0,
-  harmony: 0,
-  rhythm: 0,
-  production: 0,
-  lyricsFit: 0,
-  originality: 0,
-  emotionalImpact: 0,
-};
-
-const DEFAULT_FEEDBACK: TrackFeedback = {
-  musicPositives: "",
-  musicNegatives: "",
-  lyricsPositives: "",
-  lyricsNegatives: "",
-  thingsToAvoid: "",
-};
 
 export async function createVersion(
   trackId: string,
