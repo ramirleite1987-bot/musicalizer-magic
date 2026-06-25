@@ -9,7 +9,7 @@ import { eq } from "drizzle-orm";
 import {
   DEFAULT_DIMENSION_SCORES,
   DEFAULT_FEEDBACK,
-} from "@/lib/version-defaults";
+} from "@/lib/track-defaults";
 import {
   getCatholicTheme,
   getCatholicStyleBlend,

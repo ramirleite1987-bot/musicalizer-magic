@@ -77,14 +77,20 @@ const ptBR = {
   },
   createTrack: {
     title: "Criar uma nova faixa",
-    description: "Dê um nome à faixa e, opcionalmente, um gênero para começar.",
+    description:
+      "Dê um nome à faixa e comece a partir de um modelo de estilo — ou crie uma faixa em branco e configure tudo você mesmo.",
     nameLabel: "Nome da faixa",
-    namePlaceholder: "ex.: Vibrações de Verão",
+    namePlaceholder: "ex.: Santo é o Senhor",
     genreLabel: "Gênero",
-    genrePlaceholder: "ex.: Eletrônica",
+    genrePlaceholder: "ex.: Louvor",
     createButton: "Criar faixa",
     created: "Faixa criada",
     createFailed: "Falha ao criar a faixa",
+    templateLabel: "Comece a partir de um modelo",
+    featured: "em destaque",
+    blankTrack: "Faixa em branco",
+    blankTrackDescription:
+      "Comece do zero e configure o prompt você mesmo.",
   },
   style: {
     presets: "Predefinições",

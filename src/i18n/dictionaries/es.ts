@@ -75,14 +75,19 @@ const es = {
   },
   createTrack: {
     title: "Crear una nueva pista",
-    description: "Dale un nombre a tu pista y, opcionalmente, un género para empezar.",
+    description:
+      "Dale un nombre a tu pista y empieza desde una plantilla de estilo — o crea una pista en blanco y configúralo todo tú mismo.",
     nameLabel: "Nombre de la pista",
-    namePlaceholder: "p. ej. Vibras de Verano",
+    namePlaceholder: "p. ej. Santo es el Señor",
     genreLabel: "Género",
-    genrePlaceholder: "p. ej. Electrónica",
+    genrePlaceholder: "p. ej. Alabanza",
     createButton: "Crear pista",
     created: "Pista creada",
     createFailed: "Error al crear la pista",
+    templateLabel: "Empieza desde una plantilla",
+    featured: "destacado",
+    blankTrack: "Pista en blanco",
+    blankTrackDescription: "Empieza desde cero y configura el prompt tú mismo.",
   },
   style: {
     presets: "Preajustes",

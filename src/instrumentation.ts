@@ -27,6 +27,8 @@ export async function register() {
       await sql`ALTER TABLE tracks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]'::jsonb`;
       await sql`CREATE TABLE IF NOT EXISTS style_presets (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name VARCHAR(255) NOT NULL, style JSONB NOT NULL, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
       await sql`CREATE TABLE IF NOT EXISTS generation_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), track_id UUID, version_id UUID, provider VARCHAR(32) NOT NULL, model VARCHAR(64), status VARCHAR(32) NOT NULL, duration_ms INTEGER, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
+      await sql`CREATE TABLE IF NOT EXISTS share_links (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), token VARCHAR(64) NOT NULL UNIQUE, track_id UUID NOT NULL, version_id UUID NOT NULL, track_name VARCHAR(255) NOT NULL, version_data JSONB NOT NULL, created_at TIMESTAMP DEFAULT NOW() NOT NULL, revoked_at TIMESTAMP)`;
+      await sql`CREATE TABLE IF NOT EXISTS chat_messages (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), track_id UUID NOT NULL, role VARCHAR(16) NOT NULL, content TEXT NOT NULL, suggestions JSONB, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
     } catch (err) {
       // Non-fatal: if the column already exists or DB is unreachable, continue normally
       console.warn("[instrumentation] auto-migration warning:", err);

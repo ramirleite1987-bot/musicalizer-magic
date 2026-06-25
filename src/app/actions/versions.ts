@@ -5,13 +5,13 @@ import { getDb } from "@/lib/db";
 import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import type { TrackVersion } from "@/types/music";
-import { generatePromptVariations } from "@/app/actions/ai-suggestions";
-import { startGeneration } from "@/app/actions/generation";
 import {
   DEFAULT_STYLE,
   DEFAULT_DIMENSION_SCORES,
   DEFAULT_FEEDBACK,
-} from "@/lib/version-defaults";
+} from "@/lib/track-defaults";
+import { generatePromptVariations } from "@/app/actions/ai-suggestions";
+import { startGeneration } from "@/app/actions/generation";
 
 export async function createVersion(
   trackId: string,

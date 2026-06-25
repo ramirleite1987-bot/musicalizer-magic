@@ -75,14 +75,19 @@ const en = {
   },
   createTrack: {
     title: "Create a new track",
-    description: "Give your track a name and an optional genre to get started.",
+    description:
+      "Name your track and start from a style template — or create a blank track and set everything up yourself.",
     nameLabel: "Track name",
-    namePlaceholder: "e.g. Summer Vibes",
+    namePlaceholder: "e.g. Santo é o Senhor",
     genreLabel: "Genre",
-    genrePlaceholder: "e.g. Electronic",
+    genrePlaceholder: "e.g. Louvor",
     createButton: "Create Track",
     created: "Track created",
     createFailed: "Failed to create track",
+    templateLabel: "Start from a template",
+    featured: "featured",
+    blankTrack: "Blank track",
+    blankTrackDescription: "Start from scratch and configure the prompt yourself.",
   },
   style: {
     presets: "Presets",

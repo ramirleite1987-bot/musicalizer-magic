@@ -267,7 +267,7 @@ ${styleDescription || "(no style details)"}
 Return exactly ${count} variations. Each should be a complete, standalone music production prompt that could be used independently. Make them meaningfully different from each other — vary the instrumentation, energy, texture, or emotional angle.`;
 
   const { output } = await generateText({
-    model: "anthropic/claude-sonnet-4-6",
+    model: "anthropic/claude-sonnet-4.6",
     output: Output.object({ schema: promptVariationsSchema }),
     prompt: userPrompt,
   });

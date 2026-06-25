@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useRef, useEffect, useCallback } from "react";
-import { Music, Search, Star, Tag, MoreHorizontal, Copy, Trash2 } from "lucide-react";
+import { Music, Search, Star, Tag, MoreHorizontal, Copy, Trash2, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,6 +40,10 @@ interface SidebarProps {
   onSelectTrack: (id: string) => void;
   onTrackDuplicated?: (newTrackId: string) => void;
   onTrackDeleted?: (deletedTrackId: string) => void;
+  /** Mobile: whether the drawer is open */
+  mobileOpen?: boolean;
+  /** Mobile: callback to close the drawer */
+  onMobileClose?: () => void;
 }
 
 export function Sidebar({
@@ -49,6 +53,8 @@ export function Sidebar({
   onSelectTrack,
   onTrackDuplicated,
   onTrackDeleted,
+  mobileOpen = false,
+  onMobileClose,
 }: SidebarProps) {
   const { t } = useI18n();
   const [search, setSearch] = useState("");
@@ -180,17 +186,30 @@ export function Sidebar({
 
   const getThemeById = (id: string) => themes.find((t) => t.id === id);
 
-  return (
+  const sidebarContent = (
     <div className="w-64 flex-shrink-0 border-r border-zinc-200 dark:border-zinc-800 flex flex-col h-full bg-white dark:bg-zinc-950">
       {/* Logo */}
       <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
-            <Music className="w-4 h-4 text-white" />
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+              <Music className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
+              Musicalizer Magic
+            </span>
           </div>
-          <span className="font-semibold text-sm text-zinc-900 dark:text-zinc-100">
-            Musicalizer Magic
-          </span>
+          {/* Close button visible only on mobile drawer */}
+          {onMobileClose && (
+            <button
+              type="button"
+              aria-label="Close sidebar"
+              onClick={onMobileClose}
+              className="md:hidden p-1.5 rounded-md text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -432,5 +451,30 @@ export function Sidebar({
         return selectedTrack ? <TrackStatsCard track={selectedTrack} /> : null;
       })()}
     </div>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible on md+ */}
+      <div className="hidden md:flex">
+        {sidebarContent}
+      </div>
+
+      {/* Mobile drawer overlay */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onMobileClose}
+            aria-hidden="true"
+          />
+          {/* Drawer panel */}
+          <div className="relative z-10 flex h-full animate-in slide-in-from-left duration-300">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

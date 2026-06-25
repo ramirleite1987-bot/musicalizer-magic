@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Church } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Church, Menu, Share2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,12 @@ interface HeaderProps {
   onOpenSearch?: () => void;
   onOpenActivity?: () => void;
   onOpenCatholic?: () => void;
+  /** Mobile: callback to open the sidebar drawer */
+  onOpenMobileSidebar?: () => void;
+  /** Share the selected version — returns the share URL */
+  onShare?: () => Promise<void>;
+  /** Open AI Co-Producer chat drawer */
+  onOpenCoProducer?: () => void;
 }
 
 const STATUS_CONFIG: Record<TrackStatus, { icon: typeof Clock; className: string }> = {
@@ -38,10 +44,11 @@ const STATUS_CONFIG: Record<TrackStatus, { icon: typeof Clock; className: string
   archived: { icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenCatholic }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenCatholic, onOpenMobileSidebar, onShare, onOpenCoProducer }: HeaderProps) {
   const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
 
   // Inline rename state
   const [isEditing, setIsEditing] = useState(false);
@@ -157,6 +164,16 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
     setIsEditing(false);
   };
 
+  const handleShare = async () => {
+    if (!onShare || isSharing) return;
+    setIsSharing(true);
+    try {
+      await onShare();
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const handleExport = () => {
     if (!track) return;
     const themeNames: Record<string, string> = {};
@@ -208,7 +225,20 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
   if (!track) {
     return (
       <div className="h-14 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-4 bg-white dark:bg-zinc-950">
-        <p className="text-sm text-zinc-400">{t("header.selectTrackToStart")}</p>
+        <div className="flex items-center gap-2">
+          {/* Hamburger — mobile only */}
+          {onOpenMobileSidebar && (
+            <button
+              type="button"
+              aria-label="Open sidebar"
+              onClick={onOpenMobileSidebar}
+              className="md:hidden p-2 rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          )}
+          <p className="text-sm text-zinc-400">{t("header.selectTrackToStart")}</p>
+        </div>
         {/* Import button available even without a selected track */}
         <div className="flex items-center gap-2">
           <input
@@ -297,6 +327,18 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
         className="hidden"
         onChange={handleFileChange}
       />
+
+      {/* Hamburger — mobile only */}
+      {onOpenMobileSidebar && (
+        <button
+          type="button"
+          aria-label="Open sidebar"
+          onClick={onOpenMobileSidebar}
+          className="md:hidden mr-2 p-2 rounded-md text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex-shrink-0 min-w-[44px] min-h-[44px] flex items-center justify-center"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+      )}
 
       {/* Breadcrumb / editable track name */}
       <div className="flex items-center gap-1.5 min-w-0">
@@ -484,6 +526,25 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           </Badge>
         )}
 
+        {/* Share button — only when version is complete or has audio */}
+        {onShare && version && (version.status === "complete" || version.audioUrl) && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            onClick={handleShare}
+            disabled={isSharing}
+            title="Share this version"
+          >
+            {isSharing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Share2 className="w-3.5 h-3.5" />
+            )}
+            <span className="hidden sm:inline">Share</span>
+          </Button>
+        )}
+
         {/* Export button */}
         <Button
           variant="outline"
@@ -523,6 +584,20 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
 
         <LanguageSwitcher />
         <ThemeToggle />
+
+        {/* AI Co-Producer Chat */}
+        {onOpenCoProducer && track && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
+            onClick={onOpenCoProducer}
+            title="Open AI Co-Producer chat"
+          >
+            <MessageSquare className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Co-Producer</span>
+          </Button>
+        )}
 
         {/* Batch Generate — 3 Variations */}
         {onBatchGenerate && (
