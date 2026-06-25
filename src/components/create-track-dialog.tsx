@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createTrack } from "@/app/actions/tracks";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/provider";
 import { cn } from "@/lib/utils";
 import {
   PROMPT_TEMPLATES,
@@ -49,6 +50,7 @@ export function CreateTrackDialog({
   onOpenChange,
   onCreated,
 }: CreateTrackDialogProps) {
+  const { t } = useI18n();
   const [name, setName] = useState("");
   const [genre, setGenre] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
@@ -103,7 +105,7 @@ export function CreateTrackDialog({
               }
             : {}),
         });
-        toast.success("Track created", {
+        toast.success(t("createTrack.created"), {
           description: template
             ? `${trimmedName} · ${template.label}`
             : trimmedName,
@@ -111,8 +113,8 @@ export function CreateTrackDialog({
         handleOpenChange(false);
         onCreated?.();
       } catch (err) {
-        toast.error("Failed to create track", {
-          description: err instanceof Error ? err.message : "Unknown error",
+        toast.error(t("createTrack.createFailed"), {
+          description: err instanceof Error ? err.message : undefined,
         });
       }
     });
@@ -126,24 +128,23 @@ export function CreateTrackDialog({
             <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
               <Music className="w-5 h-5 text-white" />
             </div>
-            <DialogTitle>Create a new track</DialogTitle>
+            <DialogTitle>{t("createTrack.title")}</DialogTitle>
           </div>
           <DialogDescription>
-            Name your track and start from a style template — or create a blank
-            track and set everything up yourself.
+            {t("createTrack.description")}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="px-6 space-y-4">
           {/* Track name */}
           <div className="space-y-1.5">
-            <Label htmlFor="track-name">Track name</Label>
+            <Label htmlFor="track-name">{t("createTrack.nameLabel")}</Label>
             <Input
               id="track-name"
               ref={nameInputRef}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Santo é o Senhor"
+              placeholder={t("createTrack.namePlaceholder")}
               disabled={isPending}
               required
             />
@@ -153,7 +154,7 @@ export function CreateTrackDialog({
           <div className="space-y-1.5">
             <div className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-violet-500" />
-              <Label className="mb-0">Start from a template</Label>
+              <Label className="mb-0">{t("createTrack.templateLabel")}</Label>
               <span className="text-zinc-400 font-normal text-xs">
                 (optional)
               </span>
@@ -175,10 +176,10 @@ export function CreateTrackDialog({
                 <FileText className="w-4 h-4 shrink-0 text-zinc-500" />
                 <div className="flex-1 min-w-0">
                   <span className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
-                    Blank track
+                    {t("createTrack.blankTrack")}
                   </span>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Start from scratch and configure the prompt yourself.
+                    {t("createTrack.blankTrackDescription")}
                   </p>
                 </div>
                 {selectedTemplateId === null && (
@@ -195,7 +196,7 @@ export function CreateTrackDialog({
                     </h4>
                     {category === "Católico" && (
                       <span className="text-[10px] text-violet-500 font-medium">
-                        em destaque
+                        {t("createTrack.featured")}
                       </span>
                     )}
                     <div className="flex-1 h-px bg-zinc-100 dark:bg-zinc-800" />
@@ -244,16 +245,14 @@ export function CreateTrackDialog({
           {/* Genre */}
           <div className="space-y-1.5">
             <Label htmlFor="track-genre">
-              Genre{" "}
-              <span className="text-zinc-400 font-normal text-xs">
-                (optional)
-              </span>
+              {t("createTrack.genreLabel")}{" "}
+              <span className="text-zinc-400 font-normal text-xs">({t("common.optional")})</span>
             </Label>
             <Input
               id="track-genre"
               value={genre}
               onChange={(e) => setGenre(e.target.value)}
-              placeholder="e.g. Louvor"
+              placeholder={t("createTrack.genrePlaceholder")}
               disabled={isPending}
             />
             <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -275,13 +274,8 @@ export function CreateTrackDialog({
         <DialogFooter>
           <DialogClose
             render={
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isPending}
-                type="button"
-              >
-                Cancel
+              <Button variant="outline" size="sm" disabled={isPending} type="button">
+                {t("common.cancel")}
               </Button>
             }
           />
@@ -291,8 +285,10 @@ export function CreateTrackDialog({
             onClick={handleSubmit as unknown as React.MouseEventHandler}
             className="bg-violet-600 hover:bg-violet-700 text-white gap-1.5"
           >
-            {isPending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : null}
-            Create Track
+            {isPending ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : null}
+            {t("createTrack.createButton")}
           </Button>
         </DialogFooter>
       </DialogContent>

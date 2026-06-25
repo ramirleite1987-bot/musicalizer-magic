@@ -17,6 +17,7 @@ export const DEFAULT_STYLE: TrackStyle = {
   instruments: [],
   vocalStyle: "None",
   duration: "2min",
+  language: "pt",
   provider: "suno",
   sunoApiVersion: "v5.5",
   minimaxModel: "music-1.5",

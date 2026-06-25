@@ -20,6 +20,19 @@ export const MINIMAX_MODELS = [
 
 export type MinimaxAudioFormat = "mp3" | "wav" | "pcm";
 
+// Languages available for the sung vocals / lyrics of a generated track.
+// "la" (Latin) is included for liturgical / Catholic chant.
+export type SongLanguage = "pt" | "en" | "es" | "la";
+
+export const SONG_LANGUAGES: readonly SongLanguage[] = [
+  "pt",
+  "en",
+  "es",
+  "la",
+] as const;
+
+export const DEFAULT_SONG_LANGUAGE: SongLanguage = "pt";
+
 export const MINIMAX_SAMPLE_RATES = [22050, 32000, 44100, 48000] as const;
 export const MINIMAX_BITRATES = [128000, 192000, 256000, 320000] as const;
 export const MINIMAX_FORMATS: MinimaxAudioFormat[] = ["mp3", "wav", "pcm"];
@@ -49,6 +62,7 @@ export interface TrackStyle {
   instruments: string[];
   vocalStyle: string;
   duration: string;
+  language?: SongLanguage;
   provider?: MusicProvider;
   sunoApiVersion: string;
   minimaxModel?: string;

@@ -18,6 +18,7 @@ import { TrackStatsCard } from "@/components/track-stats-card";
 import { TrackTags } from "@/components/track-tags";
 import { duplicateTrack as duplicateTrackAction, deleteTrack as deleteTrackAction } from "@/app/actions/tracks";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/provider";
 
 const COLOR_MAP: Record<string, string> = {
   blue: "bg-blue-500",
@@ -55,6 +56,7 @@ export function Sidebar({
   mobileOpen = false,
   onMobileClose,
 }: SidebarProps) {
+  const { t } = useI18n();
   const [search, setSearch] = useState("");
   const [themeFilter, setThemeFilter] = useState("all");
   // Local optimistic tag overrides keyed by trackId
@@ -93,8 +95,8 @@ export function Sidebar({
       setIsDuplicating(true);
       try {
         const newTrackId = await duplicateTrackAction(trackId);
-        toast.success("Track duplicated", {
-          description: "Navigate to the new track to start editing.",
+        toast.success(t("sidebar.trackDuplicated"), {
+          description: t("sidebar.trackDuplicatedDesc"),
         });
         if (onTrackDuplicated) {
           onTrackDuplicated(newTrackId);
@@ -103,14 +105,14 @@ export function Sidebar({
           window.location.reload();
         }
       } catch (err) {
-        toast.error("Failed to duplicate track", {
-          description: err instanceof Error ? err.message : "Unknown error",
+        toast.error(t("sidebar.duplicateFailed"), {
+          description: err instanceof Error ? err.message : undefined,
         });
       } finally {
         setIsDuplicating(false);
       }
     },
-    [closeMenu, onTrackDuplicated]
+    [closeMenu, onTrackDuplicated, t]
   );
 
   const handleDelete = useCallback(
@@ -118,19 +120,19 @@ export function Sidebar({
       closeMenu();
       try {
         await deleteTrackAction(trackId);
-        toast.success("Track deleted");
+        toast.success(t("sidebar.trackDeleted"));
         if (onTrackDeleted) {
           onTrackDeleted(trackId);
         } else {
           window.location.reload();
         }
       } catch (err) {
-        toast.error("Failed to delete track", {
-          description: err instanceof Error ? err.message : "Unknown error",
+        toast.error(t("sidebar.deleteFailed"), {
+          description: err instanceof Error ? err.message : undefined,
         });
       }
     },
-    [closeMenu, onTrackDeleted]
+    [closeMenu, onTrackDeleted, t]
   );
 
   const getTrackTags = (track: Track): string[] =>
@@ -220,7 +222,7 @@ export function Sidebar({
             <Search className="absolute left-2.5 top-2.5 w-4 h-4 text-zinc-400" />
           )}
           <Input
-            placeholder="Search tracks or #tag..."
+            placeholder={t("sidebar.searchPlaceholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
@@ -232,17 +234,17 @@ export function Sidebar({
         </div>
         {isTagSearch && searchLower.length > 1 && (
           <p className="text-[10px] text-violet-500 dark:text-violet-400 px-1">
-            Filtering by tag: {search.trim()}
+            {t("sidebar.filteringByTag", { tag: search.trim() })}
           </p>
         )}
 
         {/* Theme filter */}
         <Select value={themeFilter} onValueChange={(v) => setThemeFilter(v ?? "all")}>
           <SelectTrigger className="h-8 text-xs">
-            <SelectValue placeholder="Filter by theme" />
+            <SelectValue placeholder={t("sidebar.filterByTheme")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All themes</SelectItem>
+            <SelectItem value="all">{t("sidebar.allThemes")}</SelectItem>
             {themes.map((theme) => (
               <SelectItem key={theme.id} value={theme.id}>
                 <div className="flex items-center gap-2">
@@ -263,7 +265,10 @@ export function Sidebar({
       {/* Track count */}
       <div className="px-3 pb-1">
         <p className="text-xs text-zinc-400">
-          {filteredTracks.length} track{filteredTracks.length !== 1 ? "s" : ""}
+          {filteredTracks.length}{" "}
+          {filteredTracks.length === 1
+            ? t("sidebar.trackSingular")
+            : t("sidebar.trackPlural")}
         </p>
       </div>
 
@@ -329,7 +334,7 @@ export function Sidebar({
                           variant="secondary"
                           className="text-[10px] h-4 px-1 bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300"
                         >
-                          gen
+                          {t("sidebar.gen")}
                         </Badge>
                       )}
                     </div>
@@ -357,8 +362,10 @@ export function Sidebar({
                   </div>
 
                   <div className="mt-1 text-xs text-zinc-400">
-                    {track.versions.length} version
-                    {track.versions.length !== 1 ? "s" : ""}
+                    {track.versions.length}{" "}
+                    {track.versions.length === 1
+                      ? t("sidebar.versionSingular")
+                      : t("sidebar.versionPlural")}
                   </div>
                 </button>
 
@@ -382,7 +389,7 @@ export function Sidebar({
                 >
                   <button
                     type="button"
-                    aria-label="Track options"
+                    aria-label={t("sidebar.trackOptions")}
                     disabled={isDuplicating}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -410,7 +417,7 @@ export function Sidebar({
                         className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left text-zinc-700 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-50"
                       >
                         <Copy className="w-3.5 h-3.5" />
-                        {isDuplicating ? "Duplicating…" : "Duplicate"}
+                        {isDuplicating ? t("sidebar.duplicating") : t("sidebar.duplicate")}
                       </button>
                       <button
                         type="button"
@@ -421,7 +428,7 @@ export function Sidebar({
                         className="flex items-center gap-2 w-full px-3 py-1.5 text-xs text-left text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/50"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
-                        Delete
+                        {t("sidebar.delete")}
                       </button>
                     </div>
                   )}
@@ -432,7 +439,7 @@ export function Sidebar({
 
           {filteredTracks.length === 0 && (
             <div className="py-8 text-center text-sm text-zinc-400">
-              No tracks found
+              {t("sidebar.noTracksFound")}
             </div>
           )}
         </div>

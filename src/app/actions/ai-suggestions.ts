@@ -3,6 +3,7 @@
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import type { TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
+import { songLanguageName } from "@/lib/music/language";
 
 const lyricsSchema = z.object({
   lyrics: z.string().describe("The full lyrics with section labels like [Verse 1], [Chorus], [Bridge]"),
@@ -19,12 +20,15 @@ export async function generateLyrics(params: {
 }): Promise<{ lyrics: string; structure: string }> {
   const { trackName, prompt, genre, moods, style, existingLyrics } = params;
 
+  const languageName = songLanguageName(style.language);
+
   const styleDescription = [
     genre ? `Genre: ${genre}` : null,
     moods && moods.length > 0 ? `Moods/Vibes: ${moods.join(", ")}` : null,
     style.tempo ? `Tempo: ${style.tempo} BPM` : null,
     style.key ? `Key: ${style.key} ${style.isMinor ? "minor" : "major"}` : null,
     style.vocalStyle ? `Vocal style: ${style.vocalStyle}` : null,
+    `Language: ${languageName}`,
     style.instruments && style.instruments.length > 0
       ? `Instruments: ${style.instruments.join(", ")}`
       : null,
@@ -47,6 +51,7 @@ Style details:
 ${styleDescription || "(no additional style details)"}
 ${existingLyricsSection}
 Requirements:
+- Write ALL the lyrics in ${languageName}. Section labels stay in English (e.g. [Verse 1], [Chorus]).
 - Use clear section labels: [Verse 1], [Pre-Chorus] (optional), [Chorus], [Verse 2], [Bridge], [Outro] as appropriate
 - Make the lyrics thematically consistent and emotionally resonant
 - Match the tone and energy implied by the genre and moods

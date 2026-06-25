@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { generateLyrics } from "@/app/actions/ai-suggestions";
 import type { TrackStyle } from "@/types/music";
+import { useI18n } from "@/i18n/provider";
 
 interface LyricsGeneratorModalProps {
   open: boolean;
@@ -36,6 +37,7 @@ export function LyricsGeneratorModal({
   style,
   existingLyrics,
 }: LyricsGeneratorModalProps) {
+  const { t } = useI18n();
   const [isLoading, setIsLoading] = useState(false);
   const [generatedLyrics, setGeneratedLyrics] = useState<string | null>(null);
   const [structure, setStructure] = useState<string | null>(null);
@@ -56,18 +58,18 @@ export function LyricsGeneratorModal({
       setGeneratedLyrics(result.lyrics);
       setStructure(result.structure);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Something went wrong";
-      toast.error("Failed to generate lyrics", {
+      const message = err instanceof Error ? err.message : undefined;
+      toast.error(t("lyricsModal.failed"), {
         description: message,
         action: {
-          label: "Retry",
+          label: t("common.retry"),
           onClick: () => runGeneration(),
         },
       });
     } finally {
       setIsLoading(false);
     }
-  }, [trackName, prompt, genre, style, existingLyrics]);
+  }, [trackName, prompt, genre, style, existingLyrics, t]);
 
   // Auto-generate when modal opens
   useEffect(() => {
@@ -81,8 +83,8 @@ export function LyricsGeneratorModal({
     if (generatedLyrics) {
       onApply(generatedLyrics);
       onClose();
-      toast.success("Lyrics applied", {
-        description: "The generated lyrics have been added to the editor.",
+      toast.success(t("lyricsModal.applied"), {
+        description: t("lyricsModal.appliedDesc"),
       });
     }
   };
@@ -93,7 +95,7 @@ export function LyricsGeneratorModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-violet-500" />
-            AI Lyrics Generator
+            {t("lyricsModal.title")}
           </DialogTitle>
           <DialogCloseButton />
         </DialogHeader>
@@ -102,9 +104,9 @@ export function LyricsGeneratorModal({
           {isLoading && (
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-zinc-500">
               <Loader2 className="w-8 h-8 animate-spin text-violet-500" />
-              <p className="text-sm font-medium">Writing lyrics&hellip;</p>
+              <p className="text-sm font-medium">{t("lyricsModal.writing")}</p>
               <p className="text-xs text-zinc-400 text-center max-w-xs">
-                Claude is crafting lyrics for <span className="font-semibold text-zinc-600 dark:text-zinc-300">{trackName || "your track"}</span>
+                {t("lyricsModal.craftingFor", { name: trackName || t("lyricsModal.yourTrack") })}
               </p>
             </div>
           )}
@@ -127,7 +129,7 @@ export function LyricsGeneratorModal({
 
           {!isLoading && !generatedLyrics && (
             <div className="flex items-center justify-center py-16 text-zinc-400 text-sm">
-              No lyrics generated yet.
+              {t("lyricsModal.noLyricsYet")}
             </div>
           )}
         </div>
@@ -137,7 +139,7 @@ export function LyricsGeneratorModal({
             onClick={onClose}
             className="px-4 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
           >
-            Close
+            {t("common.close")}
           </button>
           <button
             onClick={runGeneration}
@@ -145,7 +147,7 @@ export function LyricsGeneratorModal({
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-            Regenerate
+            {t("common.regenerate")}
           </button>
           <button
             onClick={handleApply}
@@ -153,7 +155,7 @@ export function LyricsGeneratorModal({
             className="flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-green-600 hover:bg-green-700 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Check className="w-4 h-4" />
-            Apply
+            {t("common.apply")}
           </button>
         </DialogFooter>
       </DialogContent>

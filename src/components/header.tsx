@@ -2,18 +2,20 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Menu, Share2, MessageSquare } from "lucide-react";
+import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, Church, Menu, Share2, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import type { Track, TrackVersion, Theme } from "@/types/music";
+import type { Track, TrackVersion, Theme, TrackStatus } from "@/types/music";
 import { exportTrackAsJSON } from "@/lib/track-export";
 import { parseTrackImport } from "@/lib/track-export";
 import { importTrack } from "@/app/actions/import-track";
 import { generateTrackNames } from "@/app/actions/ai-suggestions";
 import { toast } from "sonner";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/i18n/provider";
 
 interface HeaderProps {
   track: Track | null;
@@ -26,6 +28,7 @@ interface HeaderProps {
   onRenameTrack?: (newName: string) => void;
   onOpenSearch?: () => void;
   onOpenActivity?: () => void;
+  onOpenCatholic?: () => void;
   /** Mobile: callback to open the sidebar drawer */
   onOpenMobileSidebar?: () => void;
   /** Share the selected version — returns the share URL */
@@ -34,14 +37,15 @@ interface HeaderProps {
   onOpenCoProducer?: () => void;
 }
 
-const STATUS_CONFIG = {
-  draft: { label: "Draft", icon: Clock, className: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400" },
-  generating: { label: "Generating", icon: Loader2, className: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
-  complete: { label: "Complete", icon: CheckCircle2, className: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300" },
-  archived: { label: "Archived", icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
+const STATUS_CONFIG: Record<TrackStatus, { icon: typeof Clock; className: string }> = {
+  draft: { icon: Clock, className: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400" },
+  generating: { icon: Loader2, className: "bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300" },
+  complete: { icon: CheckCircle2, className: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300" },
+  archived: { icon: AlertCircle, className: "bg-zinc-100 text-zinc-500 dark:bg-zinc-800 dark:text-zinc-500" },
 };
 
-export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenMobileSidebar, onShare, onOpenCoProducer }: HeaderProps) {
+export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGenerating = false, themes = [], onImported, onRenameTrack, onOpenSearch, onOpenActivity, onOpenCatholic, onOpenMobileSidebar, onShare, onOpenCoProducer }: HeaderProps) {
+  const { t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
   const [isSharing, setIsSharing] = useState(false);
@@ -137,13 +141,13 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
         }
         setNameSuggestions(names);
       } else {
-        toast.error("No suggestions returned", {
-          description: "Try adding more details to the prompt.",
+        toast.error(t("toasts.noSuggestions"), {
+          description: t("toasts.noSuggestionsDesc"),
         });
       }
     } catch (err) {
-      toast.error("Failed to generate name suggestions", {
-        description: err instanceof Error ? err.message : "Unknown error.",
+      toast.error(t("toasts.nameSuggestFailed"), {
+        description: err instanceof Error ? err.message : undefined,
       });
     } finally {
       setIsSuggestingNames(false);
@@ -178,12 +182,12 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
     }
     try {
       exportTrackAsJSON(track, themeNames);
-      toast.success("Track exported", {
-        description: `${track.name} downloaded as JSON.`,
+      toast.success(t("toasts.trackExported"), {
+        description: t("toasts.trackExportedDesc", { name: track.name }),
       });
     } catch (err) {
-      toast.error("Export failed", {
-        description: err instanceof Error ? err.message : "Unknown error.",
+      toast.error(t("toasts.exportFailed"), {
+        description: err instanceof Error ? err.message : undefined,
       });
     }
   };
@@ -205,13 +209,13 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
       const json: unknown = JSON.parse(text);
       const parsed = parseTrackImport(json);
       const newTrackId = await importTrack(parsed);
-      toast.success("Track imported", {
-        description: `"${parsed.name}" created with ${parsed.versions.length} version(s).`,
+      toast.success(t("toasts.trackImported"), {
+        description: `"${parsed.name}" — ${parsed.versions.length} version(s).`,
       });
       onImported?.(newTrackId);
     } catch (err) {
-      toast.error("Import failed", {
-        description: err instanceof Error ? err.message : "Unknown error.",
+      toast.error(t("toasts.importFailed"), {
+        description: err instanceof Error ? err.message : undefined,
       });
     } finally {
       setIsImporting(false);
@@ -233,7 +237,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
               <Menu className="w-5 h-5" />
             </button>
           )}
-          <p className="text-sm text-zinc-400">Select a track to get started</p>
+          <p className="text-sm text-zinc-400">{t("header.selectTrackToStart")}</p>
         </div>
         {/* Import button available even without a selected track */}
         <div className="flex items-center gap-2">
@@ -244,15 +248,27 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             className="hidden"
             onChange={handleFileChange}
           />
+          {onOpenCatholic && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1.5 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+              onClick={onOpenCatholic}
+              title={t("header.catholicStudioTitle")}
+            >
+              <Church className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{t("header.catholicStudio")}</span>
+            </Button>
+          )}
           <Button
             variant="outline"
             size="sm"
             className="gap-1.5"
             onClick={onOpenSearch}
-            title="Search (Cmd+K)"
+            title={t("header.search")}
           >
             <Search className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">Search</span>
+            <span className="hidden sm:inline">{t("header.search")}</span>
             <kbd className="hidden sm:inline-flex items-center ml-1 px-1 py-0.5 rounded border border-zinc-300 dark:border-zinc-600 text-[10px] font-mono text-zinc-400 bg-zinc-50 dark:bg-zinc-800">
               ⌘K
             </kbd>
@@ -269,12 +285,12 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             ) : (
               <Upload className="w-3.5 h-3.5" />
             )}
-            Import
+            {t("header.import")}
           </Button>
           <Link href="/usage">
             <Button variant="outline" size="sm" className="gap-1.5">
               <BarChart2 className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Usage</span>
+              <span className="hidden sm:inline">{t("header.usage")}</span>
             </Button>
           </Link>
           {onOpenActivity && (
@@ -283,12 +299,13 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
               size="sm"
               className="gap-1.5"
               onClick={onOpenActivity}
-              title="Activity feed"
+              title={t("header.activityFeed")}
             >
               <Activity className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Activity</span>
+              <span className="hidden sm:inline">{t("header.activity")}</span>
             </Button>
           )}
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </div>
@@ -336,7 +353,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
                   if (e.key === "Enter") commitRename();
                 }}
                 className="h-7 text-sm w-48 font-medium"
-                placeholder="Track name…"
+                placeholder={t("header.trackNamePlaceholder")}
               />
               {/* AI wand button inside edit mode */}
               <Button
@@ -345,7 +362,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
                 className="h-7 w-7 text-violet-500 hover:text-violet-700 hover:bg-violet-50 dark:hover:bg-violet-950/40"
                 onClick={handleSuggestNames}
                 disabled={isSuggestingNames || !version?.prompt}
-                title="Generate name suggestions with AI"
+                title={t("header.suggestNamesTitle")}
               >
                 {isSuggestingNames ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -358,7 +375,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
                 size="icon"
                 className="h-7 w-7 text-green-600 hover:text-green-700"
                 onClick={commitRename}
-                title="Save name"
+                title={t("header.saveName")}
               >
                 <Check className="w-3.5 h-3.5" />
               </Button>
@@ -367,7 +384,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
                 size="icon"
                 className="h-7 w-7 text-zinc-400 hover:text-zinc-600"
                 onClick={cancelRename}
-                title="Cancel"
+                title={t("common.cancel")}
               >
                 <X className="w-3.5 h-3.5" />
               </Button>
@@ -375,7 +392,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             {/* Suggestions dropdown */}
             {nameSuggestions.length > 0 && (
               <div className="absolute top-full left-0 mt-1 z-50 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-lg shadow-lg p-2 flex flex-col gap-1 min-w-[200px]">
-                <p className="text-[10px] text-zinc-400 px-1 pb-1">AI suggestions — click to apply</p>
+                <p className="text-[10px] text-zinc-400 px-1 pb-1">{t("header.aiSuggestions")}</p>
                 {nameSuggestions.map((name) => (
                   <button
                     key={name}
@@ -399,7 +416,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
               size="icon"
               className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
               onClick={startEditing}
-              title="Rename track"
+              title={t("header.renameTrack")}
             >
               <Pencil className="w-3 h-3" />
             </Button>
@@ -411,7 +428,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
                 className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity text-violet-400 hover:text-violet-600 dark:hover:text-violet-400"
                 onClick={handleSuggestNames}
                 disabled={isSuggestingNames}
-                title="Generate track name suggestions with AI"
+                title={t("header.suggestNamesTitle")}
               >
                 {isSuggestingNames ? (
                   <Loader2 className="w-3 h-3 animate-spin" />
@@ -434,16 +451,30 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
 
       {/* Right side: badges + action buttons */}
       <div className="flex items-center gap-2 flex-shrink-0">
+        {/* Catholic Studio button */}
+        {onOpenCatholic && (
+          <Button
+            variant="outline"
+            size="sm"
+            className="gap-1.5 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40"
+            onClick={onOpenCatholic}
+            title={t("header.catholicStudioTitle")}
+          >
+            <Church className="w-3.5 h-3.5" />
+            <span className="hidden lg:inline">{t("header.catholicStudio")}</span>
+          </Button>
+        )}
+
         {/* Search button */}
         <Button
           variant="outline"
           size="sm"
           className="gap-1.5"
           onClick={onOpenSearch}
-          title="Search (Cmd+K)"
+          title={t("header.search")}
         >
           <Search className="w-3.5 h-3.5" />
-          <span className="hidden lg:inline">Search</span>
+          <span className="hidden lg:inline">{t("header.search")}</span>
           <kbd className="hidden lg:inline-flex items-center ml-1 px-1 py-0.5 rounded border border-zinc-300 dark:border-zinc-600 text-[10px] font-mono text-zinc-400 bg-zinc-50 dark:bg-zinc-800">
             ⌘K
           </kbd>
@@ -456,10 +487,10 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             size="sm"
             className="gap-1.5"
             onClick={onOpenActivity}
-            title="Activity feed"
+            title={t("header.activityFeed")}
           >
             <Activity className="w-3.5 h-3.5" />
-            <span className="hidden lg:inline">Activity</span>
+            <span className="hidden lg:inline">{t("header.activity")}</span>
           </Button>
         )}
 
@@ -470,7 +501,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             className={cn("flex items-center gap-1 text-xs", statusConfig.className)}
           >
             <StatusIcon className={cn("w-3 h-3", isGenerating && "animate-spin")} />
-            {statusConfig.label}
+            {t(`status.${status}`)}
           </Badge>
         )}
 
@@ -491,7 +522,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
         {/* Best version badge */}
         {version?.isBest && (
           <Badge className="text-xs bg-yellow-100 text-yellow-700 dark:bg-yellow-950 dark:text-yellow-300 border-yellow-200 dark:border-yellow-800">
-            ★ Best
+            {t("header.best")}
           </Badge>
         )}
 
@@ -520,10 +551,10 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           size="sm"
           className="gap-1.5"
           onClick={handleExport}
-          title="Export track as JSON"
+          title={t("header.export")}
         >
           <Download className="w-3.5 h-3.5" />
-          Export
+          {t("header.export")}
         </Button>
 
         {/* Import button */}
@@ -533,24 +564,25 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           className="gap-1.5"
           onClick={handleImportClick}
           disabled={isImporting}
-          title="Import track from JSON"
+          title={t("header.import")}
         >
           {isImporting ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
           ) : (
             <Upload className="w-3.5 h-3.5" />
           )}
-          Import
+          {t("header.import")}
         </Button>
 
         {/* Usage link */}
         <Link href="/usage">
-          <Button variant="outline" size="sm" className="gap-1.5" title="Usage dashboard">
+          <Button variant="outline" size="sm" className="gap-1.5" title={t("header.usage")}>
             <BarChart2 className="w-3.5 h-3.5" />
-            <span className="hidden lg:inline">Usage</span>
+            <span className="hidden lg:inline">{t("header.usage")}</span>
           </Button>
         </Link>
 
+        <LanguageSwitcher />
         <ThemeToggle />
 
         {/* AI Co-Producer Chat */}
@@ -575,14 +607,14 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
             size="sm"
             variant="outline"
             className="gap-1.5 border-violet-300 dark:border-violet-700 text-violet-700 dark:text-violet-300 hover:bg-violet-50 dark:hover:bg-violet-950/40"
-            title="Generate 3 AI-varied prompt versions at once"
+            title={t("header.variationsTitle")}
           >
             {isBatchGenerating ? (
               <Loader2 className="w-3.5 h-3.5 animate-spin" />
             ) : (
               <span className="text-sm leading-none">⚡</span>
             )}
-            <span className="hidden sm:inline">3 Variations</span>
+            <span className="hidden sm:inline">{t("header.variations")}</span>
           </Button>
         )}
 
@@ -597,7 +629,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           ) : (
             <Sparkles className="w-3.5 h-3.5" />
           )}
-          Generate
+          {t("header.generate")}
         </Button>
       </div>
     </div>
