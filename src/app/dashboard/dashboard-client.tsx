@@ -29,6 +29,7 @@ import {
 } from "@/app/actions/versions";
 import { updateTrack as updateTrackAction } from "@/app/actions/tracks";
 import { startGeneration } from "@/app/actions/generation";
+import { createShareLink } from "@/app/actions/share";
 import {
   createTheme as createThemeAction,
   deleteTheme as deleteThemeAction,
@@ -45,6 +46,9 @@ import { OnboardingEmptyState } from "@/components/onboarding-empty-state";
 import { OnboardingBanner } from "@/components/onboarding-banner";
 import { CreateTrackDialog } from "@/components/create-track-dialog";
 import { ActivityPanel } from "@/components/activity-panel";
+import { CatholicStudioDialog } from "@/components/catholic-studio-dialog";
+import { CoProducerChat } from "@/components/co-producer-chat";
+import { useI18n } from "@/i18n/provider";
 
 // Tab names ordered to match shortcut keys 1-6
 const TAB_NAMES = ["versions", "prompt", "lyrics", "style", "themes", "evaluate"] as const;
@@ -60,6 +64,7 @@ export function DashboardClient({
   initialThemes,
   loadWarning = null,
 }: DashboardClientProps) {
+  const { t } = useI18n();
   const [tracks] = useState<Track[]>(initialTracks);
   const [themes] = useState<Theme[]>(initialThemes);
   const [selectedTrackId, setSelectedTrackId] = useState<string | null>(() => {
@@ -95,6 +100,9 @@ export function DashboardClient({
   const [showSearchPalette, setShowSearchPalette] = useState(false);
   const [showCreateTrack, setShowCreateTrack] = useState(false);
   const [showActivity, setShowActivity] = useState(false);
+  const [showCatholic, setShowCatholic] = useState(false);
+  const [showCoProducer, setShowCoProducer] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   // Active generation progress cards — supports multiple concurrent cards (batch)
@@ -149,36 +157,34 @@ export function DashboardClient({
       if (newVersion) {
         setSelectedVersionId(newVersion.id);
         setActiveTab("prompt");
-        toast.success(`Created Version ${newVersion.versionNumber}`, {
-          description: "Copied settings from previous version.",
+        toast.success(t("toasts.versionCreated", { n: newVersion.versionNumber }), {
+          description: t("toasts.versionCreatedDesc"),
         });
       }
     });
-  }, [selectedVersionId]);
+  }, [selectedVersionId, t]);
 
   const handleMarkBest = useCallback(() => {
     if (!selectedTrackId || !selectedVersionId) return;
     startTransition(async () => {
       await markBestAction(selectedTrackId, selectedVersionId);
-      toast.success("Marked as Best Version", {
-        description:
-          "This version will be used as the reference for future generations.",
+      toast.success(t("toasts.markedBest"), {
+        description: t("toasts.markedBestDesc"),
       });
     });
-  }, [selectedTrackId, selectedVersionId]);
+  }, [selectedTrackId, selectedVersionId, t]);
 
   const handleMarkBestVersion = useCallback(
     (versionId: string) => {
       if (!selectedTrackId) return;
       startTransition(async () => {
         await markBestAction(selectedTrackId, versionId);
-        toast.success("Marked as Best Version", {
-          description:
-            "This version will be used as the reference for future generations.",
+        toast.success(t("toasts.markedBest"), {
+          description: t("toasts.markedBestDesc"),
         });
       });
     },
-    [selectedTrackId]
+    [selectedTrackId, t]
   );
 
   const handleRenameTrack = useCallback(
@@ -186,11 +192,11 @@ export function DashboardClient({
       if (!selectedTrackId) return;
       startTransition(async () => {
         await updateTrackAction(selectedTrackId, { name: newName });
-        toast.success("Track renamed", { description: newName });
+        toast.success(t("toasts.trackRenamed"), { description: newName });
         window.location.reload();
       });
     },
-    [selectedTrackId]
+    [selectedTrackId, t]
   );
 
   const handleGenerate = useCallback(() => {
@@ -218,11 +224,11 @@ export function DashboardClient({
         ]);
       })
       .catch((err: Error) => {
-        toast.error("Could not start generation", {
+        toast.error(t("toasts.couldNotStartGeneration"), {
           description: err.message,
         });
       });
-  }, [selectedTrack, selectedVersion, isPending]);
+  }, [selectedTrack, selectedVersion, isPending, t]);
 
   const handleUploadAudio = useCallback(
     async (file: File) => {
@@ -241,15 +247,15 @@ export function DashboardClient({
             audioUrl: url,
             status: "complete",
           });
-          toast.success("Audio uploaded", {
+          toast.success(t("toasts.audioUploaded"), {
             description: file.name,
           });
         });
       } catch {
-        toast.error("Upload failed");
+        toast.error(t("toasts.uploadFailed"));
       }
     },
-    [selectedVersionId]
+    [selectedVersionId, t]
   );
 
   const handleRemoveAudio = useCallback(() => {
@@ -286,19 +292,19 @@ export function DashboardClient({
             versionLabel: `${selectedTrack.name} v${r.versionNumber}`,
           })),
         ]);
-        toast.success("Batch generation started", {
-          description: `3 variations are now generating.`,
+        toast.success(t("toasts.batchStarted"), {
+          description: t("toasts.batchStartedDesc"),
         });
       })
       .catch((err: Error) => {
-        toast.error("Batch generation failed", {
+        toast.error(t("toasts.batchFailed"), {
           description: err.message,
         });
       })
       .finally(() => {
         setIsBatchGenerating(false);
       });
-  }, [selectedTrack, selectedVersion, isBatchGenerating]);
+  }, [selectedTrack, selectedVersion, isBatchGenerating, t]);
 
   const handleAssignTheme = useCallback(
     (themeId: string) => {
@@ -324,10 +330,10 @@ export function DashboardClient({
     (theme: Omit<Theme, "id" | "createdAt">) => {
       startTransition(async () => {
         await createThemeAction(theme);
-        toast.success(`Theme "${theme.name}" created`);
+        toast.success(t("toasts.themeCreated", { name: theme.name }));
       });
     },
-    []
+    [t]
   );
 
   const handleDeleteTheme = useCallback(
@@ -338,6 +344,26 @@ export function DashboardClient({
     },
     []
   );
+
+  const handleShare = useCallback(async () => {
+    if (!selectedTrack || !selectedVersion) return;
+    try {
+      const url = await createShareLink(
+        selectedTrack.id,
+        selectedVersion.id,
+        selectedTrack.name,
+        selectedVersion
+      );
+      await navigator.clipboard.writeText(url);
+      toast.success("Share link copied!", {
+        description: url,
+      });
+    } catch (err) {
+      toast.error("Failed to create share link", {
+        description: err instanceof Error ? err.message : "Unknown error.",
+      });
+    }
+  }, [selectedTrack, selectedVersion]);
 
   // -----------------------------------------------------------------------
   // Keyboard shortcut handlers
@@ -432,11 +458,11 @@ export function DashboardClient({
         const data = await res.json();
         return data.themes ?? [];
       } catch {
-        toast.error("Failed to generate themes");
+        toast.error(t("toasts.themeGenFailed"));
         return [];
       }
     },
-    []
+    [t]
   );
 
   return (
@@ -445,7 +471,10 @@ export function DashboardClient({
         tracks={tracks}
         themes={themes}
         selectedTrackId={selectedTrackId}
-        onSelectTrack={handleSelectTrack}
+        onSelectTrack={(id) => {
+          handleSelectTrack(id);
+          setMobileSidebarOpen(false);
+        }}
         onTrackDuplicated={(newTrackId) => {
           // Reload page and navigate to the duplicated track
           window.location.href = `/dashboard?track=${newTrackId}`;
@@ -458,6 +487,8 @@ export function DashboardClient({
             window.location.reload();
           }
         }}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={() => setMobileSidebarOpen(false)}
       />
 
       <div className="flex-1 flex flex-col min-w-0 bg-background/95">
@@ -475,6 +506,10 @@ export function DashboardClient({
           onRenameTrack={handleRenameTrack}
           onOpenSearch={() => setShowSearchPalette(true)}
           onOpenActivity={() => setShowActivity((prev) => !prev)}
+          onOpenCatholic={() => setShowCatholic(true)}
+          onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          onShare={handleShare}
+          onOpenCoProducer={selectedTrack && selectedVersion ? () => setShowCoProducer((prev) => !prev) : undefined}
         />
 
         {loadWarning ? (
@@ -495,49 +530,55 @@ export function DashboardClient({
               onValueChange={setActiveTab}
               className="flex-1 flex flex-col"
             >
-              <div className="px-6 pt-4 border-b border-border/50 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
-                <TabsList className="bg-muted/50 border border-border/50 p-1">
+              <div className="px-3 sm:px-6 pt-4 border-b border-border/50 bg-background/50 backdrop-blur-sm sticky top-0 z-10">
+                <TabsList className="bg-muted/50 border border-border/50 p-1 overflow-x-auto flex w-full sm:w-auto">
                   <TabsTrigger
                     value="versions"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Versions"
                   >
                     <GitBranch className="w-4 h-4" />
-                    Versions
+                    <span className="hidden sm:inline">{t("tabs.versions")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="prompt"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Prompt"
                   >
                     <Sparkles className="w-4 h-4" />
-                    Prompt
+                    <span className="hidden sm:inline">{t("tabs.prompt")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="lyrics"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Lyrics"
                   >
                     <Mic2 className="w-4 h-4" />
-                    Lyrics
+                    <span className="hidden sm:inline">{t("tabs.lyrics")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="style"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Style"
                   >
                     <Settings2 className="w-4 h-4" />
-                    Style
+                    <span className="hidden sm:inline">{t("tabs.style")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="themes"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Themes"
                   >
                     <Palette className="w-4 h-4" />
-                    Themes
+                    <span className="hidden sm:inline">{t("tabs.themes")}</span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="evaluate"
-                    className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm"
+                    className="gap-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm flex-shrink-0"
+                    title="Evaluate"
                   >
                     <Activity className="w-4 h-4" />
-                    Evaluate
+                    <span className="hidden sm:inline">{t("tabs.evaluate")}</span>
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -655,7 +696,7 @@ export function DashboardClient({
           <div className="flex-1 flex items-center justify-center text-muted-foreground">
             <div className="text-center space-y-4">
               <Mic2 className="w-12 h-12 mx-auto opacity-20" />
-              <p>Select a track from the sidebar to view its details.</p>
+              <p>{t("dashboard.selectTrackDetails")}</p>
             </div>
           </div>
         )}
@@ -676,12 +717,34 @@ export function DashboardClient({
         onCreated={() => window.location.reload()}
       />
 
+      <CatholicStudioDialog
+        open={showCatholic}
+        onOpenChange={setShowCatholic}
+        onCreated={(trackId) => {
+          window.location.href = `/dashboard?track=${trackId}`;
+        }}
+      />
+
       {showActivity && (
         <ActivityPanel
           tracks={tracks}
           themes={themes}
           onSelectTrack={handleSelectTrack}
           onClose={() => setShowActivity(false)}
+        />
+      )}
+
+      {showCoProducer && selectedTrack && selectedVersion && (
+        <CoProducerChat
+          track={selectedTrack}
+          version={selectedVersion}
+          onClose={() => setShowCoProducer(false)}
+          onApplyPrompt={(content) =>
+            handleUpdateVersion({ prompt: content })
+          }
+          onApplyLyrics={(content) =>
+            handleUpdateVersion({ lyrics: content })
+          }
         />
       )}
     </div>

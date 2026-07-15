@@ -23,6 +23,8 @@ interface PromptTemplatesPanelProps {
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
+  "Católico":
+    "bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border-indigo-200 dark:border-indigo-800",
   Electronic:
     "bg-cyan-100 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300 border-cyan-200 dark:border-cyan-800",
   "Hip-Hop":

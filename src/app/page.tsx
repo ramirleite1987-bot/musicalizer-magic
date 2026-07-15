@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@clerk/nextjs/server";
@@ -9,6 +10,15 @@ import {
   BarChart2,
   KeyRound,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "Musicalizer Magic — AI-Powered Music Production Workbench",
+  description:
+    "Generate, iterate, and perfect your tracks with AI. Multi-provider generation, version control, and intelligent evaluation in one workbench.",
+  alternates: {
+    canonical: "/",
+  },
+};
 
 export default async function Home() {
   const { userId } = await auth();

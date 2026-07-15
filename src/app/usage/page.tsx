@@ -1,16 +1,18 @@
 import Link from "next/link";
 import { getUsageStats } from "@/app/actions/usage-stats";
+import { getServerDictionary } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function UsagePage() {
+  const dict = await getServerDictionary();
   let stats;
   let error: string | null = null;
 
   try {
     stats = await getUsageStats();
   } catch (err) {
-    error = err instanceof Error ? err.message : "Failed to load usage stats";
+    error = err instanceof Error ? err.message : dict.usage.loadFailed;
   }
 
   return (
@@ -19,16 +21,16 @@ export default async function UsagePage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold text-zinc-100">Usage Dashboard</h1>
+            <h1 className="text-2xl font-bold text-zinc-100">{dict.usage.title}</h1>
             <p className="text-sm text-zinc-400 mt-1">
-              Generation activity, costs, and provider breakdown
+              {dict.usage.subtitle}
             </p>
           </div>
           <Link
             href="/dashboard"
             className="text-sm text-violet-400 hover:text-violet-300 transition-colors"
           >
-            &larr; Back to Dashboard
+            {dict.usage.backToDashboard}
           </Link>
         </div>
 
@@ -41,25 +43,25 @@ export default async function UsagePage() {
             {/* Summary cards */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <StatCard
-                label="Total Generations"
+                label={dict.usage.totalGenerations}
                 value={stats.totalGenerations.toString()}
               />
               <StatCard
-                label="Success Rate"
+                label={dict.usage.successRate}
                 value={`${(stats.successRate * 100).toFixed(1)}%`}
                 subtext={
                   stats.totalGenerations === 0
-                    ? "No data yet"
+                    ? dict.usage.noDataYet
                     : undefined
                 }
               />
               <StatCard
-                label="Estimated Cost"
+                label={dict.usage.estimatedCost}
                 value={`$${stats.estimatedCost.toFixed(2)}`}
                 subtext="Suno $0.05 · Minimax $0.03"
               />
               <StatCard
-                label="Providers"
+                label={dict.usage.providers}
                 value={`${stats.byProvider.suno + stats.byProvider.minimax}`}
                 subtext={`Suno: ${stats.byProvider.suno} · Minimax: ${stats.byProvider.minimax}`}
               />
@@ -68,21 +70,22 @@ export default async function UsagePage() {
             {/* Provider breakdown */}
             <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
               <h2 className="text-sm font-semibold text-zinc-300 mb-4">
-                Provider Breakdown
+                {dict.usage.providerBreakdown}
               </h2>
               <ProviderBar
                 sunoCount={stats.byProvider.suno}
                 minimaxCount={stats.byProvider.minimax}
+                emptyLabel={dict.usage.noGenerationsYet}
               />
             </div>
 
             {/* Bar chart: last 30 days */}
             <div className="rounded-lg border border-zinc-800 bg-zinc-900 p-6">
               <h2 className="text-sm font-semibold text-zinc-300 mb-4">
-                Generations — Last 30 Days
+                {dict.usage.last30Days}
               </h2>
               {stats.last30Days.length === 0 ? (
-                <p className="text-sm text-zinc-500">No generation activity in the last 30 days.</p>
+                <p className="text-sm text-zinc-500">{dict.usage.noActivity30Days}</p>
               ) : (
                 <BarChart data={stats.last30Days} />
               )}
@@ -117,15 +120,15 @@ function StatCard({
 function ProviderBar({
   sunoCount,
   minimaxCount,
+  emptyLabel,
 }: {
   sunoCount: number;
   minimaxCount: number;
+  emptyLabel: string;
 }) {
   const total = sunoCount + minimaxCount;
   if (total === 0) {
-    return (
-      <p className="text-sm text-zinc-500">No generations recorded yet.</p>
-    );
+    return <p className="text-sm text-zinc-500">{emptyLabel}</p>;
   }
   const sunoPct = (sunoCount / total) * 100;
   const minimaxPct = (minimaxCount / total) * 100;

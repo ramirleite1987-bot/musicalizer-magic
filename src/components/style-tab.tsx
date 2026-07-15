@@ -22,11 +22,14 @@ import {
   MINIMAX_MODELS,
   MINIMAX_SAMPLE_RATES,
   SUNO_VERSIONS,
+  SONG_LANGUAGES,
   type AudioQuality,
   type MinimaxAudioFormat,
   type MusicProvider,
+  type SongLanguage,
   type TrackVersion,
 } from "@/types/music";
+import { useI18n } from "@/i18n/provider";
 import {
   getStylePresets,
   saveStylePreset,
@@ -77,6 +80,7 @@ interface StyleTabProps {
 }
 
 export function StyleTab({ version, onChange }: StyleTabProps) {
+  const { t } = useI18n();
   const style = version.style;
   const [newInstrument, setNewInstrument] = useState("");
   const [presets, setPresets] = useState<StylePreset[]>([]);
@@ -131,13 +135,13 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
   };
 
   const getTempoLabel = (tempo: number) => {
-    if (tempo < 60) return "Very Slow";
-    if (tempo < 80) return "Slow";
-    if (tempo < 100) return "Moderate";
-    if (tempo < 120) return "Medium";
-    if (tempo < 140) return "Fast";
-    if (tempo < 160) return "Very Fast";
-    return "Extreme";
+    if (tempo < 60) return t("style.tempoLabels.verySlow");
+    if (tempo < 80) return t("style.tempoLabels.slow");
+    if (tempo < 100) return t("style.tempoLabels.moderate");
+    if (tempo < 120) return t("style.tempoLabels.medium");
+    if (tempo < 140) return t("style.tempoLabels.fast");
+    if (tempo < 160) return t("style.tempoLabels.veryFast");
+    return t("style.tempoLabels.extreme");
   };
 
   const handleLoadPreset = (presetId: string | null) => {
@@ -174,7 +178,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
     <div className="flex flex-col gap-5 p-4">
       {/* Presets Row */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Presets</Label>
+        <Label className="text-sm font-medium">{t("style.presets")}</Label>
         <div className="flex gap-2 items-center">
           <div className="flex-1">
             <Select
@@ -185,10 +189,10 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                 <SelectValue
                   placeholder={
                     loadingPresets
-                      ? "Loading presets..."
+                      ? t("style.loadingPresets")
                       : presets.length === 0
-                      ? "No presets saved"
-                      : "Load preset..."
+                      ? t("style.noPresets")
+                      : t("style.loadPreset")
                   }
                 />
               </SelectTrigger>
@@ -201,7 +205,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                     <button
                       onClick={(e) => handleDeletePreset(preset.id, e)}
                       className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-red-500 transition-colors z-10"
-                      title="Delete preset"
+                      title={t("style.deletePreset")}
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -216,10 +220,10 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
               size="sm"
               className="h-9 px-3 gap-1.5 shrink-0"
               onClick={() => setSavingPreset(true)}
-              title="Save current style as preset"
+              title={t("style.savePresetTitle")}
             >
               <Bookmark className="w-3.5 h-3.5" />
-              Save
+              {t("common.save")}
             </Button>
           ) : (
             <div className="flex gap-1.5 items-center">
@@ -233,7 +237,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                     setPresetName("");
                   }
                 }}
-                placeholder="Preset name..."
+                placeholder={t("style.presetNamePlaceholder")}
                 className="h-9 text-sm w-36"
                 autoFocus
               />
@@ -243,7 +247,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                 onClick={handleSavePreset}
                 disabled={!presetName.trim()}
               >
-                Save
+                {t("common.save")}
               </Button>
               <Button
                 variant="ghost"
@@ -265,10 +269,10 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {/* Genre */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Genre</Label>
+        <Label className="text-sm font-medium">{t("style.genre")}</Label>
         <Select value={style.genre} onValueChange={(v) => v && updateStyle({ genre: v })}>
           <SelectTrigger>
-            <SelectValue placeholder="Select genre" />
+            <SelectValue placeholder={t("style.selectGenre")} />
           </SelectTrigger>
           <SelectContent>
             {GENRES.map((genre) => (
@@ -285,9 +289,9 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
       {/* Moods */}
       <div className="space-y-2">
         <Label className="text-sm font-medium">
-          Moods
+          {t("style.moods")}
           <span className="ml-1.5 text-xs font-normal text-zinc-400">
-            ({style.moods.length} selected)
+            ({style.moods.length} {t("common.selected")})
           </span>
         </Label>
         <div className="flex flex-wrap gap-1.5">
@@ -316,7 +320,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
       {/* Tempo */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <Label className="text-sm font-medium">Tempo</Label>
+          <Label className="text-sm font-medium">{t("style.tempo")}</Label>
           <div className="flex items-center gap-2">
             <span className="text-xs text-zinc-400">{getTempoLabel(style.tempo)}</span>
             <Badge variant="secondary" className="text-xs font-mono">
@@ -342,11 +346,11 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {/* Key & Scale */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Key & Scale</Label>
+        <Label className="text-sm font-medium">{t("style.keyScale")}</Label>
         <div className="flex gap-2">
           <Select value={style.key} onValueChange={(v) => v && updateStyle({ key: v })}>
             <SelectTrigger className="flex-1">
-              <SelectValue placeholder="Key" />
+              <SelectValue placeholder={t("style.keyScale")} />
             </SelectTrigger>
             <SelectContent>
               {KEYS.map((key) => (
@@ -367,7 +371,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                   : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               )}
             >
-              Major
+              {t("style.major")}
             </button>
             <button
               onClick={() => updateStyle({ isMinor: true })}
@@ -378,7 +382,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                   : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
               )}
             >
-              Minor
+              {t("style.minor")}
             </button>
           </div>
         </div>
@@ -388,7 +392,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {/* Instruments */}
       <div className="space-y-3">
-        <Label className="text-sm font-medium">Instruments</Label>
+        <Label className="text-sm font-medium">{t("style.instruments")}</Label>
 
         {/* Quick toggles */}
         <div className="flex flex-wrap gap-1.5">
@@ -440,7 +444,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
             value={newInstrument}
             onChange={(e) => setNewInstrument(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && addCustomInstrument()}
-            placeholder="Add custom instrument..."
+            placeholder={t("style.addCustomInstrument")}
             className="h-8 text-sm"
           />
           <Button
@@ -458,10 +462,10 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {/* Vocal Style */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Vocal Style</Label>
+        <Label className="text-sm font-medium">{t("style.vocalStyle")}</Label>
         <Select value={style.vocalStyle} onValueChange={(v) => v && updateStyle({ vocalStyle: v })}>
           <SelectTrigger>
-            <SelectValue placeholder="Select vocal style" />
+            <SelectValue placeholder={t("style.selectVocalStyle")} />
           </SelectTrigger>
           <SelectContent>
             {VOCAL_STYLES.map((vs) => (
@@ -475,9 +479,32 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       <Separator />
 
+      {/* Song Language */}
+      <div className="space-y-2">
+        <Label className="text-sm font-medium">{t("style.language")}</Label>
+        <Select
+          value={style.language ?? "pt"}
+          onValueChange={(v) => v && updateStyle({ language: v as SongLanguage })}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SONG_LANGUAGES.map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                {t(`songLanguage.${lang}`)}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <p className="text-xs text-zinc-400">{t("style.languageHint")}</p>
+      </div>
+
+      <Separator />
+
       {/* Duration */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Duration</Label>
+        <Label className="text-sm font-medium">{t("style.duration")}</Label>
         <div className="flex flex-wrap gap-1.5">
           {DURATIONS.map((dur) => (
             <button
@@ -500,13 +527,13 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {/* Provider */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Music Provider</Label>
+        <Label className="text-sm font-medium">{t("style.provider")}</Label>
         <Select
           value={style.provider ?? "suno"}
           onValueChange={(v) => v && updateStyle({ provider: v as MusicProvider })}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select provider" />
+            <SelectValue placeholder={t("style.selectProvider")} />
           </SelectTrigger>
           <SelectContent>
             {PROVIDERS.map((p) => (
@@ -520,13 +547,13 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
 
       {(style.provider ?? "suno") === "suno" ? (
         <div className="space-y-2">
-          <Label className="text-sm font-medium">Suno API Version</Label>
+          <Label className="text-sm font-medium">{t("style.sunoVersion")}</Label>
           <Select
             value={style.sunoApiVersion}
             onValueChange={(v) => v && updateStyle({ sunoApiVersion: v })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select version" />
+              <SelectValue placeholder={t("style.selectVersion")} />
             </SelectTrigger>
             <SelectContent>
               {SUNO_VERSIONS.map((sv) => (
@@ -540,13 +567,13 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
       ) : (
         <>
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Minimax Model</Label>
+            <Label className="text-sm font-medium">{t("style.minimaxModel")}</Label>
             <Select
               value={style.minimaxModel || "music-1.5"}
               onValueChange={(v) => v && updateStyle({ minimaxModel: v })}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select model" />
+                <SelectValue placeholder={t("style.selectModel")} />
               </SelectTrigger>
               <SelectContent>
                 {MINIMAX_MODELS.map((m) => (
@@ -561,7 +588,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
           <Separator />
 
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Audio Quality</Label>
+            <Label className="text-sm font-medium">{t("style.audioQuality")}</Label>
             {(() => {
               const q = style.audioQuality ?? DEFAULT_MINIMAX_AUDIO_QUALITY;
               const setQuality = (patch: Partial<AudioQuality>) =>
@@ -569,7 +596,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
               return (
                 <div className="grid grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <span className="text-xs text-zinc-500">Sample rate</span>
+                    <span className="text-xs text-zinc-500">{t("style.sampleRate")}</span>
                     <Select
                       value={String(q.sampleRate)}
                       onValueChange={(v) =>
@@ -589,7 +616,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs text-zinc-500">Bitrate</span>
+                    <span className="text-xs text-zinc-500">{t("style.bitrate")}</span>
                     <Select
                       value={String(q.bitrate)}
                       onValueChange={(v) =>
@@ -609,7 +636,7 @@ export function StyleTab({ version, onChange }: StyleTabProps) {
                     </Select>
                   </div>
                   <div className="space-y-1">
-                    <span className="text-xs text-zinc-500">Format</span>
+                    <span className="text-xs text-zinc-500">{t("style.format")}</span>
                     <Select
                       value={q.format}
                       onValueChange={(v) =>

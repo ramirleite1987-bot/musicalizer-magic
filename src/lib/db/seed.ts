@@ -1,6 +1,7 @@
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 import * as schema from "./schema";
+import { CATHOLIC_THEMES } from "../../data/catholic-presets";
 
 async function seed() {
   const sql = neon(process.env.DATABASE_URL!);
@@ -80,6 +81,18 @@ async function seed() {
       },
     ])
     .returning();
+
+  // Insert the Catholic niche preset themes
+  await db.insert(schema.themes).values(
+    CATHOLIC_THEMES.map((theme) => ({
+      name: theme.canonicalName,
+      description: theme.canonicalDescription,
+      keywords: theme.keywords,
+      color: theme.color,
+      source: "manual" as const,
+      sourceRef: "",
+    }))
+  );
 
   // Insert tracks
   const [t1, t2] = await db
@@ -265,7 +278,7 @@ async function seed() {
   ]);
 
   console.log("Seed complete!");
-  console.log(`- ${6} themes created`);
+  console.log(`- ${6 + CATHOLIC_THEMES.length} themes created`);
   console.log(`- ${2} tracks created`);
   console.log(`- ${4} versions created`);
 }

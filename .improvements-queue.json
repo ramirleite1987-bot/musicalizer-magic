@@ -132,7 +132,7 @@
       "id": 21,
       "title": "AI Co-Producer Chat",
       "description": "Add a collapsible chat panel (right side drawer) where the user converses with Claude as a 'co-producer'. The chat has full context of the selected track (prompt, style, lyrics, scores, feedback) and can propose changes via structured tool-like responses with one-click 'Apply to prompt/lyrics/style' buttons. Persist chat history per track in a new chat_messages table.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
@@ -146,7 +146,7 @@
       "id": 23,
       "title": "Public Share Pages",
       "description": "Add a 'Share' button that generates a public read-only page (/share/[token]) for a track version: artwork placeholder, waveform player, lyrics, and style summary. Token stored in a new share_links table with revoke support. This is the #1 feature for the project to gain notoriety \u2014 users share their creations.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
@@ -174,7 +174,7 @@
       "id": 27,
       "title": "PWA + Mobile Responsive Layout",
       "description": "Make the dashboard fully responsive: collapsible sidebar drawer on mobile, stacked tabs, touch-friendly sliders. Add PWA manifest + icons so users can install the app on their phone home screen. Massive reach win for notoriety.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {
@@ -188,7 +188,7 @@
       "id": 29,
       "title": "Landing Page",
       "description": "Create a public marketing landing page at / (move dashboard redirect to a 'Launch App' button): hero with animated gradient, feature grid showcasing AI generation/versioning/evaluation, screenshots section, and CTA. This is the front door for the project's notoriety.",
-      "status": "pending",
+      "status": "done",
       "priority": "high"
     },
     {

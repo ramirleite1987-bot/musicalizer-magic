@@ -14,12 +14,17 @@ on:
 
 jobs:
   droid:
+    # Only trusted users (owner/members/collaborators) can trigger the agent —
+    # prevents arbitrary users from driving an AI agent with write access via
+    # comments or issue bodies (prompt-injection / abuse vector).
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@droid')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@droid')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@droid')) ||
-      (github.event_name == 'issues' && (contains(github.event.issue.body, '@droid') || contains(github.event.issue.title, '@droid'))) ||
-      (github.event_name == 'pull_request' && (contains(github.event.pull_request.body, '@droid') || contains(github.event.pull_request.title, '@droid')))
+      (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@droid') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@droid') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association)) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@droid') && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association)) ||
+        (github.event_name == 'issues' && (contains(github.event.issue.body, '@droid') || contains(github.event.issue.title, '@droid')) && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.issue.author_association)) ||
+        (github.event_name == 'pull_request' && (contains(github.event.pull_request.body, '@droid') || contains(github.event.pull_request.title, '@droid')) && contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.pull_request.author_association))
+      )
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -28,11 +33,26 @@ jobs:
       id-token: write
       actions: read
     steps:
+      # FACTORY_API_KEY has never been configured in this repo; skip gracefully
+      # instead of failing when it is absent.
+      - name: Check FACTORY_API_KEY
+        id: key
+        env:
+          FACTORY_API_KEY: ${{ secrets.FACTORY_API_KEY }}
+        run: |
+          if [ -n "$FACTORY_API_KEY" ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::FACTORY_API_KEY secret not configured - skipping Droid."
+          fi
       - name: Checkout repository
+        if: steps.key.outputs.present == 'true'
         uses: actions/checkout@v5
         with:
           fetch-depth: 1
       - name: Run Droid Exec
+        if: steps.key.outputs.present == 'true'
         uses: Factory-AI/droid-action@v3
         with:
           factory_api_key: ${{ secrets.FACTORY_API_KEY }}
