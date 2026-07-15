@@ -1,0 +1,11 @@
+# gitleaks configuration for musicalizer-magic
+# Extends the default ruleset (used by the "Secret scan" CI job) and adds a
+# narrow allowlist. See https://github.com/gitleaks/gitleaks#configuration
+[extend]
+useDefault = true
+
+[allowlist]
+description = ".env.example contains placeholder values only (never real secrets, per AGENTS.md); its example NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is a public-by-design Clerk publishable key and trips the entropy-based generic-api-key rule."
+paths = [
+  '''\.env\.example$''',
+]
