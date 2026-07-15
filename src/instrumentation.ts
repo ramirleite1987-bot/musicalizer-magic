@@ -27,6 +27,17 @@ export async function register() {
       await sql`ALTER TABLE tracks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]'::jsonb`;
       await sql`CREATE TABLE IF NOT EXISTS style_presets (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), name VARCHAR(255) NOT NULL, style JSONB NOT NULL, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
       await sql`CREATE TABLE IF NOT EXISTS generation_logs (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), track_id UUID, version_id UUID, provider VARCHAR(32) NOT NULL, model VARCHAR(64), status VARCHAR(32) NOT NULL, duration_ms INTEGER, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
+      await sql`ALTER TABLE tracks ADD COLUMN IF NOT EXISTS user_id TEXT`;
+      await sql`ALTER TABLE themes ADD COLUMN IF NOT EXISTS user_id TEXT`;
+      await sql`ALTER TABLE style_presets ADD COLUMN IF NOT EXISTS user_id TEXT`;
+      await sql`ALTER TABLE generation_logs ADD COLUMN IF NOT EXISTS user_id TEXT`;
+      await sql`CREATE INDEX IF NOT EXISTS tracks_user_id_idx ON tracks (user_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS themes_user_id_idx ON themes (user_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS style_presets_user_id_idx ON style_presets (user_id)`;
+      await sql`CREATE INDEX IF NOT EXISTS generation_logs_user_id_idx ON generation_logs (user_id)`;
+      await sql`CREATE TABLE IF NOT EXISTS user_settings (user_id TEXT PRIMARY KEY, display_name VARCHAR(255), llm_provider VARCHAR(32) DEFAULT 'openrouter' NOT NULL, llm_model VARCHAR(128), default_music_provider VARCHAR(32) DEFAULT 'suno' NOT NULL, default_genre VARCHAR(100), openrouter_key_enc TEXT, minimax_key_enc TEXT, suno_key_enc TEXT, created_at TIMESTAMP DEFAULT NOW() NOT NULL, updated_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
+      await sql`CREATE TABLE IF NOT EXISTS skills (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), user_id TEXT, name VARCHAR(255) NOT NULL, description TEXT DEFAULT '' NOT NULL, category VARCHAR(50) DEFAULT 'general' NOT NULL, instructions TEXT NOT NULL, created_at TIMESTAMP DEFAULT NOW() NOT NULL, updated_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
+      await sql`CREATE INDEX IF NOT EXISTS skills_user_id_idx ON skills (user_id)`;
       await sql`CREATE TABLE IF NOT EXISTS share_links (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), token VARCHAR(64) NOT NULL UNIQUE, track_id UUID NOT NULL, version_id UUID NOT NULL, track_name VARCHAR(255) NOT NULL, version_data JSONB NOT NULL, created_at TIMESTAMP DEFAULT NOW() NOT NULL, revoked_at TIMESTAMP)`;
       await sql`CREATE TABLE IF NOT EXISTS chat_messages (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), track_id UUID NOT NULL, role VARCHAR(16) NOT NULL, content TEXT NOT NULL, suggestions JSONB, created_at TIMESTAMP DEFAULT NOW() NOT NULL)`;
     } catch (err) {

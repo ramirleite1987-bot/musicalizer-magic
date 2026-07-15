@@ -58,9 +58,15 @@ describe("music dispatcher", () => {
 
   it("routes getGenerationStatus to the right provider", async () => {
     await getGenerationStatus("suno", "suno-1");
-    expect(suno.getGenerationStatus).toHaveBeenCalledWith("suno-1");
+    expect(suno.getGenerationStatus).toHaveBeenCalledWith("suno-1", undefined);
 
     await getGenerationStatus("minimax", "mm-1");
-    expect(minimax.getGenerationStatus).toHaveBeenCalledWith("mm-1");
+    expect(minimax.getGenerationStatus).toHaveBeenCalledWith("mm-1", undefined);
+
+    await getGenerationStatus("suno", "suno-1", { suno: "user-key" });
+    expect(suno.getGenerationStatus).toHaveBeenLastCalledWith(
+      "suno-1",
+      "user-key"
+    );
   });
 });

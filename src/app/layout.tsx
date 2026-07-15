@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
+import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { I18nProvider } from "@/i18n/provider";
@@ -31,10 +32,11 @@ export default async function RootLayout({
   const locale = resolveLocale(cookieStore.get(LOCALE_COOKIE)?.value);
 
   return (
-    <html lang={htmlLang(locale)} className="h-full antialiased" suppressHydrationWarning>
-      <body className="min-h-full flex flex-col">
-        <I18nProvider initialLocale={locale}>
-          <ThemeProvider
+    <ClerkProvider>
+      <html lang={htmlLang(locale)} className="h-full antialiased" suppressHydrationWarning>
+        <body className="min-h-full flex flex-col">
+          <I18nProvider initialLocale={locale}>
+            <ThemeProvider
             attribute="class"
             defaultTheme="dark"
             enableSystem={false}
@@ -43,8 +45,9 @@ export default async function RootLayout({
             {children}
             <Toaster position="bottom-right" />
           </ThemeProvider>
-        </I18nProvider>
-      </body>
-    </html>
+          </I18nProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }

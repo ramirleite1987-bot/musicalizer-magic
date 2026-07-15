@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { tracks, trackVersions } from "@/lib/db/schema";
+import { requireUserId } from "@/lib/auth";
 import type { TrackVersion, MusicProvider } from "@/types/music";
 import {
   DEFAULT_STYLE,
@@ -15,12 +16,14 @@ export async function importTrack(data: {
   genre: string;
   versions: Partial<TrackVersion>[];
 }): Promise<string> {
+  const userId = await requireUserId();
   const db = getDb();
 
   // Create the track with "(imported)" suffix
   const [newTrack] = await db
     .insert(tracks)
     .values({
+      userId,
       name: `${data.name} (imported)`,
       genre: data.genre,
     })

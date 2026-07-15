@@ -2,7 +2,8 @@
 
 import { getDb } from "@/lib/db";
 import { generationLogs } from "@/lib/db/schema";
-import { sql, gte } from "drizzle-orm";
+import { sql, gte, eq, and } from "drizzle-orm";
+import { requireUserId } from "@/lib/auth";
 
 const COST_PER_GENERATION: Record<string, number> = {
   suno: 0.05,
@@ -18,12 +19,15 @@ export interface UsageStats {
 }
 
 export async function getUsageStats(): Promise<UsageStats> {
+  const userId = await requireUserId();
   const db = getDb();
+  const ownLogs = eq(generationLogs.userId, userId);
 
   // Total generations (non-started rows, or all rows)
   const totalResult = await db
     .select({ count: sql<number>`cast(count(*) as integer)` })
-    .from(generationLogs);
+    .from(generationLogs)
+    .where(ownLogs);
   const totalGenerations = totalResult[0]?.count ?? 0;
 
   // By provider — count started entries per provider
@@ -33,6 +37,7 @@ export async function getUsageStats(): Promise<UsageStats> {
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(generationLogs)
+    .where(ownLogs)
     .groupBy(generationLogs.provider);
 
   const byProvider: { suno: number; minimax: number } = { suno: 0, minimax: 0 };
@@ -48,6 +53,7 @@ export async function getUsageStats(): Promise<UsageStats> {
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(generationLogs)
+    .where(ownLogs)
     .groupBy(generationLogs.status);
 
   let completeCount = 0;
@@ -69,7 +75,7 @@ export async function getUsageStats(): Promise<UsageStats> {
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(generationLogs)
-    .where(gte(generationLogs.createdAt, thirtyDaysAgo))
+    .where(and(ownLogs, gte(generationLogs.createdAt, thirtyDaysAgo)))
     .groupBy(sql`to_char(${generationLogs.createdAt}, 'YYYY-MM-DD')`)
     .orderBy(sql`to_char(${generationLogs.createdAt}, 'YYYY-MM-DD')`);
 
@@ -85,7 +91,12 @@ export async function getUsageStats(): Promise<UsageStats> {
       count: sql<number>`cast(count(*) as integer)`,
     })
     .from(generationLogs)
-    .where(sql`${generationLogs.status} = 'started' OR ${generationLogs.status} = 'complete' OR ${generationLogs.status} = 'failed'`)
+    .where(
+      and(
+        ownLogs,
+        sql`(${generationLogs.status} = 'started' OR ${generationLogs.status} = 'complete' OR ${generationLogs.status} = 'failed')`
+      )
+    )
     .groupBy(generationLogs.provider);
 
   let estimatedCost = 0;

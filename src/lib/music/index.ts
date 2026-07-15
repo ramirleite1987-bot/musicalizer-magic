@@ -29,20 +29,30 @@ export function resolveProvider(style: TrackStyle): MusicProvider {
   return style.provider ?? "suno";
 }
 
+/** Per-user API keys; when absent the clients fall back to server env vars. */
+export interface ProviderKeys {
+  suno?: string;
+  minimax?: string;
+}
+
 export async function createGeneration(
-  params: GenerationParams
+  params: GenerationParams,
+  keys?: ProviderKeys
 ): Promise<GenerationResponse> {
   const provider = resolveProvider(params.style);
-  if (provider === "minimax") return minimax.createGeneration(params);
-  return suno.createGeneration(params);
+  if (provider === "minimax")
+    return minimax.createGeneration(params, keys?.minimax);
+  return suno.createGeneration(params, keys?.suno);
 }
 
 export async function getGenerationStatus(
   provider: MusicProvider,
-  taskId: string
+  taskId: string,
+  keys?: ProviderKeys
 ): Promise<StatusResponse> {
-  if (provider === "minimax") return minimax.getGenerationStatus(taskId);
-  return suno.getGenerationStatus(taskId);
+  if (provider === "minimax")
+    return minimax.getGenerationStatus(taskId, keys?.minimax);
+  return suno.getGenerationStatus(taskId, keys?.suno);
 }
 
 const CONTENT_TYPES: Record<MinimaxAudioFormat, string> = {

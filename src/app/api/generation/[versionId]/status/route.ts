@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
 import { getDb } from "@/lib/db";
-import { trackVersions, generationLogs } from "@/lib/db/schema";
+import { trackVersions, tracks, generationLogs } from "@/lib/db/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { getGenerationStatus, inferAudioFile, resolveProvider } from "@/lib/music";
+import { getUserMusicKeys } from "@/lib/user-config";
 import { put } from "@vercel/blob";
 import { safeFetch } from "@/lib/security/url";
 
@@ -11,18 +13,25 @@ type RouteContext = {
 };
 
 export async function GET(_request: NextRequest, { params }: RouteContext) {
+  const { userId } = await auth();
+  if (!userId) {
+    return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+  }
+
   const { versionId } = await params;
   const db = getDb();
 
-  const [version] = await db
-    .select()
+  const [owned] = await db
+    .select({ version: trackVersions })
     .from(trackVersions)
-    .where(eq(trackVersions.id, versionId))
+    .innerJoin(tracks, eq(trackVersions.trackId, tracks.id))
+    .where(and(eq(trackVersions.id, versionId), eq(tracks.userId, userId)))
     .limit(1);
 
-  if (!version) {
+  if (!owned) {
     return NextResponse.json({ error: "Version not found" }, { status: 404 });
   }
+  const version = owned.version;
 
   const provider = resolveProvider(version.style);
   const taskId = version.providerTaskId ?? version.sunoTaskId;
@@ -39,7 +48,8 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
   }
 
   try {
-    const status = await getGenerationStatus(provider, taskId);
+    const keys = await getUserMusicKeys(userId);
+    const status = await getGenerationStatus(provider, taskId, keys);
 
     if (status.status === "complete" && status.audioUrl) {
       // Provider-supplied URL: validate host and cap size before downloading
@@ -91,6 +101,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
               ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
               : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
           await db.insert(generationLogs).values({
+            userId,
             trackId: version.trackId,
             versionId,
             provider,
@@ -145,6 +156,7 @@ export async function GET(_request: NextRequest, { params }: RouteContext) {
               ? (version.style as { minimaxModel?: string })?.minimaxModel ?? "music-1.5"
               : (version.style as { sunoApiVersion?: string })?.sunoApiVersion ?? "v4";
           await db.insert(generationLogs).values({
+            userId,
             trackId: version.trackId,
             versionId,
             provider,
