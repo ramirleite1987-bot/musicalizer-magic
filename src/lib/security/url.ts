@@ -30,9 +30,19 @@ function isPrivateIp(ip: string): boolean {
   if (version === 4) return isPrivateIPv4(ip);
   if (version !== 6) return true;
   const lower = ip.toLowerCase();
-  // IPv4-mapped IPv6 (::ffff:a.b.c.d)
+  // IPv4-mapped IPv6, dotted form (::ffff:a.b.c.d)
   const mapped = lower.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
   if (mapped) return isPrivateIPv4(mapped[1]);
+  // IPv4-mapped IPv6, hex form (::ffff:7f00:1) — the URL parser canonicalizes
+  // the dotted form to this, so it must be checked too
+  const mappedHex = lower.match(/^::ffff:([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (mappedHex) {
+    const hi = parseInt(mappedHex[1], 16);
+    const lo = parseInt(mappedHex[2], 16);
+    return isPrivateIPv4(
+      `${hi >> 8}.${hi & 0xff}.${lo >> 8}.${lo & 0xff}`
+    );
+  }
   return (
     lower === "::" ||
     lower === "::1" || // loopback
