@@ -70,8 +70,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      # Fails on high/critical vulnerabilities in production dependencies
-      - run: npm audit --omit=dev --audit-level=high
+      # Fails on high/critical vulnerabilities in production dependencies,
+      # except the documented, justified exceptions in scripts/check-audit.mjs
+      - run: node scripts/check-audit.mjs
 
   secret-scan:
     name: Secret scan
