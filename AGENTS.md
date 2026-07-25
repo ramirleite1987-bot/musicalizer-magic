@@ -41,7 +41,7 @@ CI (`.github/workflows/ci.yml`) blocks merges to `main` unless ALL of these pass
 2. `npx tsc --noEmit`
 3. `npm test`
 4. `npm run build`
-5. `npm audit --omit=dev --audit-level=high` (no high/critical vulns in production deps)
+5. `node scripts/check-audit.mjs` (fails on any high/critical vuln in production deps that isn't a justified, named exception — see below)
 
 A Claude Code hook (`.claude/settings.json` → `scripts/hooks/post-edit-check.mjs`) lints every edited TS/JS file automatically and feeds errors back to the agent; don't disable it.
 
@@ -53,7 +53,9 @@ A Claude Code hook (`.claude/settings.json` → `scripts/hooks/post-edit-check.m
 - **Uploads:** `/api/upload` accepts only audio types up to 50MB and sanitizes filenames. Keep those restrictions when changing it.
 - **API keys are server-only.** `SUNO_API_KEY`, `MINIMAX_API_KEY`, `ANTHROPIC_API_KEY`, `BLOB_READ_WRITE_TOKEN`, `DATABASE_URL` must never appear in client components or be prefixed `NEXT_PUBLIC_`.
 - **GitHub workflows:** least privilege (`contents: read` unless write is genuinely needed); workflows triggered by comments/issues must gate on `author_association` (OWNER/MEMBER/COLLABORATOR). Don't widen permissions without justification.
-- **Known accepted gaps** (single-user deploy): no auth and no rate limiting on API routes. If the app ever becomes multi-user or publicly promoted, add auth (e.g. Vercel deployment protection or middleware) and rate limiting on the endpoints that call paid AI APIs first.
+- **Auth:** Clerk protects the app (`src/proxy.ts` middleware + per-route `auth()` checks in API routes and Server Actions). New routes and actions must check `auth()` and scope DB queries by `userId` — never assume the middleware alone is enough.
+- **Known accepted gap:** no rate limiting on API routes. If the app is publicly promoted, add rate limiting on the endpoints that call paid AI APIs first.
+- **Dependency audit exceptions:** `scripts/check-audit.mjs` (run by CI instead of a bare `npm audit`) fails the build on any high/critical production-dependency vulnerability *except* the packages named in its `ACCEPTED_RISK` map. Currently that's `postcss` and `sharp`, both vendored inside `next`'s own `node_modules` with no fix available in any next release up to the latest stable — accepted because this app never runs postcss on user-supplied CSS and never imports `next/image` (so the sharp/libvips surface is unreachable). Revisit this file whenever `npm audit` output for these packages changes, and whenever a next release ships that resolves them, remove the exception and drop the workaround.
 
 ## Git / PR conventions
 
