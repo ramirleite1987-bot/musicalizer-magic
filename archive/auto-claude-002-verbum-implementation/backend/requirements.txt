@@ -7,3 +7,5 @@ notebooklm-py[browser]>=0.3.4
 icalendar>=6.0.0
 pydantic-settings>=2.0.0
 python-dotenv>=1.0.0
+# GHSA-6q48-6c7w-9gw2: pin above the emSign CA bundle that trusted compromised intermediates.
+certifi>=2026.10.19
