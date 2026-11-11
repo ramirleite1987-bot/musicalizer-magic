@@ -20,19 +20,45 @@ vi.mock("@/lib/auth", () => ({
   },
 }));
 
+const ownedVersionRow = {
+  versionNumber: 1,
+  createdAt: new Date("2026-01-01T00:00:00.000Z"),
+  updatedAt: new Date("2026-01-01T00:00:00.000Z"),
+  status: "complete" as const,
+  prompt: "from-db",
+  negativePrompt: "",
+  lyrics: "",
+  style: { genre: "pop", moods: [], tempo: 120, key: "C", isMinor: false, instruments: [], vocalStyle: "", duration: "auto", sunoApiVersion: "v4" },
+  rating: 0,
+  dimensionScores: {},
+  notes: "",
+  feedback: {},
+  isBest: false,
+  audioFileName: null,
+  audioUrl: "https://blob.example/owned.mp3",
+  sunoTaskId: null,
+  provider: "suno",
+  providerTaskId: null,
+};
+
 vi.mock("@/lib/db/ownership", () => ({
   requireOwnedTrack: async (trackId: string, userId: string) => {
     if (!ownedTrackIds.has(trackId)) throw new Error("Track not found");
-    return { id: trackId, userId };
+    return { id: trackId, userId, name: "Owned Song" };
   },
   requireOwnedVersion: async (versionId: string, userId: string) => {
     const row = ownedVersions.get(versionId);
     if (!row) throw new Error("Version not found");
-    return { ...row, userId };
+    return { ...ownedVersionRow, ...row, userId };
   },
 }));
 
-const selectLimit = vi.hoisted(() => vi.fn(async (_n?: number) => [] as unknown[]));
+const selectLimit = vi.hoisted(() =>
+  vi.fn(async (...args: unknown[]) => {
+    void args;
+    return [] as unknown[];
+  })
+);
 const insertValues = vi.hoisted(() =>
   vi.fn(async (values: Record<string, unknown>) => values)
 );
@@ -48,6 +74,7 @@ const captured = vi.hoisted(() => ({
   trackInsert: null as Record<string, unknown> | null,
   themeInsert: null as Record<string, unknown> | null,
   shareInsert: null as Record<string, unknown> | null,
+  versionUpdate: null as Record<string, unknown> | null,
 }));
 
 vi.mock("@/lib/db", () => ({
@@ -80,7 +107,10 @@ vi.mock("@/lib/db", () => ({
     }),
     delete: () => ({ where: deleteWhere }),
     update: () => ({
-      set: () => ({ where: updateWhere }),
+      set: (values: Record<string, unknown>) => {
+        captured.versionUpdate = values;
+        return { where: updateWhere };
+      },
     }),
     query: {
       themes: { findFirst: themeFindFirst },
@@ -95,6 +125,7 @@ import {
 import { createShareLink, revokeShareLink } from "@/app/actions/share";
 import { createCatholicTrack } from "@/app/actions/catholic";
 import { generateLyrics } from "@/app/actions/ai-suggestions";
+import { updateVersion } from "@/app/actions/versions";
 
 describe("chat ownership", () => {
   beforeEach(() => {
@@ -144,19 +175,19 @@ describe("share ownership", () => {
   });
 
   it("creates a share link only when the caller owns the track and version", async () => {
-    const url = await createShareLink(
-      "track-owner",
-      "ver-owner",
-      "Song",
-      { id: "ver-owner", trackId: "track-owner" } as never
-    );
+    const url = await createShareLink("track-owner", "ver-owner");
     expect(url).toMatch(/\/share\/[a-f0-9]{32}$/);
     expect(captured.shareInsert?.trackId).toBe("track-owner");
+    expect(captured.shareInsert?.trackName).toBe("Owned Song");
+    expect(
+      (captured.shareInsert?.versionData as { prompt?: string } | undefined)
+        ?.prompt
+    ).toBe("from-db");
   });
 
   it("refuses to mint a share link for another user's track", async () => {
     await expect(
-      createShareLink("track-other", "ver-owner", "Song", {} as never)
+      createShareLink("track-other", "ver-owner")
     ).rejects.toThrow("Track not found");
   });
 
@@ -208,6 +239,40 @@ describe("catholic track ownership", () => {
         instrumental: false,
       })
     ).rejects.toThrow("Not authenticated");
+  });
+});
+
+describe("version update mass assignment", () => {
+  beforeEach(() => {
+    authState.userId = "user_a";
+    ownedTrackIds.clear();
+    ownedTrackIds.add("track-owner");
+    captured.versionUpdate = null;
+    updateWhere.mockClear();
+  });
+
+  it("persists https audioUrl and marks the version complete", async () => {
+    await updateVersion("ver-owner", {
+      audioUrl: "https://blob.example/upload.mp3",
+      audioFileName: "upload.mp3",
+      status: "complete",
+    });
+    expect(captured.versionUpdate?.audioUrl).toBe(
+      "https://blob.example/upload.mp3"
+    );
+    expect(captured.versionUpdate?.status).toBe("complete");
+    expect(captured.versionUpdate).not.toHaveProperty("sunoTaskId");
+  });
+
+  it("rejects javascript: audioUrl and ignores client task ids", async () => {
+    await expect(
+      updateVersion("ver-owner", {
+        audioUrl: "javascript:alert(1)",
+        sunoTaskId: "hijack",
+        providerTaskId: "hijack",
+      })
+    ).rejects.toThrow("Audio URL must be https");
+    expect(updateWhere).not.toHaveBeenCalled();
   });
 });
 
