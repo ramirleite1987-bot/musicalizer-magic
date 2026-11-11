@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { requirePageUserId } from "@/lib/auth";
 import { getUsageStats } from "@/app/actions/usage-stats";
 import { getServerDictionary } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function UsagePage() {
+  await requirePageUserId();
   const dict = await getServerDictionary();
   let stats;
   let error: string | null = null;
