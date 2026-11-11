@@ -6,7 +6,15 @@ import { getDb } from "@/lib/db";
 import { chatMessages } from "@/lib/db/schema";
 import type { ChatSuggestion } from "@/lib/db/schema";
 import { eq, asc } from "drizzle-orm";
+import { requireUserId } from "@/lib/auth";
+import { requireOwnedTrack } from "@/lib/db/ownership";
 import type { Track, TrackVersion } from "@/types/music";
+
+async function requireOwnedChatTrack(trackId: string) {
+  const userId = await requireUserId();
+  await requireOwnedTrack(trackId, userId);
+  return userId;
+}
 
 const responseSchema = z.object({
   message: z.string().describe("Conversational response to the user"),
@@ -36,6 +44,7 @@ export interface ChatMessage {
 }
 
 export async function getChatMessages(trackId: string): Promise<ChatMessage[]> {
+  await requireOwnedChatTrack(trackId);
   const db = getDb();
   const rows = await db
     .select()
@@ -74,6 +83,7 @@ export async function sendChatMessage(
     history: ChatMessage[];
   }
 ): Promise<ChatMessage> {
+  await requireOwnedChatTrack(trackId);
   const db = getDb();
 
   // Persist user message
@@ -181,6 +191,7 @@ You are a knowledgeable and creative music producer. Help the user improve their
 }
 
 export async function clearChatHistory(trackId: string): Promise<void> {
+  await requireOwnedChatTrack(trackId);
   const db = getDb();
   await db.delete(chatMessages).where(eq(chatMessages.trackId, trackId));
 }
