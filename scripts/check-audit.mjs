@@ -6,10 +6,9 @@
 import { execSync } from "node:child_process";
 
 const ACCEPTED_RISK = {
-  postcss:
-    "Vendored inside next's own node_modules for its build pipeline. This repo never runs postcss over user-supplied CSS at request time (only build-time Tailwind config), so the XSS/path-traversal advisories have no reachable input here. No fix available: every next release up to the latest stable (16.2.11) vendors an affected postcss version.",
-  sharp:
-    "Vendored inside next's own node_modules for the next/image optimizer. This app never imports next/image (grep for it in src/ turns up nothing), so the libvips parsing surface is unreachable. No fix available: every next release up to the latest stable (16.2.11) vendors an affected sharp version.",
+  // next 16.4.5 vendors patched postcss 8.5.23 and sharp ^0.35.5, so the
+  // previous postcss/sharp exceptions are no longer needed. Keep this map
+  // empty unless a new unfixable, unreachable high/critical finding appears.
 };
 
 function runAudit() {

@@ -57,6 +57,32 @@ function isPrivateIp(ip: string): boolean {
 
 export class UnsafeUrlError extends Error {}
 
+const MAX_AUDIO_URL_CHARS = 1000;
+
+/**
+ * Playback URLs stored on versions/share snapshots. Rejects javascript:,
+ * data:, http:, and anything the URL parser will not treat as https.
+ * Does not DNS-resolve (that is for server-side fetches via safeFetch).
+ */
+export function assertHttpsAudioUrl(
+  raw: string | null | undefined
+): string | null {
+  if (raw == null || raw === "") return null;
+  if (raw.length > MAX_AUDIO_URL_CHARS) {
+    throw new UnsafeUrlError("Audio URL too long");
+  }
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    throw new UnsafeUrlError("Invalid audio URL");
+  }
+  if (url.protocol !== "https:") {
+    throw new UnsafeUrlError("Audio URL must be https");
+  }
+  return raw;
+}
+
 /** Parses `raw` and rejects non-http(s) schemes and private/internal hosts. */
 export async function assertPublicHttpUrl(raw: string): Promise<URL> {
   let url: URL;

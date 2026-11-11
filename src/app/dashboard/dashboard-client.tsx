@@ -350,9 +350,7 @@ export function DashboardClient({
     try {
       const url = await createShareLink(
         selectedTrack.id,
-        selectedVersion.id,
-        selectedTrack.name,
-        selectedVersion
+        selectedVersion.id
       );
       await navigator.clipboard.writeText(url);
       toast.success("Share link copied!", {

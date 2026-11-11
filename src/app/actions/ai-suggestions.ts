@@ -2,6 +2,7 @@
 
 import { generateText, Output } from "ai";
 import { z } from "zod";
+import { requireUserId } from "@/lib/auth";
 import { getUserModel } from "@/lib/user-config";
 import type { TrackStyle, DimensionScores, TrackFeedback } from "@/types/music";
 import { songLanguageName } from "@/lib/music/language";
@@ -21,6 +22,7 @@ export async function generateLyrics(params: {
   /** Instructions from selected skills in the user's skill library */
   skillInstructions?: string[];
 }): Promise<{ lyrics: string; structure: string }> {
+  await requireUserId();
   const { trackName, prompt, genre, moods, style, existingLyrics, skillInstructions } = params;
 
   const languageName = songLanguageName(style.language);
@@ -96,6 +98,7 @@ export async function generateTrackNames(params: {
   style: Partial<TrackStyle>;
   genre?: string;
 }): Promise<string[]> {
+  await requireUserId();
   const { prompt, style, genre } = params;
 
   const styleDescription = [
@@ -171,6 +174,7 @@ export async function autoEvaluate(params: {
   justifications: Record<string, string>;
   overallNotes: string;
 }> {
+  await requireUserId();
   const { prompt, negativePrompt, lyrics, style, trackName } = params;
 
   const styleDescription = [
@@ -252,6 +256,7 @@ export async function generatePromptVariations(params: {
   style: TrackStyle;
   count: number;
 }): Promise<string[]> {
+  await requireUserId();
   const { prompt, style, count } = params;
 
   const styleDescription = [
@@ -293,6 +298,7 @@ export async function suggestPromptImprovements(params: {
   feedback: TrackFeedback;
   rating: number;
 }): Promise<PromptSuggestion[]> {
+  await requireUserId();
   const { prompt, negativePrompt, style, dimensionScores, feedback, rating } =
     params;
 

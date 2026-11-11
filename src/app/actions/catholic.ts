@@ -5,7 +5,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db";
 import { tracks, trackVersions, themes, trackThemes } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { requireUserId } from "@/lib/auth";
 import {
   DEFAULT_DIMENSION_SCORES,
   DEFAULT_FEEDBACK,
@@ -64,6 +65,7 @@ function blendDescriptors(blendIds: string[]): string[] {
 export async function buildCatholicComposition(
   input: CatholicCompositionInput
 ): Promise<CatholicComposition> {
+  await requireUserId();
   const theme = getCatholicTheme(input.themeId);
   if (!theme) {
     throw new Error(`Unknown catholic theme: ${input.themeId}`);
@@ -123,19 +125,21 @@ Produce:
 // Ensure the seeded theme row exists (idempotent by name) and return its id.
 async function ensureCatholicTheme(
   db: ReturnType<typeof getDb>,
-  themeId: CatholicThemeId
+  themeId: CatholicThemeId,
+  userId: string
 ): Promise<string | null> {
   const theme = getCatholicTheme(themeId);
   if (!theme) return null;
 
   const existing = await db.query.themes.findFirst({
-    where: eq(themes.name, theme.canonicalName),
+    where: and(eq(themes.name, theme.canonicalName), eq(themes.userId, userId)),
   });
   if (existing) return existing.id;
 
   const [created] = await db
     .insert(themes)
     .values({
+      userId,
       name: theme.canonicalName,
       description: theme.canonicalDescription,
       keywords: theme.keywords,
@@ -160,6 +164,7 @@ export interface CreateCatholicTrackInput {
 export async function createCatholicTrack(
   input: CreateCatholicTrackInput
 ): Promise<string> {
+  const userId = await requireUserId();
   const db = getDb();
   const theme = getCatholicTheme(input.themeId);
   if (!theme) {
@@ -175,6 +180,7 @@ export async function createCatholicTrack(
   const [track] = await db
     .insert(tracks)
     .values({
+      userId,
       name: input.name.trim() || theme.canonicalName,
       genre: style.genre,
       tags: ["católico", theme.canonicalName.toLowerCase()],
@@ -201,7 +207,7 @@ export async function createCatholicTrack(
     providerTaskId: null,
   });
 
-  const themeRowId = await ensureCatholicTheme(db, input.themeId);
+  const themeRowId = await ensureCatholicTheme(db, input.themeId, userId);
   if (themeRowId) {
     await db
       .insert(trackThemes)

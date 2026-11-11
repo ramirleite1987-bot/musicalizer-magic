@@ -6,6 +6,7 @@ import { trackVersions } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { requireUserId } from "@/lib/auth";
 import { requireOwnedTrack, requireOwnedVersion } from "@/lib/db/ownership";
+import { assertHttpsAudioUrl } from "@/lib/security/url";
 import type { TrackVersion } from "@/types/music";
 import {
   DEFAULT_STYLE,
@@ -26,7 +27,7 @@ export async function createVersion(
   await db.insert(trackVersions).values({
     trackId,
     versionNumber: data.versionNumber ?? 1,
-    status: data.status ?? "draft",
+    status: "draft",
     prompt: data.prompt ?? "",
     negativePrompt: data.negativePrompt ?? "",
     lyrics: data.lyrics ?? "",
@@ -37,10 +38,10 @@ export async function createVersion(
     feedback: data.feedback ?? DEFAULT_FEEDBACK,
     isBest: data.isBest ?? false,
     audioFileName: data.audioFileName ?? null,
-    audioUrl: data.audioUrl ?? null,
-    sunoTaskId: data.sunoTaskId ?? null,
+    audioUrl: assertHttpsAudioUrl(data.audioUrl ?? null),
+    sunoTaskId: null,
     provider: data.provider ?? data.style?.provider ?? "suno",
-    providerTaskId: data.providerTaskId ?? null,
+    providerTaskId: null,
   });
 
   revalidatePath("/dashboard");
@@ -80,14 +81,28 @@ export async function updateVersion(
     id: _id,
     trackId: _trackId,
     createdAt: _createdAt,
+    updatedAt: _updatedAt,
+    sunoTaskId: _sunoTaskId,
+    providerTaskId: _providerTaskId,
+    versionNumber: _versionNumber,
+    isBest: _isBest,
+    status: _status,
+    audioUrl: audioUrlUpdate,
     ...scalarUpdates
   } = updates;
   /* eslint-enable @typescript-eslint/no-unused-vars */
+
+  const nextAudioUrl =
+    audioUrlUpdate !== undefined
+      ? assertHttpsAudioUrl(audioUrlUpdate)
+      : undefined;
 
   await db
     .update(trackVersions)
     .set({
       ...scalarUpdates,
+      ...(nextAudioUrl !== undefined ? { audioUrl: nextAudioUrl } : {}),
+      ...(nextAudioUrl ? { status: "complete" as const } : {}),
       ...(mergedStyle !== undefined ? { style: mergedStyle } : {}),
       ...(mergedDimensionScores !== undefined ? { dimensionScores: mergedDimensionScores } : {}),
       ...(mergedFeedback !== undefined ? { feedback: mergedFeedback } : {}),

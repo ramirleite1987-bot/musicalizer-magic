@@ -8,6 +8,7 @@ vi.mock("node:dns/promises", () => ({
 }));
 
 import {
+  assertHttpsAudioUrl,
   assertPublicHttpUrl,
   safeFetch,
   UnsafeUrlError,
@@ -206,5 +207,26 @@ describe("safeFetch", () => {
     await expect(safeFetch(`http://${PUBLIC_IP}/err`)).rejects.toThrow(
       "Upstream responded with 500"
     );
+  });
+});
+
+describe("assertHttpsAudioUrl", () => {
+  it("allows null, empty, and https playback URLs", () => {
+    expect(assertHttpsAudioUrl(null)).toBeNull();
+    expect(assertHttpsAudioUrl("")).toBeNull();
+    expect(assertHttpsAudioUrl("https://blob.example/audio/song.mp3")).toBe(
+      "https://blob.example/audio/song.mp3"
+    );
+  });
+
+  it("rejects non-https schemes used as stored audioUrl", () => {
+    for (const url of [
+      "javascript:alert(1)",
+      "data:audio/mpeg;base64,abc",
+      "http://example.com/song.mp3",
+      "not a url",
+    ]) {
+      expect(() => assertHttpsAudioUrl(url)).toThrow(UnsafeUrlError);
+    }
   });
 });
