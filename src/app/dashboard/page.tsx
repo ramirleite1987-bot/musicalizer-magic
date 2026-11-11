@@ -1,13 +1,13 @@
 import { getTracks } from "@/app/actions/tracks";
 import { getThemes } from "@/app/actions/themes";
-import { requireUserId, ensureUserSettings } from "@/lib/auth";
+import { requirePageUserId, ensureUserSettings } from "@/lib/auth";
 import type { Theme, Track } from "@/types/music";
 import { DashboardClient } from "./dashboard-client";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const userId = await requireUserId();
+  const userId = await requirePageUserId();
 
   let tracks: Track[] = [];
   let themes: Theme[] = [];
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
         : "Database connection is not configured. Add DATABASE_URL in your deployment environment (Vercel project settings).";
   } else {
     try {
-      // Creates the user's settings row; the first user also claims pre-auth data
+      // Creates only this account's settings; legacy ownership is preserved.
       await ensureUserSettings(userId);
       [tracks, themes] = await Promise.all([getTracks(), getThemes()]);
     } catch (err) {

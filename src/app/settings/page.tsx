@@ -1,10 +1,12 @@
 import Link from "next/link";
+import { requirePageUserId } from "@/lib/auth";
 import { getSettings } from "@/app/actions/settings";
 import { SettingsForm } from "@/components/settings-form";
 
 export const dynamic = "force-dynamic";
 
 export default async function SettingsPage() {
+  await requirePageUserId();
   let settings = null;
   let error: string | null = null;
 

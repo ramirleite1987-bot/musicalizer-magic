@@ -2,6 +2,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Copy `.env.example` to `.env` and configure the existing Neon `DATABASE_URL`.
+Authentication uses native email/password accounts and PostgreSQL sessions;
+no Clerk keys are required. Visit `/sign-up` to create an account, then use
+`/sign-in`. See [docs/auth.md](docs/auth.md) for session security and legacy data handling.
+
 First, run the development server:
 
 ```bash

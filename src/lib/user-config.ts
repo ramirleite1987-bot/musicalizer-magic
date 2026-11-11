@@ -1,5 +1,5 @@
 import "server-only";
-import { auth } from "@clerk/nextjs/server";
+import { requireUserId } from "@/lib/auth";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import type { LanguageModel } from "ai";
@@ -41,11 +41,7 @@ export function safeDecrypt(encrypted: string | null | undefined): string | null
  * default when none is configured.
  */
 export async function getUserModel(): Promise<LanguageModel> {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("Not authenticated");
-  }
-
+  const userId = await requireUserId();
   const row = await getUserSettingsRow(userId);
   if (!row) return DEFAULT_GATEWAY_MODEL;
 

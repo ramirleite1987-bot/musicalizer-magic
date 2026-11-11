@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { Sparkles, ChevronRight, Clock, CheckCircle2, AlertCircle, Loader2, Download, Upload, Wand2, Pencil, Check, X, Search, BarChart2, Activity, BookOpen, Settings, Church, Menu, Share2, MessageSquare } from "lucide-react";
-import { UserButton } from "@clerk/nextjs";
+import { SignOutButton } from "@/components/sign-out-button";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -319,7 +319,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           </Link>
           <LanguageSwitcher />
           <ThemeToggle />
-          <UserButton />
+          <SignOutButton />
         </div>
       </div>
     );
@@ -627,7 +627,7 @@ export function Header({ track, version, onGenerate, onBatchGenerate, isBatchGen
           </Button>
         )}
 
-        <UserButton />
+        <SignOutButton />
 
         {/* Batch Generate — 3 Variations */}
         {onBatchGenerate && (

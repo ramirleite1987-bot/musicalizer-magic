@@ -22,6 +22,12 @@ export async function register() {
   // Auto-apply pending schema migrations on cold start (idempotent — uses IF NOT EXISTS)
   if (process.env.DATABASE_URL) {
     try {
+      const { ensureAuthSchema } = await import("@/lib/auth-store");
+      await ensureAuthSchema();
+    } catch {
+      console.warn("[instrumentation] auth schema initialization unavailable");
+    }
+    try {
       const { neon } = await import("@neondatabase/serverless");
       const sql = neon(process.env.DATABASE_URL);
       await sql`ALTER TABLE tracks ADD COLUMN IF NOT EXISTS tags jsonb NOT NULL DEFAULT '[]'::jsonb`;

@@ -22,6 +22,13 @@
       "when": 1781136000000,
       "tag": "0006_add_users_and_settings",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1794355200000,
+      "tag": "0007_native_auth",
+      "breakpoints": true
     }
   ]
 }

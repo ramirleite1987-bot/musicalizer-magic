@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentUserId } from "@/lib/auth";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { getUserModel } from "@/lib/user-config";
@@ -30,7 +30,7 @@ const themeSchema = z.object({
 });
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

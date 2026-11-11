@@ -2,8 +2,8 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const authState = vi.hoisted(() => ({ userId: "user_test" as string | null }));
 
-vi.mock("@clerk/nextjs/server", () => ({
-  auth: async () => ({ userId: authState.userId }),
+vi.mock("@/lib/auth", () => ({
+  getCurrentUserId: async () => authState.userId,
 }));
 
 const putMock = vi.hoisted(() =>

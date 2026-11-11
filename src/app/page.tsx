@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentUserId } from "@/lib/auth";
 import {
   Sparkles,
   Layers,
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const { userId } = await auth();
+  const userId = await getCurrentUserId();
   if (userId) {
     redirect("/dashboard");
   }

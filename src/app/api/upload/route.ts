@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { getCurrentUserId } from "@/lib/auth";
 import { put } from "@vercel/blob";
 
 const MAX_FILE_BYTES = 50 * 1024 * 1024; // 50MB
@@ -18,7 +18,7 @@ const ALLOWED_EXTENSIONS = new Set([
 const ALLOWED_MIME_PREFIXES = ["audio/", "video/webm"];
 
 export async function POST(request: Request) {
-  const { userId } = await auth();
+  const userId = await getCurrentUserId();
   if (!userId) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }

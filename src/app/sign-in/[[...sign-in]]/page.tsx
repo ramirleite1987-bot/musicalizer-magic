@@ -1,9 +1,8 @@
-import { SignIn } from "@clerk/nextjs";
+import { redirect } from "next/navigation";
+import { AuthForm } from "@/components/auth-form";
+import { getCurrentUserId } from "@/lib/auth";
 
-export default function SignInPage() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-950">
-      <SignIn />
-    </div>
-  );
+export default async function SignInPage() {
+  if (await getCurrentUserId()) redirect("/dashboard");
+  return <AuthForm mode="sign-in" />;
 }

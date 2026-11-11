@@ -5,8 +5,7 @@ import { I18nProvider } from "@/i18n/provider";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 
-// Clerk components require a ClerkProvider, which the test renders without
-vi.mock("@clerk/nextjs", () => ({ UserButton: () => null }));
+vi.mock("@/app/actions/auth", () => ({ signOut: vi.fn() }));
 
 vi.mock("@/app/actions/versions", () => ({
   updateVersion: vi.fn(),

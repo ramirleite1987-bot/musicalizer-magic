@@ -38,7 +38,7 @@ export const tracks = pgTable(
   "tracks",
   {
     id: uuid("id").defaultRandom().primaryKey(),
-    // Clerk user id; nullable so pre-auth rows can be claimed by the first user
+    // Stable owner id; existing legacy ownership is preserved during auth changes.
     userId: text("user_id"),
     name: varchar("name", { length: 255 }).notNull(),
     genre: varchar("genre", { length: 100 }).notNull(),
@@ -178,7 +178,7 @@ export const skills = pgTable(
 );
 
 export const userSettings = pgTable("user_settings", {
-  userId: text("user_id").primaryKey(), // Clerk user id
+  userId: text("user_id").primaryKey(),
   displayName: varchar("display_name", { length: 255 }),
   llmProvider: varchar("llm_provider", { length: 32 })
     .default("openrouter")
@@ -221,3 +221,23 @@ export const chatMessages = pgTable("chat_messages", {
   suggestions: jsonb("suggestions").$type<ChatSuggestion[]>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+export const authUsers = pgTable("auth_users", {
+  id: text("id").primaryKey(),
+  email: varchar("email", { length: 254 }).notNull().unique(),
+  name: varchar("name", { length: 80 }).notNull(),
+  passwordHash: text("password_hash").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+});
+
+export const authSessions = pgTable("auth_sessions", {
+  tokenHash: varchar("token_hash", { length: 64 }).primaryKey(),
+  userId: text("user_id").notNull().references(() => authUsers.id, { onDelete: "cascade" }),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+}, (table) => [index("auth_sessions_expires_at_idx").on(table.expiresAt)]);
+
+export const authAttempts = pgTable("auth_attempts", {
+  key: varchar("key", { length: 64 }).primaryKey(),
+  attempts: integer("attempts").notNull(),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+}, (table) => [index("auth_attempts_reset_at_idx").on(table.resetAt)]);

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { requirePageUserId } from "@/lib/auth";
 import { getAllSkills } from "@/app/actions/skills";
 import { SkillsLibrary } from "@/components/skills-library";
 import type { SkillDefinition } from "@/data/default-skills";
@@ -6,6 +7,7 @@ import type { SkillDefinition } from "@/data/default-skills";
 export const dynamic = "force-dynamic";
 
 export default async function SkillsPage() {
+  await requirePageUserId();
   let skills: SkillDefinition[] = [];
   let error: string | null = null;
 
